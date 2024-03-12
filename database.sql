@@ -6,16 +6,17 @@ CREATE TABLE UserLevels (
 
 CREATE TABLE Users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(255) AUTO_INCEREMENT NOT NULL,
+    username VARCHAR(255) AUTO_INCREMENT NOT NULL,
     password VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
-    user_level_id INT,
+    user_level_id INT NOT NULL,
+    status VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_level_id) REFERENCES UserLevels(level_id)
 );
 
-CREATE TABLE UserInformationPosts (
-    post_id INT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE EmployeeCard (
+    card_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     title VARCHAR(255),
     image_url VARCHAR(255),
@@ -25,7 +26,7 @@ CREATE TABLE UserInformationPosts (
 );
 
 CREATE TABLE JobAds (
-    jobAd_id INT AUTO_INCREMENT PRIMARY KEY,
+    ad_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     title VARCHAR(255) NOT NULL,
     salary INT NOT NULL,
@@ -37,11 +38,11 @@ CREATE TABLE JobAds (
 
 CREATE TABLE Applications (
     application_id INT AUTO_INCREMENT PRIMARY KEY,
-    jobAd_id INT NOT NULL,
+    ad_id INT NOT NULL,
     user_id INT NOT NULL,
     matchPercentage DECIMAL(5,2),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (jobAd_id) REFERENCES JobAds(jobAd_id) ON DELETE CASCADE,
+    FOREIGN KEY (ad_id) REFERENCES JobAds(ad_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
 );
 
@@ -51,6 +52,13 @@ CREATE TABLE Tests (
     title VARCHAR(255) NOT NULL,
     description TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+);
+
+CREATE TABLE JobTest (
+    ad_id INT NOT NULL,
+    test_id NOT NULL,
+    FOREIGN KEY (ad_id) REFERENCES JobAds(ad_id),
+    FOREIGN KEY (test_id) REFERENCES Tests(test_id)
 );
 
 CREATE TABLE UserTests (
