@@ -4,11 +4,21 @@ import {
   Text,
   Dimensions,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
+import {NavigationProp, ParamListBase} from '@react-navigation/native';
 import Logo from '../components/Logo';
 import LoginForm from '../components/LoginForm';
 
 const styles = StyleSheet.create({
+  container: {
+    padding: 0,
+    flex: 1,
+    paddingTop: Platform.OS === 'android' ? 30 : 0,
+    backgroundColor: '#5d71c9',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   topContainer: {
     flex: 1,
     alignItems: 'center',
@@ -41,9 +51,9 @@ const styles = StyleSheet.create({
   },
 });
 
-const Login = () => {
+const Login = ({navigation}: {navigation: NavigationProp<ParamListBase>}) => {
   return (
-    <>
+    <View style={styles.container}>
       <View style={styles.topContainer}>
         <Logo />
       </View>
@@ -56,14 +66,19 @@ const Login = () => {
               <Text style={{color: '#004aad'}}>Unohditko salasanasi?</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.linkText}>
+          <TouchableOpacity
+            style={styles.linkText}
+            onPress={() => {
+              navigation.navigate('Rekisteröidy');
+            }}
+          >
             <View>
               <Text style={{color: '#004aad'}}>Luo profiili</Text>
             </View>
           </TouchableOpacity>
         </View>
       </View>
-    </>
+    </View>
   );
 };
 
