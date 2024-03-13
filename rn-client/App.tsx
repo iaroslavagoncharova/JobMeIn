@@ -1,6 +1,7 @@
 import {StatusBar} from 'expo-status-bar';
 import {Platform, SafeAreaView, StyleSheet} from 'react-native';
 import Login from './src/views/Login';
+import Register from './src/views/Register';
 
 const App = () => {
   return (

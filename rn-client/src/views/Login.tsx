@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   loginContainer: {
-    flex: 1,
+    flex: 1.7,
     width: Dimensions.get('window').width,
     marginTop: 0,
     borderTopRightRadius: 50,
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
   },
   links: {
     margin: 0,
-    height: 45,
+    height: 50,
     justifyContent: 'space-between',
     marginBottom: 20,
   },

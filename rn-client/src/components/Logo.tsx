@@ -1,23 +1,21 @@
-import {View, StyleSheet, Image} from 'react-native';
+import {View, StyleSheet} from 'react-native';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {faHandshake} from '@fortawesome/free-solid-svg-icons';
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#ffffff',
     alignItems: 'center',
-    padding: 10,
+    padding: 20,
     borderRadius: 10,
     shadowColor: '#000',
-  },
-  logo: {
-    width: 80,
-    height: 80,
   },
 });
 
 const Logo = () => {
   return (
     <View style={styles.container}>
-      <Image style={styles.logo} source={require('../assets/handshake.png')} />
+      <FontAwesomeIcon icon={faHandshake} size={90} color={'#004aad'} />
     </View>
   );
 };

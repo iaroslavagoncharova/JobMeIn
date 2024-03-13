@@ -5,12 +5,13 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {faCalendar} from '@fortawesome/free-regular-svg-icons';
 
 const styles = StyleSheet.create({
-  loginForm: {
+  registerForm: {
     flex: 1,
-    marginTop: 50,
-    marginBottom: 20,
+    marginTop: 20,
     alignItems: 'center',
   },
   inputWithLabel: {
@@ -18,6 +19,7 @@ const styles = StyleSheet.create({
     width: 250,
     marginTop: 10,
     padding: 0,
+    height: 40,
   },
   labelText: {
     fontSize: 10,
@@ -33,8 +35,13 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderColor: '#e0e0e0',
     color: '#004aad',
+    flexDirection: 'row',
   },
-  loginButton: {
+  datePicker: {
+    flex: 1,
+    borderLeftColor: '#5d71c9',
+  },
+  registerButton: {
     marginTop: 0,
     width: 250,
     backgroundColor: '#5d71c9',
@@ -43,14 +50,24 @@ const styles = StyleSheet.create({
   },
 });
 
-const LoginForm = () => {
+const RegisterForm = () => {
   return (
-    <View style={styles.loginForm}>
+    <View style={styles.registerForm}>
+      <View style={styles.inputWithLabel}>
+        <Text style={styles.labelText}>NIMI</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Matti Meikäläinen"
+          keyboardType="default"
+          autoCorrect={false}
+          inputMode="text"
+        />
+      </View>
       <View style={styles.inputWithLabel}>
         <Text style={styles.labelText}>SÄHKÖPOSTIOSOITE</Text>
         <TextInput
           style={styles.input}
-          placeholder="example@mail.com"
+          placeholder="mattimeikalainen@example.com"
           keyboardType="default"
           autoCorrect={false}
           inputMode="email"
@@ -65,7 +82,21 @@ const LoginForm = () => {
           keyboardType="default"
         />
       </View>
-      <TouchableOpacity style={styles.loginButton} onPress={() => {}}>
+      <View style={styles.inputWithLabel}>
+        <Text style={styles.labelText}>SYNTYMÄAIKA</Text>
+        <View style={styles.input}>
+          <TextInput
+            style={{flex: 10}}
+            placeholder="pp.kk.vvvv"
+            keyboardType="numeric"
+            inputMode="numeric"
+          />
+          <TouchableOpacity style={styles.datePicker}>
+            <FontAwesomeIcon icon={faCalendar} size={20} color={'#004aad'} />
+          </TouchableOpacity>
+        </View>
+      </View>
+      <TouchableOpacity style={styles.registerButton} onPress={() => {}}>
         <Text
           style={{
             color: '#ffffff',
@@ -74,11 +105,11 @@ const LoginForm = () => {
             fontWeight: 'bold',
           }}
         >
-          Kirjaudu
+          Luo profiili
         </Text>
       </TouchableOpacity>
     </View>
   );
 };
 
-export default LoginForm;
+export default RegisterForm;
