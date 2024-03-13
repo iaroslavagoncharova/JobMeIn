@@ -1,10 +1,11 @@
 import {StatusBar} from 'expo-status-bar';
-import {Platform, SafeAreaView, StyleSheet, Text} from 'react-native';
+import {Platform, SafeAreaView, StyleSheet} from 'react-native';
+import Login from './src/views/Login';
 
 const App = () => {
   return (
     <SafeAreaView style={styles.container}>
-      <Text>Hello, React Native!</Text>
+      <Login />
       <StatusBar style="auto" />
     </SafeAreaView>
   );
@@ -12,9 +13,10 @@ const App = () => {
 
 const styles = StyleSheet.create({
   container: {
+    padding: 0,
     flex: 1,
     paddingTop: Platform.OS === 'android' ? 30 : 0,
-    backgroundColor: '#fff',
+    backgroundColor: '#5d71c9',
     alignItems: 'center',
     justifyContent: 'center',
   },
