@@ -7,6 +7,8 @@ import {
 } from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faCalendar} from '@fortawesome/free-regular-svg-icons';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import {useState} from 'react';
 
 const styles = StyleSheet.create({
   registerForm: {
@@ -52,6 +54,27 @@ const styles = StyleSheet.create({
 });
 
 const RegisterForm = () => {
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [date, setDate] = useState('' as string);
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = (date: Date) => {
+    const day = ('0' + date.getDate()).slice(-2);
+    const month = ('0' + (date.getMonth() + 1)).slice(-2);
+    const year = date.getFullYear();
+
+    const formattedDate = `${day}.${month}.${year}`;
+    setDate(formattedDate);
+    hideDatePicker();
+  };
+
   return (
     <View style={styles.registerForm}>
       <View style={styles.inputWithLabel}>
@@ -87,13 +110,20 @@ const RegisterForm = () => {
         <Text style={styles.labelText}>SYNTYMÄAIKA</Text>
         <View style={styles.input}>
           <TextInput
+            id="date"
+            value={date}
             style={{flex: 10}}
             placeholder="pp.kk.vvvv"
-            keyboardType="numeric"
-            inputMode="numeric"
+            inputMode="none"
           />
-          <TouchableOpacity style={styles.datePicker}>
+          <TouchableOpacity style={styles.datePicker} onPress={showDatePicker}>
             <FontAwesomeIcon icon={faCalendar} size={20} color={'#004aad'} />
+            <DateTimePickerModal
+              isVisible={isDatePickerVisible}
+              mode="date"
+              onConfirm={handleConfirm}
+              onCancel={hideDatePicker}
+            />
           </TouchableOpacity>
         </View>
       </View>
