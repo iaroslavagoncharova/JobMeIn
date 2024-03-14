@@ -11,6 +11,7 @@ import {faCalendar} from '@fortawesome/free-regular-svg-icons';
 const styles = StyleSheet.create({
   registerForm: {
     flex: 1,
+    position: 'relative',
     marginTop: 20,
     alignItems: 'center',
   },

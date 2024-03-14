@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
   topContainer: {
     flex: 1,
     flexDirection: 'row',
+    position: 'relative',
     justifyContent: 'flex-start',
     width: Dimensions.get('window').width,
   },
@@ -33,6 +34,7 @@ const styles = StyleSheet.create({
   },
   registerContainer: {
     flex: 4,
+    position: 'relative',
     width: Dimensions.get('window').width,
     height: 700,
     marginTop: 0,
