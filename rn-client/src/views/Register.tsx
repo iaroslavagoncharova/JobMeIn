@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#5d71c9',
   },
   registerContainer: {
-    flex: 4,
+    flex: 6,
     position: 'relative',
     width: Dimensions.get('window').width,
     height: 700,
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   headerText: {
-    marginTop: 20,
+    marginTop: 15,
     fontSize: 45,
     fontWeight: 'bold',
     color: '#004aad',
@@ -70,7 +70,7 @@ const Register = ({
         >
           <FontAwesomeIcon
             icon={faArrowLeft}
-            size={50}
+            size={40}
             color={'#ffffff'}
             style={styles.arrowIcon}
           />
