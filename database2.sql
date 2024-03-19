@@ -1,3 +1,7 @@
+DROP DATABASE IF EXISTS JobMeIn;
+CREATE DATABASE JobMeIn;
+USE JobMeIn;
+
 CREATE TABLE UserLevels (
   level_id int(11) AUTO_INCREMENT PRIMARY KEY,
   level_name varchar(255) NOT NULL
