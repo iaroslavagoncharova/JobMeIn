@@ -7,7 +7,7 @@ CREATE TABLE UserLevels (
   level_name varchar(255) NOT NULL
 );
 
-CREATE TABLE `Users` (
+CREATE TABLE Users (
   user_id int(11) AUTO_INCREMENT NOT NULL PRIMARY KEY,
   username varchar(255) NOT NULL,
   password varchar(255) NOT NULL,
