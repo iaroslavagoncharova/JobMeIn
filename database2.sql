@@ -8,7 +8,7 @@ CREATE TABLE UserLevels (
 );
 
 CREATE TABLE Users (
-  user_id int(11) AUTO_INCREMENT NOT NULL PRIMARY KEY,
+  user_id int(11) AUTO_INCREMENT PRIMARY KEY NOT NULL,
   username varchar(255) NOT NULL,
   password varchar(255) NOT NULL,
   email varchar(255) NOT NULL,
