@@ -20,7 +20,7 @@ CREATE TABLE Users (
   user_type varchar(255) NOT NULL,
   link varchar(255),
   field varchar(255),
-  created_at date CURRENT_TIMESTAMP
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE JobExperience (
