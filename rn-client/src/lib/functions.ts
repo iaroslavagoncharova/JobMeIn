@@ -1,4 +1,4 @@
-import {ErrorResponse} from '../../../shared-types/MessageTypes'
+import {ErrorResponse} from '../types/MessageTypes';
 
 const fetchData = async <T>(
   url: string,

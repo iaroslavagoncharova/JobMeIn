@@ -1,21 +1,26 @@
+DROP DATABASE IF EXISTS JobMeIn;
+CREATE DATABASE JobMeIn;
+USE JobMeIn;
+
 CREATE TABLE UserLevels (
   level_id int(11) AUTO_INCREMENT PRIMARY KEY,
   level_name varchar(255) NOT NULL
 );
 
-CREATE TABLE `Users` (
-  user_id int(11) AUTO_INCREMENT NOT NULL PRIMARY KEY,
+CREATE TABLE Users (
+  user_id int(11) AUTO_INCREMENT PRIMARY KEY NOT NULL,
   username varchar(255) NOT NULL,
   password varchar(255) NOT NULL,
   email varchar(255) NOT NULL,
   user_level_id int NOT NULL,
   fullname varchar(255) NOT NULL,
-  phone varchar(255),
+  phone varchar(255) NOT NULL,
   about_me text,
   status varchar(255),
   user_type varchar(255) NOT NULL,
   link varchar(255),
-  field varchar(255)
+  field varchar(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE JobExperience (
@@ -156,6 +161,16 @@ CREATE TABLE Reports (
     report_reason text NOT NULL,
     reported_at datetime NOT NULL,
     is_resolved tinyint NOT NULL
+);
+
+CREATE TABLE Adjectives (
+  adj_id int(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  adj_name varchar(255) NOT NULL
+);
+
+CREATE TABLE Animals (
+  animal_id int(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  animal_name varchar(255) NOT NULL
 );
 
 ALTER TABLE `JobExperience` ADD FOREIGN KEY (`user_id`) REFERENCES `Users` (`user_id`);
