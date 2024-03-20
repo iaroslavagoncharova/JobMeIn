@@ -1,0 +1,13 @@
+{
+  "name": "JobMeIn autentikointipalvelin",
+  "version": "1.0.0",
+  "description": "Monialustaprojekti k2024, ryhmä 3",
+  "title": "Autentikointipalvelin",
+  "url": "/api/v1",
+  "template": {
+    "withCompare": true,
+    "withGenerator": true
+  },
+  "exclude": ["node_modules/", "public/"],
+  "files": ["src/**/*.ts"]
+}

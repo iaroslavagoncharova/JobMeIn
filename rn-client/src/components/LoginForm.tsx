@@ -1,10 +1,7 @@
-import {
-  StyleSheet,
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {Controller, useForm} from 'react-hook-form';
+import {Card, Input} from '@rneui/base';
+import {Values} from '../types/LocalTypes';
 
 const styles = StyleSheet.create({
   loginForm: {
@@ -38,33 +35,68 @@ const styles = StyleSheet.create({
     marginTop: 0,
     width: 250,
     backgroundColor: '#5d71c9',
-    marginBottom: 30,
+    marginBottom: 10,
     borderRadius: 5,
   },
 });
 
 const LoginForm = () => {
+  const initValues: Values = {email: '', password: ''};
+  const {
+    control,
+    handleSubmit,
+    formState: {errors},
+  } = useForm({
+    defaultValues: initValues,
+  });
+
   return (
-    <View style={styles.loginForm}>
-      <View style={styles.inputWithLabel}>
-        <Text style={styles.labelText}>SÄHKÖPOSTIOSOITE</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="example@mail.com"
-          keyboardType="default"
-          autoCorrect={false}
-          inputMode="email"
-        />
-      </View>
-      <View style={styles.inputWithLabel}>
-        <Text style={styles.labelText}>SALASANA</Text>
-        <TextInput
-          style={styles.input}
-          secureTextEntry={true}
-          placeholder="********"
-          keyboardType="default"
-        />
-      </View>
+    <Card>
+      <Controller
+        control={control}
+        rules={{
+          required: {
+            value: true,
+            message: 'Ole hyvä ja syötä sähköpostiosoite',
+          },
+        }}
+        render={({field: {onChange, onBlur, value}}) => (
+          <Input
+            style={styles.input}
+            placeholder="example@mail.com"
+            onBlur={onBlur}
+            onChangeText={onChange}
+            value={value}
+            inputMode="email"
+            autoCapitalize="none"
+            errorMessage={errors.email?.message}
+          />
+        )}
+        name="email"
+      />
+      <Controller
+        control={control}
+        rules={{
+          required: {
+            value: true,
+            message: 'Ole hyvä ja syötä salasana',
+          },
+        }}
+        render={({field: {onChange, onBlur, value}}) => (
+          <Input
+            style={styles.input}
+            placeholder="********"
+            onBlur={onBlur}
+            onChangeText={onChange}
+            value={value}
+            inputMode="text"
+            autoCapitalize="none"
+            secureTextEntry
+            errorMessage={errors.password?.message}
+          />
+        )}
+        name="password"
+      />
       <TouchableOpacity style={styles.loginButton} onPress={() => {}}>
         <Text
           style={{
@@ -77,7 +109,7 @@ const LoginForm = () => {
           Kirjaudu
         </Text>
       </TouchableOpacity>
-    </View>
+    </Card>
   );
 };
 

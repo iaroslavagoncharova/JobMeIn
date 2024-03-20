@@ -13,4 +13,4 @@ type User = {
   field: string;
 };
 
-export type { User };
+export type {User};
