@@ -1,78 +1,77 @@
-import {LoginResponse, UserResponse} from '../../../shared-types/MessageTypes';
 import {fetchData} from '../lib/functions';
-import {User} from '../../../shared-types/DBTypes';
-import {Credentials} from '../types/LocalTypes';
+import {User} from '../types/DBTypes';
+import {Values} from '../types/LocalTypes';
+import {LoginResponse, UserResponse} from '../types/MessageTypes';
 
 const useUser = () => {
-  const getUserByToken = async (token: string) => {
-    const options = {
-      headers: {
-        Authorization: 'Bearer ' + token,
-      },
-    };
-    return await fetchData<UserResponse>(
-      process.env.VITE_AUTH_API + '/users/token/',
-      options,
+  const getUserById = async (id: number) => {
+    return await fetchData<User>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/users/' + id,
     );
   };
 
+  const getUserByToken = async (token: string) => {
+    const options = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const result = await fetchData<UserResponse>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/users/token',
+      options,
+    );
+    return result;
+  };
+
   const postUser = async (user: Record<string, string>) => {
-    const options: RequestInit = {
+    const options = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(user),
     };
-
-    await fetchData<UserResponse>(
-      process.env.VITE_AUTH_API + '/users',
+    return await fetchData<UserResponse>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/users',
       options,
     );
   };
-
-  const getUsernameAvailable = async (username: string) => {
+  const getUsernameAvailability = async (username: string) => {
     return await fetchData<{available: boolean}>(
-      process.env.VITE_AUTH_API + '/users/username/' + username,
+      process.env.EXPO_PUBLIC_AUTH_API + '/users/username/' + username,
     );
   };
 
-  const getEmailAvailable = async (email: string) => {
+  const getEmailAvailability = async (email: string) => {
     return await fetchData<{available: boolean}>(
-      process.env.VITE_AUTH_API + '/users/email/' + email,
+      process.env.EXPO_PUBLIC_AUTH_API + '/users/email/' + email,
     );
   };
-
-  const getUserById = async (user_id: number) => {
-    return await fetchData<User>(
-      process.env.VITE_AUTH_API + '/users/' + user_id,
-    );
-  };
-
   return {
+    getUserById,
     getUserByToken,
     postUser,
-    getUsernameAvailable,
-    getEmailAvailable,
-    getUserById,
+    getUsernameAvailability,
+    getEmailAvailability,
   };
 };
 
-const useAuthentication = () => {
-  const postLogin = async (creds: Credentials) => {
-    return await fetchData<LoginResponse>(
-      process.env.VITE_AUTH_API + '/auth/login',
-      {
-        method: 'POST',
-        body: JSON.stringify(creds),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+const useAuth = () => {
+  const postLogin = async (values: Values) => {
+    const options: RequestInit = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       },
+      body: JSON.stringify(values),
+    };
+    const result = await fetchData<LoginResponse>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/auth/login',
+      options,
     );
+    return result;
   };
-
   return {postLogin};
 };
 
-export {useUser, useAuthentication};
+export {useUser, useAuth};

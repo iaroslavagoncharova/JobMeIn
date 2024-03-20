@@ -1,8 +1,7 @@
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {Controller, useForm} from 'react-hook-form';
 import {Card, Input} from '@rneui/base';
-import {Credentials} from '../types/LocalTypes';
-import {useUserContext} from '../hooks/ContextHooks';
+import {Values} from '../types/LocalTypes';
 
 const styles = StyleSheet.create({
   loginForm: {
@@ -42,8 +41,7 @@ const styles = StyleSheet.create({
 });
 
 const LoginForm = () => {
-  const {handleLogin} = useUserContext();
-  const initValues: Credentials = {email: '', password: ''};
+  const initValues: Values = {email: '', password: ''};
   const {
     control,
     handleSubmit,
@@ -51,10 +49,6 @@ const LoginForm = () => {
   } = useForm({
     defaultValues: initValues,
   });
-
-  const doLogin = async (inputs: Credentials) => {
-    handleLogin(inputs);
-  };
 
   return (
     <Card>
@@ -103,10 +97,7 @@ const LoginForm = () => {
         )}
         name="password"
       />
-      <TouchableOpacity
-        style={styles.loginButton}
-        onPress={handleSubmit(doLogin)}
-      >
+      <TouchableOpacity style={styles.loginButton} onPress={() => {}}>
         <Text
           style={{
             color: '#ffffff',

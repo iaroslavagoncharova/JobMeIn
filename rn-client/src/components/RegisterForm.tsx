@@ -7,12 +7,8 @@ import {
   Alert,
 } from 'react-native';
 import {Controller, useForm} from 'react-hook-form';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faCalendar} from '@fortawesome/free-regular-svg-icons';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {Card, Input} from '@rneui/base';
-import {useState, useEffect} from 'react';
-import DropDownPicker from 'react-native-dropdown-picker';
+import {useEffect} from 'react';
 import {useUser} from '../hooks/apiHooks';
 
 const RegisterForm = () => {
@@ -21,15 +17,13 @@ const RegisterForm = () => {
     fullname: '',
     email: '',
     password: '',
-    confirmPassword: '',
-    dateOfBirth: '',
-    userType: '',
+    phone: '',
+    user_type: 'Työnhakija',
   };
   const {
     control,
     handleSubmit,
     formState: {errors},
-    getValues,
   } = useForm({
     defaultValues: initValues,
     mode: 'onBlur',
@@ -38,62 +32,19 @@ const RegisterForm = () => {
   const doRegister = async (inputs: {
     fullname: string;
     email: string;
-    password: string;
-    confirmPassword?: string;
-    dateOfBirth?: string;
-    userType: string;
+    password?: string;
+    phone: string;
+    user_type: string;
   }) => {
-    console.log(inputs);
+    console.log(inputs, 'inputs 1');
     try {
-      delete inputs.confirmPassword;
-      delete inputs.dateOfBirth;
+      console.log(inputs, 'inputs 2');
       await postUser(inputs);
       Alert.alert('User created', 'You can now login');
     } catch (error) {
       Alert.alert('Error', (error as Error).message);
     }
   };
-
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [date, setDate] = useState('' as string);
-  const [dateString, setDateString] = useState('' as string);
-
-  const showDatePicker = () => {
-    setDatePickerVisibility(true);
-  };
-
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false);
-  };
-
-  const handleConfirm = (date: Date) => {
-    const day = ('0' + date.getDate()).slice(-2);
-    const month = ('0' + (date.getMonth() + 1)).slice(-2);
-    const year = date.getFullYear();
-
-    const formattedDate = `${day}.${month}.${year}`;
-    setDate(date.toDateString());
-    setDateString(formattedDate);
-    hideDatePicker();
-  };
-
-  const getAge = (date: Date) => {
-    const today = new Date();
-    const birthDate = date;
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-    return age;
-  };
-
-  const [openUserTypes, setOpenUserTypes] = useState(false);
-  const [userTypeValue, setUserTypeValue] = useState(null);
-  const [userTypeItems, setUserTypeItems] = useState([
-    {label: 'Työnhakija', value: 'Työnhakija'},
-    {label: 'Yritys', value: 'Yritys'},
-  ]);
 
   useEffect(() => {
     console.log(errors);
@@ -186,98 +137,31 @@ const RegisterForm = () => {
         )}
         name="password"
       />
-
       <Controller
         control={control}
         rules={{
           required: {value: true, message: 'is required'},
-          validate: (value) =>
-            value === getValues().password ? true : 'Passwords do not match',
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <View style={styles.inputWithLabel}>
-            <Text style={styles.labelText}>SALASANA UUDELLEEN</Text>
-            <Input
-              style={styles.input}
-              secureTextEntry
-              placeholder="Vahvista salasana"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              errorMessage={errors.confirmPassword?.message}
-            />
-          </View>
-        )}
-        name="confirmPassword"
-      />
-      <Controller
-        control={control}
-        rules={{
-          required: {value: true, message: 'is required'},
-          validate: (value) => {
-            if (getAge(new Date(value)) < 15) {
-              return 'Olethan yli 15-vuotias';
-            }
-          },
-        }}
-        render={({field: {onChange, onBlur, value}}) => (
-          <View style={styles.inputWithLabel}>
-            <Text style={styles.labelText}>SYNTYMÄAIKA</Text>
+            <Text style={styles.labelText}>PUHELINNUMERO</Text>
             <View style={styles.input}>
+              <View>
+                <Text style={{color: '#004aad'}}>+358</Text>
+              </View>
               <TextInput
-                id="date"
                 onBlur={onBlur}
-                onChangeText={(value) => {
-                  onChange(value);
-                  setDate(value);
-                }}
-                value={date}
-                style={{flex: 10}}
-                placeholder="pp.kk.vvvv"
-                inputMode="none"
+                onChangeText={onChange}
+                value={value}
+                style={{flex: 10, paddingLeft: 10}}
+                placeholder="01234567"
+                keyboardType="phone-pad"
+                inputMode="numeric"
               />
-              <TouchableOpacity
-                style={styles.datePicker}
-                onPress={showDatePicker}
-              >
-                <FontAwesomeIcon
-                  icon={faCalendar}
-                  size={20}
-                  color={'#004aad'}
-                />
-                <DateTimePickerModal
-                  isVisible={isDatePickerVisible}
-                  mode="date"
-                  onConfirm={handleConfirm}
-                  onCancel={hideDatePicker}
-                />
-              </TouchableOpacity>
             </View>
           </View>
         )}
-        name="dateOfBirth"
-      />
-      <Controller
-        control={control}
-        rules={{
-          required: {value: true, message: 'is required'},
-        }}
-        render={({field: {onChange, value}}) => (
-          <View style={styles.inputWithLabel}>
-            <Text style={styles.labelText}>TILITYYPPI</Text>
-            <DropDownPicker
-              style={styles.input}
-              open={openUserTypes}
-              value={userTypeValue}
-              items={userTypeItems}
-              setOpen={setOpenUserTypes}
-              setValue={setUserTypeValue}
-              setItems={setUserTypeItems}
-              onChangeValue={onChange}
-            />
-          </View>
-        )}
-        name="userType"
+        name="phone"
       />
       <TouchableOpacity
         style={styles.registerButton}
@@ -326,10 +210,6 @@ const styles = StyleSheet.create({
     borderColor: '#e0e0e0',
     color: '#004aad',
     flexDirection: 'row',
-  },
-  datePicker: {
-    flex: 1,
-    borderLeftColor: '#5d71c9',
   },
   registerButton: {
     marginTop: 20,
