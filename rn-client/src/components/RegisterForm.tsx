@@ -85,16 +85,7 @@ const RegisterForm = () => {
             value: /^\S+@\S+\.\S+$/,
             message: 'Sähköpostiosoite ei ole validi',
           },
-          /* validate: async (value) => {
-            try {
-              const {available} = await getEmailAvailable(value);
-              return available
-                ? available
-                : 'Sähköpostiosoitteeseen on jo liitetty tili';
-            } catch (error) {
-              console.log((error as Error).message);
-            }
-          }, */
+          // TODO: Add email availability check
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <View style={styles.inputWithLabel}>

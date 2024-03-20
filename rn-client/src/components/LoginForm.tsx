@@ -1,7 +1,8 @@
-import {StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {Alert, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {Controller, useForm} from 'react-hook-form';
 import {Card, Input} from '@rneui/base';
 import {Values} from '../types/LocalTypes';
+import {useAuth} from '../hooks/apiHooks';
 
 const styles = StyleSheet.create({
   loginForm: {
@@ -41,6 +42,7 @@ const styles = StyleSheet.create({
 });
 
 const LoginForm = () => {
+  const {postLogin} = useAuth();
   const initValues: Values = {email: '', password: ''};
   const {
     control,
@@ -49,6 +51,16 @@ const LoginForm = () => {
   } = useForm({
     defaultValues: initValues,
   });
+
+  const doLogin = async (values: Values) => {
+    console.log(values);
+    try {
+      await postLogin(values);
+      Alert.alert('Kirjautuminen onnistui', 'Tervetuloa!');
+    } catch (e) {
+      Alert.alert('Kirjautuminen epäonnistui', (e as Error).message);
+    }
+  };
 
   return (
     <Card>
@@ -97,7 +109,10 @@ const LoginForm = () => {
         )}
         name="password"
       />
-      <TouchableOpacity style={styles.loginButton} onPress={() => {}}>
+      <TouchableOpacity
+        style={styles.loginButton}
+        onPress={handleSubmit(doLogin)}
+      >
         <Text
           style={{
             color: '#ffffff',
