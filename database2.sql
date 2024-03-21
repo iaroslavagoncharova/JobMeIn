@@ -176,6 +176,12 @@ CREATE TABLE Animals (
   animal_name varchar(255) NOT NULL
 );
 
+CREATE TABLE Notifications (
+  notification_id int(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  match_id int(11) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 ALTER TABLE `JobExperience` ADD FOREIGN KEY (`user_id`) REFERENCES `Users` (`user_id`);
 
 ALTER TABLE `Education` ADD FOREIGN KEY (`user_id`) REFERENCES `Users` (`user_id`);
@@ -221,3 +227,5 @@ ALTER TABLE JobSkills ADD FOREIGN KEY (job_id) REFERENCES JobAds(job_id);
 ALTER TABLE JobTests ADD FOREIGN KEY (job_id) REFERENCES JobAds(job_id);
 
 ALTER TABLE JobTests ADD FOREIGN KEY (test_id) REFERENCES Tests(test_id);
+
+ALTER TABLE Notifications ADD FOREIGN KEY (match_id) REFERENCES Matches(match_id);
