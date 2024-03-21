@@ -45,6 +45,7 @@ CREATE TABLE Education (
 
 CREATE TABLE Attachments (
   attachment_id int(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  atachment_name int(11) NOT NULL,
   user_id int(11) NOT NULL,
   link varchar(255) NOT NULL
 );
