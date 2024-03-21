@@ -72,6 +72,7 @@ CREATE TABLE JobSkills (
 );
 
 CREATE TABLE UserSkills (
+  userskill_id int(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
   user_id int(11) NOT NULL,
   skill_id int(11) NOT NULL
 );
