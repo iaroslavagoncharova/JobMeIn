@@ -137,7 +137,7 @@ CREATE TABLE Messages (
   user_id int(11) NOT NULL,
   chat_id int(11) NOT NULL,
   message_text text NOT NULL,
-  sent_at date NOT NULL
+  sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE Swipes (
@@ -145,14 +145,14 @@ CREATE TABLE Swipes (
   swiper_id int(11) NOT NULL,
   swiped_id int(11) NOT NULL,
   swipe_direction varchar(255) NOT NULL,
-  swiped_at datetime NOT NULL
+  swiped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE Matches (
   match_id int(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
   user1_id int(11) NOT NULL,
   user2_id int(11) NOT NULL,
-  matched_at datetime NOT NULL
+  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE Reports (
@@ -161,8 +161,8 @@ CREATE TABLE Reports (
     reported_item_type varchar(255) NOT NULL,
     reported_item_id int(11) NOT NULL,
     report_reason text NOT NULL,
-    reported_at datetime NOT NULL,
-    is_resolved tinyint NOT NULL
+    reported_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_resolved TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE Adjectives (
