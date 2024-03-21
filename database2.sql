@@ -16,6 +16,7 @@ CREATE TABLE Users (
   fullname varchar(255) NOT NULL,
   phone varchar(255) NOT NULL,
   about_me text,
+  address varchar(255),
   status varchar(255),
   user_type varchar(255) NOT NULL,
   link varchar(255),
