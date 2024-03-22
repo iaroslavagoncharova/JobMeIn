@@ -40,10 +40,9 @@ const styles = StyleSheet.create({
     color: '#004aad',
   },
   links: {
-    margin: 0,
     height: 50,
     justifyContent: 'space-between',
-    marginBottom: 20,
+    marginVertical: 10,
   },
   linkText: {
     margin: 0,
@@ -59,7 +58,7 @@ const Login = ({navigation}: {navigation: NavigationProp<ParamListBase>}) => {
       </View>
       <View style={styles.loginContainer}>
         <Text style={styles.headerText}>Kirjaudu sisään</Text>
-        <LoginForm />
+        <LoginForm navigation={navigation} />
         <View style={styles.links}>
           <TouchableOpacity style={styles.linkText}>
             <View>

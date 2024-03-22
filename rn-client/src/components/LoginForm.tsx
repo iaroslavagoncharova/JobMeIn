@@ -1,6 +1,7 @@
 import {Alert, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {Controller, useForm} from 'react-hook-form';
 import {Card, Input} from '@rneui/base';
+import {NavigationProp, ParamListBase} from '@react-navigation/native';
 import {Values} from '../types/LocalTypes';
 import {useAuth} from '../hooks/apiHooks';
 
@@ -41,7 +42,11 @@ const styles = StyleSheet.create({
   },
 });
 
-const LoginForm = () => {
+const LoginForm = ({
+  navigation,
+}: {
+  navigation: NavigationProp<ParamListBase>;
+}) => {
   const {postLogin} = useAuth();
   const initValues: Values = {email: '', password: ''};
   const {
@@ -111,7 +116,10 @@ const LoginForm = () => {
       />
       <TouchableOpacity
         style={styles.loginButton}
-        onPress={handleSubmit(doLogin)}
+        onPress={() => {
+          handleSubmit(doLogin);
+          navigation.navigate('Profiili');
+        }}
       >
         <Text
           style={{
