@@ -1,4 +1,4 @@
-import {Alert, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {Controller, useForm} from 'react-hook-form';
 import {Card, Input} from '@rneui/base';
 import {
@@ -6,10 +6,9 @@ import {
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
-import {Values} from '../types/LocalTypes';
-import {useAuth} from '../hooks/apiHooks';
-import {useUserContext} from '../hooks/ContextHooks';
 import {useEffect} from 'react';
+import {Values} from '../types/LocalTypes';
+import {useUserContext} from '../hooks/ContextHooks';
 
 const styles = StyleSheet.create({
   loginForm: {

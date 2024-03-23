@@ -5,7 +5,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  FlatList,
 } from 'react-native';
 import {ListItem} from '@rneui/base';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
@@ -15,33 +14,33 @@ import {useUserContext} from '../hooks/ContextHooks';
 const Profile = () => {
   const {user} = useUserContext();
   console.log(user);
-  const skills = [
-    {
-      skill_id: 1,
-      skill_name: 'JavaScript',
-      type: 'hard',
-    },
-    {
-      skill_id: 2,
-      skill_name: 'React Native',
-      type: 'hard',
-    },
-    {
-      skill_id: 3,
-      skill_name: 'Asiakaspalvelu',
-      type: 'soft',
-    },
-    {
-      skill_id: 4,
-      skill_name: 'Tiimityö',
-      type: 'soft',
-    },
-    {
-      skill_id: 5,
-      skill_name: 'Kommunikaatio',
-      type: 'soft',
-    },
-  ];
+  // const skills = [
+  //   {
+  //     skill_id: 1,
+  //     skill_name: 'JavaScript',
+  //     type: 'hard',
+  //   },
+  //   {
+  //     skill_id: 2,
+  //     skill_name: 'React Native',
+  //     type: 'hard',
+  //   },
+  //   {
+  //     skill_id: 3,
+  //     skill_name: 'Asiakaspalvelu',
+  //     type: 'soft',
+  //   },
+  //   {
+  //     skill_id: 4,
+  //     skill_name: 'Tiimityö',
+  //     type: 'soft',
+  //   },
+  //   {
+  //     skill_id: 5,
+  //     skill_name: 'Kommunikaatio',
+  //     type: 'soft',
+  //   },
+  // ];
 
   const tests = [
     {
