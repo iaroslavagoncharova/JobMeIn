@@ -18,7 +18,7 @@ const RegisterForm = () => {
     email: '',
     password: '',
     phone: '',
-    user_type: 'Työnhakija',
+    user_type: 'candidate',
   };
   const {
     control,
