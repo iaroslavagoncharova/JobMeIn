@@ -65,6 +65,7 @@ const useAuth = () => {
       },
       body: JSON.stringify(values),
     };
+    console.log(options);
     const result = await fetchData<LoginResponse>(
       process.env.EXPO_PUBLIC_AUTH_API + '/auth/login',
       options,

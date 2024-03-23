@@ -3,6 +3,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Login from '../views/Login';
 import Register from '../views/Register';
 import SingleChat from '../views/SingleChat';
+import {useUserContext} from '../hooks/ContextHooks';
 import TabNavigator from './TabNavigator';
 
 const Stack = createNativeStackNavigator();
@@ -25,18 +26,25 @@ const LoginRegister = () => {
 };
 
 const StackNavigator = () => {
+  const {user} = useUserContext();
   return (
     <Stack.Navigator>
-      <Stack.Screen
-        name="Navigaatiopalkki"
-        component={TabNavigator}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="Keskustelu"
-        component={SingleChat}
-        options={{headerShown: false}}
-      />
+      {user ? (
+        <>
+          <Stack.Screen
+            name="Navigaatiopalkki"
+            component={TabNavigator}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen name="Keskustelu" component={SingleChat} />
+        </>
+      ) : (
+        <Stack.Screen
+          name="Navigaatiopalkki"
+          component={TabNavigator}
+          options={{headerShown: false}}
+        />
+      )}
     </Stack.Navigator>
   );
 };

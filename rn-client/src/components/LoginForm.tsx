@@ -1,9 +1,15 @@
 import {Alert, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {Controller, useForm} from 'react-hook-form';
 import {Card, Input} from '@rneui/base';
-import {NavigationProp, ParamListBase} from '@react-navigation/native';
+import {
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+} from '@react-navigation/native';
 import {Values} from '../types/LocalTypes';
 import {useAuth} from '../hooks/apiHooks';
+import {useUserContext} from '../hooks/ContextHooks';
+import {useEffect} from 'react';
 
 const styles = StyleSheet.create({
   loginForm: {
@@ -42,12 +48,9 @@ const styles = StyleSheet.create({
   },
 });
 
-const LoginForm = ({
-  navigation,
-}: {
-  navigation: NavigationProp<ParamListBase>;
-}) => {
-  const {postLogin} = useAuth();
+const LoginForm = () => {
+  const navigation: NavigationProp<ParamListBase> = useNavigation();
+  const {handleLogin, handleAutoLogin} = useUserContext();
   const initValues: Values = {email: '', password: ''};
   const {
     control,
@@ -56,16 +59,17 @@ const LoginForm = ({
   } = useForm({
     defaultValues: initValues,
   });
+  console.log(initValues);
 
   const doLogin = async (values: Values) => {
-    console.log(values);
-    try {
-      await postLogin(values);
-      Alert.alert('Kirjautuminen onnistui', 'Tervetuloa!');
-    } catch (e) {
-      Alert.alert('Kirjautuminen epäonnistui', (e as Error).message);
-    }
+    handleLogin(values);
+    console.log('doLogin', values);
+    navigation.navigate('Profile');
   };
+
+  useEffect(() => {
+    handleAutoLogin();
+  }, []);
 
   return (
     <Card>
@@ -116,10 +120,7 @@ const LoginForm = ({
       />
       <TouchableOpacity
         style={styles.loginButton}
-        onPress={() => {
-          handleSubmit(doLogin);
-          navigation.navigate('Profiili');
-        }}
+        onPress={handleSubmit(doLogin)}
       >
         <Text
           style={{

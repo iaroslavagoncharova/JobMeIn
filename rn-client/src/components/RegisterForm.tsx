@@ -9,9 +9,15 @@ import {
 import {Controller, useForm} from 'react-hook-form';
 import {Card, Input} from '@rneui/base';
 import {useEffect} from 'react';
+import {
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+} from '@react-navigation/native';
 import {useUser} from '../hooks/apiHooks';
 
 const RegisterForm = () => {
+  const navigation: NavigationProp<ParamListBase> = useNavigation();
   const {postUser} = useUser();
   const initValues = {
     fullname: '',
@@ -41,6 +47,7 @@ const RegisterForm = () => {
       console.log(inputs, 'inputs 2');
       await postUser(inputs);
       Alert.alert('User created', 'You can now login');
+      navigation.navigate('Kirjaudu');
     } catch (error) {
       Alert.alert('Error', (error as Error).message);
     }
