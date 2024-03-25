@@ -32,7 +32,8 @@ CREATE TABLE JobExperience (
   job_city varchar(255),
   description varchar(255),
   start_date date NOT NULL,
-  end_date date NOT NULL
+  end_date date NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
 
 CREATE TABLE Education (
@@ -41,14 +42,16 @@ CREATE TABLE Education (
   school varchar(255) NOT NULL,
   degree varchar(255) NOT NULL,
   field varchar(255),
-  graduation date
+  graduation date,
+  FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
 
 CREATE TABLE Attachments (
   attachment_id int(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
   atachment_name int(11) NOT NULL,
   user_id int(11) NOT NULL,
-  link varchar(255) NOT NULL
+  link varchar(255) NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES Users (user_id)
 );
 
 CREATE TABLE JobAds (
@@ -59,7 +62,8 @@ CREATE TABLE JobAds (
   user_id int(11) NOT NULL,
   job_description varchar(255) NOT NULL,
   deadline_date date NOT NULL,
-  field varchar(255) NOT NULL
+  field varchar(255) NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES Users (user_id)
 );
 
 CREATE TABLE Skills (
@@ -69,14 +73,18 @@ CREATE TABLE Skills (
 );
 
 CREATE TABLE JobSkills (
-    skill_id int(11) NOT NULL,
-    job_id int(11) NOT NULL
+  skill_id int(11) NOT NULL,
+  job_id int(11) NOT NULL,
+  FOREIGN KEY (skill_id) REFERENCES Skills(skill_id),
+  FOREIGN KEY (job_id) REFERENCES JobAds(job_id)
 );
 
 CREATE TABLE UserSkills (
   userskill_id int(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
   user_id int(11) NOT NULL,
-  skill_id int(11) NOT NULL
+  skill_id int(11) NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES Users(user_id),
+  FOREIGN KEY (skill_id) REFERENCES Skills(skill_id)
 );
 
 CREATE TABLE KeyWords (
@@ -86,7 +94,9 @@ CREATE TABLE KeyWords (
 
 CREATE TABLE KeywordsJobs (
   keyword_id int(11) NOT NULL,
-  job_id int(11) NOT NULL
+  job_id int(11) NOT NULL,
+  FOREIGN KEY (keyword_id) REFERENCES KeyWords(keyword_id),
+  FOREIGN KEY (job_id) REFERENCES JobAds(job_id)
 );
 
 CREATE TABLE Applications (
@@ -95,42 +105,47 @@ CREATE TABLE Applications (
   job_id int(11) NOT NULL,
   status varchar(255) NOT NULL,
   application_text text,
-  created_at date NOT NULL
+  created_at date NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES Users (user_id),
+  FOREIGN KEY (job_id) REFERENCES JobAds (job_id)
 );
 
 CREATE TABLE ApplicationLinks (
   link_id int(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
   application_id int(11) NOT NULL,
-  link varchar(255) NOT NULL
+  link varchar(255) NOT NULL,
+  FOREIGN KEY (application_id) REFERENCES Applications (application_id)
 );
 
 CREATE TABLE Tests (
   test_id int(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
   test_type varchar(255) NOT NULL,
   user_id int(11),
-  test_link varchar(255)
+  test_link varchar(255),
+  FOREIGN KEY (user_id) REFERENCES Users (user_id)
 );
 
 CREATE TABLE JobTests (
   job_id int(11) NOT NULL,
-  test_id int(11) NOT NULL
+  test_id int(11) NOT NULL,
+  FOREIGN KEY (job_id) REFERENCES JobAds (job_id),
+  FOREIGN KEY (test_id) REFERENCES Tests(test_id)
 );
 
 CREATE TABLE UserTests (
   test_id int(11) NOT NULL,
   user_id int(11) NOT NULL,
   percentage int(11) NOT NULL,
-  completed_at date NOT NULL
+  completed_at date NOT NULL,
+  FOREIGN KEY (test_id) REFERENCES Tests (test_id),
+  FOREIGN KEY (user_id) REFERENCES Users (user_id)
 );
 
 CREATE TABLE Chats (
   chat_id int(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
-  created_at date NOT NULL
-);
-
-CREATE TABLE UserChats (
-  user_id int(11) NOT NULL,
-  chat_id int(11) NOT NULL
+  user1_id int(11) NOT NULL,
+  user2_id int(11) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE Messages (
@@ -138,7 +153,9 @@ CREATE TABLE Messages (
   user_id int(11) NOT NULL,
   chat_id int(11) NOT NULL,
   message_text text NOT NULL,
-  sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES Users (user_id),
+  FOREIGN KEY (chat_id) REFERENCES Chats (chat_id)
 );
 
 CREATE TABLE Swipes (
@@ -157,13 +174,14 @@ CREATE TABLE Matches (
 );
 
 CREATE TABLE Reports (
-    report_id int(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    user_id int(11) NOT NULL,
-    reported_item_type varchar(255) NOT NULL,
-    reported_item_id int(11) NOT NULL,
-    report_reason text NOT NULL,
-    reported_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    is_resolved TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  report_id int(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  user_id int(11) NOT NULL,
+  reported_item_type varchar(255) NOT NULL,
+  reported_item_id int(11) NOT NULL,
+  report_reason text NOT NULL,
+  reported_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  is_resolved TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES Users (user_id)
 );
 
 CREATE TABLE Adjectives (
@@ -179,53 +197,6 @@ CREATE TABLE Animals (
 CREATE TABLE Notifications (
   notification_id int(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
   match_id int(11) NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (match_id) REFERENCES Matches(match_id)
 );
-
-ALTER TABLE `JobExperience` ADD FOREIGN KEY (`user_id`) REFERENCES `Users` (`user_id`);
-
-ALTER TABLE `Education` ADD FOREIGN KEY (`user_id`) REFERENCES `Users` (`user_id`);
-
-ALTER TABLE `UserSkills` ADD FOREIGN KEY (`user_id`) REFERENCES `Users` (`user_id`);
-
-ALTER TABLE `UserSkills` ADD FOREIGN KEY (`skill_id`) REFERENCES `Skills` (`skill_id`);
-
-ALTER TABLE `UserTests` ADD FOREIGN KEY (`test_id`) REFERENCES `Tests` (`test_id`);
-
-ALTER TABLE `UserTests` ADD FOREIGN KEY (`user_id`) REFERENCES `Users` (`user_id`);
-
-ALTER TABLE `Attachments` ADD FOREIGN KEY (`user_id`) REFERENCES `Users` (`user_id`);
-
-ALTER TABLE `Tests` ADD FOREIGN KEY (`user_id`) REFERENCES `Users` (`user_id`);
-
-ALTER TABLE `Applications` ADD FOREIGN KEY (`user_id`) REFERENCES `Users` (`user_id`);
-
-ALTER TABLE `Applications` ADD FOREIGN KEY (`job_id`) REFERENCES `JobAds` (`job_id`);
-
-ALTER TABLE `JobAds` ADD FOREIGN KEY (`user_id`) REFERENCES `Users` (`user_id`);
-
-ALTER TABLE `Messages` ADD FOREIGN KEY (`user_id`) REFERENCES `Users` (`user_id`);
-
-ALTER TABLE `Messages` ADD FOREIGN KEY (`chat_id`) REFERENCES `Chats` (`chat_id`);
-
-ALTER TABLE `UserChats` ADD FOREIGN KEY (`user_id`) REFERENCES `Users` (`user_id`);
-
-ALTER TABLE `UserChats` ADD FOREIGN KEY (`chat_id`) REFERENCES `Chats` (`chat_id`);
-
-ALTER TABLE `ApplicationLinks` ADD FOREIGN KEY (`application_id`) REFERENCES `Applications` (`application_id`);
-
-ALTER TABLE `Reports` ADD FOREIGN KEY (`user_id`) REFERENCES `Users` (`user_id`);
-
-ALTER TABLE KeywordsJobs ADD FOREIGN KEY (keyword_id) REFERENCES KeyWords(keyword_id);
-
-ALTER TABLE KeywordsJobs ADD FOREIGN KEY (job_id) REFERENCES JobAds(job_id);
-
-ALTER TABLE JobSkills ADD FOREIGN KEY (skill_id) REFERENCES Skills(skill_id);
-
-ALTER TABLE JobSkills ADD FOREIGN KEY (job_id) REFERENCES JobAds(job_id);
-
-ALTER TABLE JobTests ADD FOREIGN KEY (job_id) REFERENCES JobAds(job_id);
-
-ALTER TABLE JobTests ADD FOREIGN KEY (test_id) REFERENCES Tests(test_id);
-
-ALTER TABLE Notifications ADD FOREIGN KEY (match_id) REFERENCES Matches(match_id);
