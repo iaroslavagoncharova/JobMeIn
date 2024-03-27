@@ -49,6 +49,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#004aad',
   },
+  links: {
+    height: 50,
+    justifyContent: 'space-between',
+    marginVertical: 10,
+  },
   linkText: {
     marginTop: 20,
     alignItems: 'center',
@@ -78,19 +83,32 @@ const Register = ({
       </View>
       <View style={styles.registerContainer}>
         <Text style={styles.headerText}>Luo profiili</Text>
-        <TouchableOpacity
-          style={styles.linkText}
-          onPress={() => {
-            navigation.navigate('Kirjaudu');
-          }}
-        >
-          <View>
-            <Text style={{color: '#004aad'}}>
-              Oletko jo rekisteröitynyt? Kirjaudu sisään
-            </Text>
-          </View>
-        </TouchableOpacity>
         <RegisterForm />
+        <View style={styles.links}>
+          <TouchableOpacity
+            style={styles.linkText}
+            onPress={() => {
+              // TODO: Navigate to the company registration screen
+              // navigation.navigate('RekisteröiYritys');
+            }}
+          >
+            <View>
+              <Text style={{color: '#004aad'}}>Teetkö tiliä yritykselle?</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.linkText}
+            onPress={() => {
+              navigation.navigate('Kirjaudu');
+            }}
+          >
+            <View>
+              <Text style={{color: '#004aad'}}>
+                Oletko jo rekisteröitynyt? Kirjaudu sisään
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );

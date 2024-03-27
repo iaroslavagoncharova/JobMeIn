@@ -18,7 +18,7 @@ const RegisterForm = () => {
     email: '',
     password: '',
     phone: '',
-    user_type: 'Työnhakija',
+    user_type: 'candidate',
   };
   const {
     control,
@@ -128,6 +128,7 @@ const RegisterForm = () => {
         )}
         name="password"
       />
+      {/* TODO: add password confirmation */}
       <Controller
         control={control}
         rules={{
@@ -138,7 +139,13 @@ const RegisterForm = () => {
             <Text style={styles.labelText}>PUHELINNUMERO</Text>
             <View style={styles.input}>
               <View>
-                <Text style={{color: '#004aad'}}>+358</Text>
+                <Text
+                  style={{
+                    color: '#004aad',
+                  }}
+                >
+                  +358
+                </Text>
               </View>
               <TextInput
                 onBlur={onBlur}

@@ -1,4 +1,4 @@
-import {User} from "./DBTypes";
+import {User} from './DBTypes';
 
 type MessageResponse = {
   message: string;
