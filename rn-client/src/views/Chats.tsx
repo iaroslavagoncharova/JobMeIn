@@ -31,7 +31,12 @@ const Chats = ({navigation}: {navigation: NavigationProp<ParamListBase>}) => {
             </Text>
           </View>
         </TouchableOpacity>
-        <View style={styles.chat}>
+        <TouchableOpacity
+          style={styles.chat}
+          onPress={() => {
+            navigation.navigate('Keskustelu');
+          }}
+        >
           <FontAwesomeIcon
             icon={faCircleUser}
             size={70}
@@ -45,8 +50,13 @@ const Chats = ({navigation}: {navigation: NavigationProp<ParamListBase>}) => {
               Hei! Olisiko kiinnostunut...
             </Text>
           </View>
-        </View>
-        <View style={styles.chat}>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.chat}
+          onPress={() => {
+            navigation.navigate('Keskustelu');
+          }}
+        >
           <FontAwesomeIcon
             icon={faCircleUser}
             size={70}
@@ -60,7 +70,7 @@ const Chats = ({navigation}: {navigation: NavigationProp<ParamListBase>}) => {
               Hei! Olisiko kiinnostunut...
             </Text>
           </View>
-        </View>
+        </TouchableOpacity>
       </View>
     </View>
   );

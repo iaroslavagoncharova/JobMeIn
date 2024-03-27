@@ -58,7 +58,7 @@ const Login = ({navigation}: {navigation: NavigationProp<ParamListBase>}) => {
       </View>
       <View style={styles.loginContainer}>
         <Text style={styles.headerText}>Kirjaudu sisään</Text>
-        <LoginForm navigation={navigation} />
+        <LoginForm />
         <View style={styles.links}>
           <TouchableOpacity style={styles.linkText}>
             <View>
