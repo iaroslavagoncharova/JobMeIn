@@ -8,7 +8,11 @@ import {
 } from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
-import {NavigationProp, ParamListBase} from '@react-navigation/native';
+import {
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+} from '@react-navigation/native';
 import RegisterForm from '../components/RegisterForm';
 
 const styles = StyleSheet.create({
@@ -60,11 +64,8 @@ const styles = StyleSheet.create({
   },
 });
 
-const Register = ({
-  navigation,
-}: {
-  navigation: NavigationProp<ParamListBase>;
-}) => {
+const Register = ({handleToggle}: {handleToggle: () => void}) => {
+  const navigation: NavigationProp<ParamListBase> = useNavigation();
   return (
     <View style={styles.container}>
       <View style={styles.topContainer}>
@@ -83,7 +84,7 @@ const Register = ({
       </View>
       <View style={styles.registerContainer}>
         <Text style={styles.headerText}>Luo profiili</Text>
-        <RegisterForm />
+        <RegisterForm handleToggle={handleToggle} />
         <View style={styles.links}>
           <TouchableOpacity
             style={styles.linkText}
@@ -94,18 +95,6 @@ const Register = ({
           >
             <View>
               <Text style={{color: '#004aad'}}>Teetkö tiliä yritykselle?</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.linkText}
-            onPress={() => {
-              navigation.navigate('Kirjaudu');
-            }}
-          >
-            <View>
-              <Text style={{color: '#004aad'}}>
-                Oletko jo rekisteröitynyt? Kirjaudu sisään
-              </Text>
             </View>
           </TouchableOpacity>
         </View>

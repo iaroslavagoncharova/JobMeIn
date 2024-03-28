@@ -18,6 +18,7 @@ const UserProvider = ({children}: {children: React.ReactNode}) => {
       if (result) {
         AsyncStorage.setItem('token', result.token);
         setUser(result.user);
+        console.log(result.user, 'result.user', result.token, 'result.token');
       }
     } catch (error) {
       Alert.alert((error as Error).message);
@@ -25,13 +26,18 @@ const UserProvider = ({children}: {children: React.ReactNode}) => {
   };
 
   const handleLogout = async () => {
-    await AsyncStorage.removeItem('token');
-    setUser(null);
+    try {
+      await AsyncStorage.removeItem('token');
+      setUser(null);
+    } catch (error) {
+      Alert.alert((error as Error).message);
+    }
   };
 
   const handleAutoLogin = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
+      console.log(token, 'token');
       if (token) {
         const result = await getUserByToken(token);
         if (result) {

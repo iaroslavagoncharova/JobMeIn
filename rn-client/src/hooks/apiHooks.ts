@@ -13,9 +13,10 @@ const useUser = () => {
   const getUserByToken = async (token: string) => {
     const options = {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: 'Bearer ' + token,
       },
     };
+    console.log(options);
     const result = await fetchData<UserResponse>(
       process.env.EXPO_PUBLIC_AUTH_API + '/users/token',
       options,
@@ -70,6 +71,7 @@ const useAuth = () => {
       process.env.EXPO_PUBLIC_AUTH_API + '/auth/login',
       options,
     );
+    console.log(result);
     return result;
   };
   return {postLogin};

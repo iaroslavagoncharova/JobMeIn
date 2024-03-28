@@ -16,7 +16,7 @@ import {
 } from '@react-navigation/native';
 import {useUser} from '../hooks/apiHooks';
 
-const RegisterForm = () => {
+const RegisterForm = ({handleToggle}: {handleToggle: () => void}) => {
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const {postUser} = useUser();
   const initValues = {
@@ -47,7 +47,7 @@ const RegisterForm = () => {
       console.log(inputs, 'inputs 2');
       await postUser(inputs);
       Alert.alert('User created', 'You can now login');
-      navigation.navigate('Kirjaudu');
+      handleToggle();
     } catch (error) {
       Alert.alert('Error', (error as Error).message);
     }
