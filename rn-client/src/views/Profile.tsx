@@ -9,39 +9,27 @@ import {
 import {ListItem} from '@rneui/base';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faAdd, faEdit} from '@fortawesome/free-solid-svg-icons';
+import {useEffect} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+} from '@react-navigation/native';
 import {useUserContext} from '../hooks/ContextHooks';
 
 const Profile = () => {
-  const {user} = useUserContext();
+  const {user, handleLogout} = useUserContext();
+  const navigation: NavigationProp<ParamListBase> = useNavigation();
   console.log(user);
-  // const skills = [
-  //   {
-  //     skill_id: 1,
-  //     skill_name: 'JavaScript',
-  //     type: 'hard',
-  //   },
-  //   {
-  //     skill_id: 2,
-  //     skill_name: 'React Native',
-  //     type: 'hard',
-  //   },
-  //   {
-  //     skill_id: 3,
-  //     skill_name: 'Asiakaspalvelu',
-  //     type: 'soft',
-  //   },
-  //   {
-  //     skill_id: 4,
-  //     skill_name: 'Tiimityö',
-  //     type: 'soft',
-  //   },
-  //   {
-  //     skill_id: 5,
-  //     skill_name: 'Kommunikaatio',
-  //     type: 'soft',
-  //   },
-  // ];
 
+  const logout = async () => {
+    const token = await AsyncStorage.getItem('token');
+    console.log(token, user);
+    await handleLogout();
+    console.log(token, user);
+    navigation.navigate('KIrjaudu/luo profiili');
+  };
   const tests = [
     {
       test_id: 1,
@@ -90,62 +78,67 @@ const Profile = () => {
         backgroundColor: '#5d71c9',
       }}
     >
-      <View style={styles.container}>
-        <ScrollView>
-          <View>
-            <Text>{user?.fullname}</Text>
-            <Image source={{uri: 'https://via.placeholder.com/150'}} />
-          </View>
-          <Text style={styles.bigHeader}>Profiili</Text>
-          <View>
-            <Text style={styles.header}>Henkilötiedot</Text>
-            <TouchableOpacity>
-              <FontAwesomeIcon icon={faEdit} size={20} />
+      {user && (
+        <View style={styles.container}>
+          <ScrollView>
+            <View>
+              <Text>{user?.fullname}</Text>
+              <Image source={{uri: 'https://via.placeholder.com/150'}} />
+            </View>
+            <Text style={styles.bigHeader}>Profiili</Text>
+            <View>
+              <Text style={styles.header}>Henkilötiedot</Text>
+              <TouchableOpacity>
+                <FontAwesomeIcon icon={faEdit} size={20} />
+              </TouchableOpacity>
+              <Text>Nimi: {user?.fullname}</Text>
+              <Text>Sähköpostiosoite: {user?.email}</Text>
+              <Text>Salasana: ******** </Text>
+              <Text>Käyttäjänimi: {user?.username}</Text>
+              <Text>Puhelinnumero: {user?.phone}</Text>
+              <Text>Kerro itsestäsi: {user?.about_me}</Text>
+            </View>
+            <View>
+              <Text style={styles.header}>Koulutus</Text>
+              <TouchableOpacity>
+                <FontAwesomeIcon icon={faEdit} size={20} />
+                <FontAwesomeIcon icon={faAdd} size={20} />
+                <Text>Lisää koulutus</Text>
+              </TouchableOpacity>
+            </View>
+            <View>
+              <Text style={styles.header}>Työkokemus</Text>
+              <TouchableOpacity>
+                <FontAwesomeIcon icon={faEdit} size={20} />
+                <FontAwesomeIcon icon={faAdd} size={20} />
+                <Text>Lisää työkokemus</Text>
+              </TouchableOpacity>
+            </View>
+            <View>
+              <Text style={styles.header}>Taidot</Text>
+              <TouchableOpacity>
+                <FontAwesomeIcon icon={faEdit} size={20} />
+                <FontAwesomeIcon icon={faAdd} size={20} />
+                <Text>Lisää taidot</Text>
+              </TouchableOpacity>
+            </View>
+            <View>
+              <Text style={styles.bigHeader}>Testit</Text>
+              {tests.map((test) => (
+                <ListItem key={test.test_id}>
+                  <Text>{test.test_name}</Text>
+                  <Text>
+                    {new Date(test.completed_at).toLocaleDateString('fi-FI')}
+                  </Text>
+                </ListItem>
+              ))}
+            </View>
+            <TouchableOpacity onPress={logout}>
+              <Text>Kirjaudu ulos</Text>
             </TouchableOpacity>
-            <Text>Nimi: {user?.fullname}</Text>
-            <Text>Sähköpostiosoite: {user?.email}</Text>
-            <Text>Salasana: ******** </Text>
-            <Text>Käyttäjänimi: {user?.username}</Text>
-            <Text>Puhelinnumero: {user?.phone}</Text>
-            <Text>Kerro itsestäsi: {user?.about_me}</Text>
-          </View>
-          <View>
-            <Text style={styles.header}>Koulutus</Text>
-            <TouchableOpacity>
-              <FontAwesomeIcon icon={faEdit} size={20} />
-              <FontAwesomeIcon icon={faAdd} size={20} />
-              <Text>Lisää koulutus</Text>
-            </TouchableOpacity>
-          </View>
-          <View>
-            <Text style={styles.header}>Työkokemus</Text>
-            <TouchableOpacity>
-              <FontAwesomeIcon icon={faEdit} size={20} />
-              <FontAwesomeIcon icon={faAdd} size={20} />
-              <Text>Lisää työkokemus</Text>
-            </TouchableOpacity>
-          </View>
-          <View>
-            <Text style={styles.header}>Taidot</Text>
-            <TouchableOpacity>
-              <FontAwesomeIcon icon={faEdit} size={20} />
-              <FontAwesomeIcon icon={faAdd} size={20} />
-              <Text>Lisää taidot</Text>
-            </TouchableOpacity>
-          </View>
-          <View>
-            <Text style={styles.bigHeader}>Testit</Text>
-            {tests.map((test) => (
-              <ListItem key={test.test_id}>
-                <Text>{test.test_name}</Text>
-                <Text>
-                  {new Date(test.completed_at).toLocaleDateString('fi-FI')}
-                </Text>
-              </ListItem>
-            ))}
-          </View>
-        </ScrollView>
-      </View>
+          </ScrollView>
+        </View>
+      )}
     </View>
   );
 };

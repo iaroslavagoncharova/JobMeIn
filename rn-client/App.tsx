@@ -1,11 +1,11 @@
-import Navigator from './src/navigators/Navigator';
 import {UserProvider} from './src/contexts/UserContext';
+import Navigator from './src/navigators/Navigator';
 
 const App = () => {
   return (
     <>
       <UserProvider>
-        <Navigator></Navigator>
+        <Navigator />
       </UserProvider>
     </>
   );
