@@ -9,15 +9,9 @@ import {
 import {Controller, useForm} from 'react-hook-form';
 import {Card, Input} from '@rneui/base';
 import {useEffect} from 'react';
-import {
-  NavigationProp,
-  ParamListBase,
-  useNavigation,
-} from '@react-navigation/native';
 import {useUser} from '../hooks/apiHooks';
 
 const RegisterForm = ({handleToggle}: {handleToggle: () => void}) => {
-  const navigation: NavigationProp<ParamListBase> = useNavigation();
   const {postUser} = useUser();
   const initValues = {
     fullname: '',

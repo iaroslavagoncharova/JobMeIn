@@ -1,11 +1,5 @@
 import {useState} from 'react';
-import {
-  Keyboard,
-  TouchableOpacity,
-  Button,
-  View,
-  StyleSheet,
-} from 'react-native';
+import {Keyboard, TouchableOpacity, View, StyleSheet} from 'react-native';
 import {Text} from 'react-native-elements';
 import Login from '../components/Login';
 import Register from '../components/Register';

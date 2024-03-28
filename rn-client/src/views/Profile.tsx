@@ -9,7 +9,6 @@ import {
 import {ListItem} from '@rneui/base';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faAdd, faEdit} from '@fortawesome/free-solid-svg-icons';
-import {useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   NavigationProp,
