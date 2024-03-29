@@ -164,6 +164,23 @@ type UpdateUser = {
   [key: string]: string | undefined;
 };
 
+export type Job = {
+  job_id: number;
+  job_address: string;
+  job_title: string;
+  salary: string;
+  user_id: number;
+  job_description: string;
+  deadline_date: Date | string;
+  field: string;
+};
+
+export type JobWithSkillsAndKeywords = Job & {
+  skills: string;
+  keywords: string;
+  username: string;
+};
+
 export type {
   UserLevel,
   User,

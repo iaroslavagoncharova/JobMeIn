@@ -5,6 +5,7 @@ import {
   Education,
   EducationInfo,
   Experience,
+  JobWithSkillsAndKeywords,
   Skill,
   Test,
   UpdateUser,
@@ -226,4 +227,20 @@ const useSkills = () => {
   return {getSkills, skills};
 };
 
-export {useUser, useAuth, useEducation, useExperience, useSkills};
+const useJobs = () => {
+  const [jobs, setJobs] = useState<JobWithSkillsAndKeywords[]>([]);
+  const getAllJobs = async () => {
+    const result = await fetchData<JobWithSkillsAndKeywords[]>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/jobs',
+    );
+    if (result) {
+      setJobs(result);
+    }
+  };
+  useEffect(() => {
+    getAllJobs();
+  }, []);
+  return {getAllJobs, jobs};
+};
+
+export {useUser, useAuth, useEducation, useExperience, useSkills, useJobs};
