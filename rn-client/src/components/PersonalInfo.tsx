@@ -56,6 +56,8 @@ export default function PersonalInfo({user}: {user: User}) {
       padding: 10,
       justifyContent: 'center',
       alignItems: 'center',
+      borderRadius: 10,
+      borderColor: '#5d71c9',
     },
     header: {
       color: '#5d71c9',
@@ -80,6 +82,7 @@ export default function PersonalInfo({user}: {user: User}) {
     icon: {
       margin: 5,
       bottom: 35,
+      color: '#5d71c9',
     },
     button: {
       margin: 5,

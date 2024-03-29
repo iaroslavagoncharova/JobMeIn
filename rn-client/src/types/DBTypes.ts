@@ -43,9 +43,12 @@ type Education = {
   graduation: Date | string;
 };
 
-export type EducationInfo = Partial<
-  Omit<Education, 'education_id' | 'user_id'>
->;
+export type EducationInfo = {
+  school?: string;
+  degree?: string;
+  field?: string;
+  graduation?: Date | string;
+};
 
 type Attachment = {
   job_id: number;

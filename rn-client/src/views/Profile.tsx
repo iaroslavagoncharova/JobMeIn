@@ -25,12 +25,15 @@ import {useEffect} from 'react';
 import {useUserContext} from '../hooks/ContextHooks';
 import {useEducation, useExperience, useSkills} from '../hooks/apiHooks';
 import PersonalInfo from '../components/PersonalInfo';
+import Edu from '../components/EducationInfo';
+import useUpdateContext from '../hooks/updateHooks';
 
 const Profile = () => {
   const {user, handleLogout} = useUserContext();
   const {getEducation, education} = useEducation();
   const {getExperience, experience} = useExperience();
   const {getSkills, skills} = useSkills();
+  const {update} = useUpdateContext();
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   console.log(user);
   console.log(education);
@@ -48,7 +51,7 @@ const Profile = () => {
     getEducation();
     getExperience();
     getSkills();
-  }, []);
+  }, [update]);
 
   const styles = StyleSheet.create({
     container: {
@@ -68,6 +71,7 @@ const Profile = () => {
       color: '#5d71c9',
       fontSize: 25,
       fontWeight: 'bold',
+      textAlign: 'center',
     },
     card: {
       backgroundColor: '#ffffff',
@@ -90,6 +94,7 @@ const Profile = () => {
           <ScrollView>
             <Text style={styles.bigHeader}>Profiili</Text>
             <PersonalInfo user={user} />
+            <Edu education={education} />
             <Card containerStyle={styles.card}>
               <Text style={styles.header}>Työkokemus</Text>
               {experience.map((exp) => (

@@ -114,6 +114,7 @@ const useAuth = () => {
 
 const useEducation = () => {
   const [education, setEducation] = useState<Education[]>([]);
+  const {update} = useUpdateContext();
   const getEducation = async () => {
     const token = await AsyncStorage.getItem('token');
     const options = {
@@ -130,7 +131,7 @@ const useEducation = () => {
 
   useEffect(() => {
     getEducation();
-  }, []);
+  }, [update]);
 
   const postEducation = async (education: EducationInfo) => {
     const token = await AsyncStorage.getItem('token');
@@ -153,11 +154,8 @@ const useEducation = () => {
     );
   };
 
-  const putEducation = async (
-    id: number,
-    education: EducationInfo,
-    token: string,
-  ) => {
+  const putEducation = async (id: number, education: EducationInfo) => {
+    const token = await AsyncStorage.getItem('token');
     const options = {
       method: 'PUT',
       headers: {
