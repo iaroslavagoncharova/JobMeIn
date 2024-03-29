@@ -10,6 +10,7 @@ type User = {
   email: string;
   user_level_id: number;
   fullname: string;
+  address: string;
   phone: string;
   about_me: string;
   status: string;
@@ -18,7 +19,7 @@ type User = {
   field: string;
 };
 
-type JobExperience = {
+type Experience = {
   experience_id: number;
   user_id: number;
   job_title: string;
@@ -29,14 +30,22 @@ type JobExperience = {
   end_date: Date | string;
 };
 
+export type ExperienceInfo = Partial<
+  Omit<Experience, 'experience_id' | 'user_id'>
+>;
+
 type Education = {
   education_id: number;
   user_id: number;
   school: string;
   degree: string;
   field: string | null;
-  graduation: Date | string | null;
+  graduation: Date | string;
 };
+
+export type EducationInfo = Partial<
+  Omit<Education, 'education_id' | 'user_id'>
+>;
 
 type Attachment = {
   job_id: number;
@@ -143,10 +152,19 @@ type Match = {
   matched_at: Date | string | null;
 };
 
+type UpdateUser = {
+  email: string;
+  fullname: string;
+  phone: string;
+  address: string;
+  about_me: string;
+  [key: string]: string | undefined;
+};
+
 export type {
   UserLevel,
   User,
-  JobExperience,
+  Experience,
   Education,
   Attachment,
   Skill,
@@ -164,4 +182,5 @@ export type {
   Message,
   Swipe,
   Match,
+  UpdateUser,
 };

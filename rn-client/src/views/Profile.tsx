@@ -5,22 +5,36 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  TextInput,
 } from 'react-native';
-import {ListItem} from '@rneui/base';
+import {Card, ListItem} from '@rneui/base';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faAdd, faEdit} from '@fortawesome/free-solid-svg-icons';
+import {
+  faAdd,
+  faEdit,
+  faMarker,
+  faStopCircle,
+} from '@fortawesome/free-solid-svg-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   NavigationProp,
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
+import {useEffect} from 'react';
 import {useUserContext} from '../hooks/ContextHooks';
+import {useEducation, useExperience, useSkills} from '../hooks/apiHooks';
+import PersonalInfo from '../components/PersonalInfo';
 
 const Profile = () => {
   const {user, handleLogout} = useUserContext();
+  const {getEducation, education} = useEducation();
+  const {getExperience, experience} = useExperience();
+  const {getSkills, skills} = useSkills();
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   console.log(user);
+  console.log(education);
+  console.log(experience);
 
   const logout = async () => {
     const token = await AsyncStorage.getItem('token');
@@ -29,33 +43,20 @@ const Profile = () => {
     console.log(token, user);
     navigation.navigate('KIrjaudu/luo profiili');
   };
-  const tests = [
-    {
-      test_id: 1,
-      test_name: 'IQ-testi',
-      type: 'platform',
-      completed_at: '2024-03-23',
-    },
-    {
-      test_id: 2,
-      test_name: 'EQ-testi',
-      type: 'platform',
-      completed_at: '2024-03-23',
-    },
-    {
-      test_id: 3,
-      test_name: 'Persoonallisuustesti',
-      type: 'platform',
-      completed_at: '2024-03-23',
-    },
-  ];
+
+  useEffect(() => {
+    getEducation();
+    getExperience();
+    getSkills();
+  }, []);
+
   const styles = StyleSheet.create({
     container: {
       backgroundColor: '#ffffff',
       flex: 1,
       padding: 30,
       marginTop: 40,
-      width: '85%',
+      width: '90%',
       borderRadius: 25,
     },
     header: {
@@ -67,6 +68,13 @@ const Profile = () => {
       color: '#5d71c9',
       fontSize: 25,
       fontWeight: 'bold',
+    },
+    card: {
+      backgroundColor: '#ffffff',
+      margin: 5,
+      padding: 10,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
   });
   return (
@@ -80,58 +88,60 @@ const Profile = () => {
       {user && (
         <View style={styles.container}>
           <ScrollView>
-            <View>
-              <Text>{user?.fullname}</Text>
-              <Image source={{uri: 'https://via.placeholder.com/150'}} />
-            </View>
             <Text style={styles.bigHeader}>Profiili</Text>
-            <View>
-              <Text style={styles.header}>Henkilötiedot</Text>
-              <TouchableOpacity>
-                <FontAwesomeIcon icon={faEdit} size={20} />
-              </TouchableOpacity>
-              <Text>Nimi: {user?.fullname}</Text>
-              <Text>Sähköpostiosoite: {user?.email}</Text>
-              <Text>Salasana: ******** </Text>
-              <Text>Käyttäjänimi: {user?.username}</Text>
-              <Text>Puhelinnumero: {user?.phone}</Text>
-              <Text>Kerro itsestäsi: {user?.about_me}</Text>
-            </View>
-            <View>
-              <Text style={styles.header}>Koulutus</Text>
-              <TouchableOpacity>
-                <FontAwesomeIcon icon={faEdit} size={20} />
-                <FontAwesomeIcon icon={faAdd} size={20} />
-                <Text>Lisää koulutus</Text>
-              </TouchableOpacity>
-            </View>
-            <View>
+            <PersonalInfo user={user} />
+            <Card containerStyle={styles.card}>
               <Text style={styles.header}>Työkokemus</Text>
+              {experience.map((exp) => (
+                <Card key={exp.experience_id}>
+                  <Text>Työnimike: {exp.job_title}</Text>
+                  <Text>Työpaikka: {exp.job_place}</Text>
+                  {exp.description ? (
+                    <Text>Kuvaus: {exp.description}</Text>
+                  ) : null}
+                  <Text>
+                    Työskentely alkaa:{' '}
+                    {new Date(exp.start_date).toLocaleDateString('fi-FI')}
+                  </Text>
+                  {exp.end_date ? (
+                    <Text>
+                      Työskentely päättyy:{' '}
+                      {new Date(exp.end_date).toLocaleDateString('fi-FI')}
+                    </Text>
+                  ) : (
+                    <Text>Nykyinen työpaikka ✅</Text>
+                  )}
+                  <TouchableOpacity>
+                    <FontAwesomeIcon icon={faEdit} size={20} />
+                  </TouchableOpacity>
+                </Card>
+              ))}
               <TouchableOpacity>
-                <FontAwesomeIcon icon={faEdit} size={20} />
                 <FontAwesomeIcon icon={faAdd} size={20} />
                 <Text>Lisää työkokemus</Text>
               </TouchableOpacity>
-            </View>
-            <View>
-              <Text style={styles.header}>Taidot</Text>
-              <TouchableOpacity>
-                <FontAwesomeIcon icon={faEdit} size={20} />
-                <FontAwesomeIcon icon={faAdd} size={20} />
-                <Text>Lisää taidot</Text>
-              </TouchableOpacity>
-            </View>
-            <View>
-              <Text style={styles.bigHeader}>Testit</Text>
-              {tests.map((test) => (
-                <ListItem key={test.test_id}>
-                  <Text>{test.test_name}</Text>
-                  <Text>
-                    {new Date(test.completed_at).toLocaleDateString('fi-FI')}
-                  </Text>
-                </ListItem>
+            </Card>
+            <Card containerStyle={styles.card}>
+              <Text style={styles.header}>Taidot (valitse 3-5 taitoa)</Text>
+              {skills.map((skill) => (
+                <Card key={skill.skill_id}>
+                  <Text>Taito: {skill.skill_name}</Text>
+                  <Text>Tyyppi: {skill.type}</Text>
+                  <TouchableOpacity>
+                    <FontAwesomeIcon icon={faEdit} size={20} />
+                  </TouchableOpacity>
+                </Card>
               ))}
-            </View>
+              {skills.length < 5 ? (
+                <TouchableOpacity>
+                  <FontAwesomeIcon icon={faAdd} size={20} />
+                  <Text>Lisää taito</Text>
+                </TouchableOpacity>
+              ) : null}
+            </Card>
+            <Card containerStyle={styles.card}>
+              <Text style={styles.header}>Testit</Text>
+            </Card>
             <TouchableOpacity onPress={logout}>
               <Text>Kirjaudu ulos</Text>
             </TouchableOpacity>

@@ -65,7 +65,10 @@ const TabNavigator = () => {
           <Tab.Screen name="Profiili" component={Profile} />
         </>
       ) : (
+        <>
+        <Tab.Screen name="Feed" component={Feed} />
         <Tab.Screen name="Kirjaudu/luo profiili" component={Auth} />
+        </>
       )}
     </Tab.Navigator>
   );

@@ -1,3 +1,4 @@
+import {UpdateProvider} from './src/contexts/UpdateContext';
 import {UserProvider} from './src/contexts/UserContext';
 import Navigator from './src/navigators/Navigator';
 
@@ -5,7 +6,9 @@ const App = () => {
   return (
     <>
       <UserProvider>
-        <Navigator />
+        <UpdateProvider>
+          <Navigator />
+        </UpdateProvider>
       </UserProvider>
     </>
   );

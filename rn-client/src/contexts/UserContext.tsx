@@ -2,7 +2,7 @@ import React, {createContext, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Alert} from 'react-native';
 import {AuthContextType, Values} from '../types/LocalTypes';
-import {User} from '../types/DBTypes';
+import {UpdateUser, User} from '../types/DBTypes';
 import {useAuth, useUser} from '../hooks/apiHooks';
 
 const UserContext = createContext<AuthContextType | null>(null);
@@ -10,7 +10,7 @@ const UserContext = createContext<AuthContextType | null>(null);
 const UserProvider = ({children}: {children: React.ReactNode}) => {
   const [user, setUser] = useState<User | null>(null);
   const {postLogin} = useAuth();
-  const {getUserByToken} = useUser();
+  const {getUserByToken, putUser} = useUser();
 
   const handleLogin = async (values: Values) => {
     try {
@@ -49,6 +49,23 @@ const UserProvider = ({children}: {children: React.ReactNode}) => {
     }
   };
 
+  const handleEdit = async (values: UpdateUser) => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      if (token) {
+        await putUser(token, values);
+        console.log(values, 'values');
+        const result = await getUserByToken(token);
+        console.log(result, 'result');
+        if (result) {
+          setUser(result.user);
+        }
+      }
+    } catch (error) {
+      console.error((error as Error).message);
+    }
+  };
+
   return (
     <UserContext.Provider
       value={{
@@ -56,6 +73,7 @@ const UserProvider = ({children}: {children: React.ReactNode}) => {
         handleLogin,
         handleLogout,
         handleAutoLogin,
+        handleEdit,
       }}
     >
       {children}
