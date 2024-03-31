@@ -1,26 +1,29 @@
-import {ActivityIndicator, View} from 'react-native';
+import {View, ActivityIndicator, TouchableOpacity} from 'react-native';
 // @ts-ignore
 import SwipeCards from 'react-native-swipe-cards';
 import {useEffect, useState} from 'react';
+import {faRotateRight} from '@fortawesome/free-solid-svg-icons';
 import {Text} from 'react-native-elements';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {useUserContext} from '../hooks/ContextHooks';
 import {useJobs, useSwipe} from '../hooks/apiHooks';
-import {JobWithSkillsAndKeywords, Swipe} from '../types/DBTypes';
+import {JobWithSkillsAndKeywords} from '../types/DBTypes';
 import JobAd from '../components/JobAd';
 import useUpdateContext from '../hooks/updateHooks';
 
 const Feed = () => {
   const {handleAutoLogin} = useUserContext();
   const {jobs} = useJobs();
-  const {postSwipe} = useSwipe();
   const {update, setUpdate} = useUpdateContext();
+  const {postSwipe} = useSwipe();
   const [loading, setLoading] = useState(false);
   const [swipingEnabled, setSwipingEnabled] = useState(true);
-  console.log(jobs, 'jobs');
-  if (!jobs) {
-    return <ActivityIndicator size="large" color="#ffffff" />;
-  }
-  const handleYup = async (job: JobWithSkillsAndKeywords) => {
+
+  useEffect(() => {
+    handleAutoLogin();
+  }, []);
+
+  const handleRight = async (job: JobWithSkillsAndKeywords) => {
     setLoading(true);
     setSwipingEnabled(false);
     try {
@@ -33,19 +36,18 @@ const Feed = () => {
       console.log(result);
       if (result) {
         console.log('swipe saved');
-        setUpdate((prevState) => !prevState);
       }
     } catch (error) {
       console.error('Error occurred:', error);
-      // Handle error
     } finally {
       setLoading(false);
       setSwipingEnabled(true);
     }
   };
-  const handleNope = async (job: JobWithSkillsAndKeywords) => {
+
+  const handleLeft = async (job: JobWithSkillsAndKeywords) => {
     setLoading(true);
-    setSwipingEnabled(false); // Disable swiping
+    setSwipingEnabled(false);
     try {
       const data = {
         swiped_id: job.job_id,
@@ -56,7 +58,6 @@ const Feed = () => {
       console.log(result);
       if (result) {
         console.log('swipe saved');
-        setUpdate((prevState) => !prevState);
       }
     } catch (error) {
       console.error('Error occurred:', error);
@@ -65,30 +66,45 @@ const Feed = () => {
       setSwipingEnabled(true);
     }
   };
-  useEffect(() => {
-    handleAutoLogin();
-  }, []);
+
+  const handleYup = (job: JobWithSkillsAndKeywords) => {
+    if (jobs.length === 1) {
+      setSwipingEnabled(false);
+    }
+    handleRight(job);
+  };
+
+  const handleNope = (job: JobWithSkillsAndKeywords) => {
+    if (jobs.length === 1) {
+      setSwipingEnabled(false);
+    }
+    handleLeft(job);
+  };
+
   return (
     <View style={{flex: 1, backgroundColor: '#5d71c9'}}>
       <SwipeCards
+        key={jobs.length}
         cards={jobs}
-        stackSize={3}
         renderCard={(jobData: JobWithSkillsAndKeywords) => (
           <JobAd job={jobData} />
         )}
-        showYup={false}
-        showNope={false}
-        useNativeDriver={true}
-        loop={false}
         renderNoMoreCards={() => (
           <View>
-            <Text h4 style={{color: '#ffffff'}}>
-              No more jobs
+            <Text style={{color: '#ffffff', fontSize: 20}}>
+              Ei enempää työpaikkoja
             </Text>
+            <TouchableOpacity
+              onPress={() => setUpdate((prevState) => !prevState)}
+            >
+              <FontAwesomeIcon icon={faRotateRight} color="#ffffff" size={40} />
+            </TouchableOpacity>
           </View>
         )}
         handleYup={swipingEnabled ? handleYup : undefined}
         handleNope={swipingEnabled ? handleNope : undefined}
+        showYup={false}
+        showNope={false}
       />
       {loading && <ActivityIndicator size="large" color="#ffffff" />}
     </View>

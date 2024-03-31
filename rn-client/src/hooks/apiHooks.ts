@@ -315,6 +315,7 @@ const useJobs = () => {
       return;
     }
     setJobs(result);
+    console.log(result);
   };
   useEffect(() => {
     getAllJobs();
