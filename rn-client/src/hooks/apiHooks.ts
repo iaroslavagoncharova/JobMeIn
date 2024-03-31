@@ -5,14 +5,20 @@ import {
   Education,
   EducationInfo,
   Experience,
+  ExperienceInfo,
   JobWithSkillsAndKeywords,
   Skill,
+  Swipe,
   Test,
   UpdateUser,
   User,
 } from '../types/DBTypes';
 import {Values} from '../types/LocalTypes';
-import {LoginResponse, UserResponse} from '../types/MessageTypes';
+import {
+  LoginResponse,
+  MessageResponse,
+  UserResponse,
+} from '../types/MessageTypes';
 import useUpdateContext from './updateHooks';
 
 const useUser = () => {
@@ -83,6 +89,19 @@ const useUser = () => {
       },
     );
   };
+
+  const deleteUser = async () => {
+    const token = await AsyncStorage.getItem('token');
+    return await fetchData<MessageResponse>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/users',
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      },
+    );
+  };
   return {
     getUserById,
     getUserByToken,
@@ -90,6 +109,7 @@ const useUser = () => {
     getUsernameAvailability,
     getEmailAvailability,
     putUser,
+    deleteUser,
   };
 };
 
@@ -194,7 +214,55 @@ const useExperience = () => {
     );
     setExperience(result);
   };
-  return {getExperience, experience};
+
+  useEffect(() => {
+    getExperience();
+  }, []);
+
+  const postExperience = async (experience: ExperienceInfo) => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify(experience),
+    };
+    return await fetchData<Experience>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/profile/experience',
+      options,
+    );
+  };
+
+  const getExperienceById = async (id: number) => {
+    return await fetchData<Experience>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/profile/experience/' + id,
+    );
+  };
+
+  const putExperience = async (id: number, experience: ExperienceInfo) => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify(experience),
+    };
+    return await fetchData<Experience>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/profile/experience/' + id,
+      options,
+    );
+  };
+  return {
+    getExperience,
+    experience,
+    postExperience,
+    getExperienceById,
+    putExperience,
+  };
 };
 
 const useSkills = () => {
@@ -229,18 +297,59 @@ const useSkills = () => {
 
 const useJobs = () => {
   const [jobs, setJobs] = useState<JobWithSkillsAndKeywords[]>([]);
+  const {update} = useUpdateContext();
   const getAllJobs = async () => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
     const result = await fetchData<JobWithSkillsAndKeywords[]>(
       process.env.EXPO_PUBLIC_AUTH_API + '/jobs',
+      options,
     );
-    if (result) {
-      setJobs(result);
+    if (!result) {
+      setJobs([]);
+      console.error('Error fetching jobs');
+      return;
     }
+    setJobs(result);
   };
   useEffect(() => {
     getAllJobs();
-  }, []);
+  }, [update]);
   return {getAllJobs, jobs};
 };
 
-export {useUser, useAuth, useEducation, useExperience, useSkills, useJobs};
+const useSwipe = () => {
+  const postSwipe = async (
+    swipe: Omit<Swipe, 'swipe_id' | 'swiper_id' | 'created_at'>,
+  ) => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify(swipe),
+    };
+    console.log(options);
+    return await fetchData<Swipe>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/swipes',
+      options,
+    );
+  };
+  return {postSwipe};
+};
+
+export {
+  useUser,
+  useAuth,
+  useEducation,
+  useExperience,
+  useSkills,
+  useJobs,
+  useSwipe,
+};

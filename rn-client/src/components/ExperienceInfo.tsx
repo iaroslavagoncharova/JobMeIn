@@ -7,29 +7,38 @@ import {
   TextInput,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {Card, Button} from '@rneui/base';
+import {Button, Card} from '@rneui/base';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faEdit, faAdd} from '@fortawesome/free-solid-svg-icons';
-import {Controller, useForm} from 'react-hook-form';
+import {faAdd, faEdit} from '@fortawesome/free-solid-svg-icons';
+import DatePicker from '@react-native-community/datetimepicker';
 import {
   NavigationProp,
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
-import {Education, EducationInfo} from '../types/DBTypes';
-import {useEducation} from '../hooks/apiHooks';
+import {Controller, useForm} from 'react-hook-form';
+import {Experience, ExperienceInfo} from '../types/DBTypes';
 import useUpdateContext from '../hooks/updateHooks';
+import {useExperience} from '../hooks/apiHooks';
 
-export default function Edu({education}: {education: Education[]}) {
-  const [eduEditing, setEduEditing] = useState<number | null>(null);
+export default function ExperiencePage({
+  experience,
+}: {
+  experience: Experience[];
+}) {
+  const [expEditing, setExpEditing] = useState<number | null>(null);
   const navigation: NavigationProp<ParamListBase> = useNavigation();
-  const {putEducation} = useEducation();
   const {update, setUpdate} = useUpdateContext();
-  const values: EducationInfo = {
-    school: '',
-    degree: '',
-    field: '',
-    graduation: '',
+  const [show, setShow] = useState(false);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
+  const {putExperience} = useExperience();
+  const values: ExperienceInfo = {
+    job_title: '',
+    job_place: '',
+    description: '',
+    start_date: startDate,
+    end_date: endDate,
   };
   const {
     control,
@@ -42,11 +51,11 @@ export default function Edu({education}: {education: Education[]}) {
     reset(values);
   };
 
-  const edit = async (inputs: EducationInfo) => {
+  const edit = async (inputs: ExperienceInfo) => {
     console.log(inputs, 'inputs');
-    if (eduEditing) {
-      await putEducation(eduEditing, inputs);
-      setEduEditing(null);
+    if (expEditing) {
+      await putExperience(expEditing, inputs);
+      setExpEditing(null);
       setUpdate((prevState) => !prevState);
       resetForm();
     }
@@ -115,26 +124,41 @@ export default function Edu({education}: {education: Education[]}) {
       borderRadius: 12,
     },
   });
-
   return (
     <Card containerStyle={styles.card}>
-      <Text style={styles.header}>Koulutus</Text>
-      {!education && <Text>Loading...</Text>}
-      {education.map((edu) => (
-        <Card key={edu.education_id} containerStyle={{borderRadius: 10}}>
-          {eduEditing !== edu.education_id ? (
+      <Text style={styles.header}>Työkokemus</Text>
+      {!experience && <Text>Loading...</Text>}
+      {experience.map((exp) => (
+        <Card key={exp.experience_id} containerStyle={{borderRadius: 10}}>
+          {expEditing !== exp.experience_id ? (
             <>
-              <Text style={styles.boldText}>Koulu:</Text>
-              <Text style={styles.text}>{edu.school}</Text>
-              <Text style={styles.boldText}>Tutkinto:</Text>
-              <Text style={styles.text}>{edu.degree}</Text>
-              <Text style={styles.boldText}>Ala:</Text>
-              <Text style={styles.text}>{edu.field}</Text>
-              <Text style={styles.boldText}>Valmistumispäivä:</Text>
+              <Text style={styles.boldText}>Työnimike:</Text>
+              <Text style={styles.text}>{exp.job_title}</Text>
+              <Text style={styles.boldText}>Työpaikka:</Text>
+              <Text style={styles.text}>{exp.job_place}</Text>
+              {exp.description ? (
+                <>
+                  <Text style={styles.boldText}>Kuvaus:</Text>
+                  <Text style={styles.text}>{exp.description}</Text>
+                </>
+              ) : null}
+              <Text style={styles.boldText}>Työskentely alkaa:</Text>
               <Text style={styles.text}>
-                {new Date(edu.graduation).toLocaleDateString('fi-FI')}
+                {new Date(exp.start_date).toLocaleDateString('fi-FI')}
               </Text>
-              <TouchableOpacity onPress={() => setEduEditing(edu.education_id)}>
+              {exp.end_date ? (
+                <>
+                  <Text style={styles.boldText}>Työskentely päättyy:</Text>
+                  <Text style={styles.text}>
+                    {new Date(exp.end_date).toLocaleDateString('fi-FI')}
+                  </Text>
+                </>
+              ) : (
+                <Text style={styles.text}>Nykyinen työpaikka ✅</Text>
+              )}
+              <TouchableOpacity
+                onPress={() => setExpEditing(exp.experience_id)}
+              >
                 <FontAwesomeIcon
                   icon={faEdit}
                   size={25}
@@ -145,60 +169,51 @@ export default function Edu({education}: {education: Education[]}) {
           ) : (
             <>
               <Controller
+                control={control}
                 render={({field: {onChange, onBlur, value}}) => (
                   <TextInput
                     style={styles.input}
                     onBlur={onBlur}
                     onChangeText={onChange}
                     value={value}
-                    placeholder={eduEditing === null ? 'Koulu' : edu.school}
-                  />
-                )}
-                name="school"
-                control={control}
-              />
-              <Controller
-                render={({field: {onChange, onBlur, value}}) => (
-                  <TextInput
-                    style={styles.input}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                    placeholder={eduEditing === null ? 'Tutkinto' : edu.degree}
-                  />
-                )}
-                name="degree"
-                control={control}
-              />
-              <Controller
-                render={({field: {onChange, onBlur, value}}) => (
-                  <TextInput
-                    style={styles.input}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                    placeholder={eduEditing === null ? 'Ala' : edu.field}
-                  />
-                )}
-                name="field"
-                control={control}
-              />
-              <Controller
-                render={({field: {onChange, onBlur, value}}) => (
-                  <TextInput
-                    style={styles.input}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value as string}
                     placeholder={
-                      eduEditing === null
-                        ? 'Valmistumispäivä'
-                        : new Date(edu.graduation).toLocaleDateString('fi-FI')
+                      expEditing === null ? 'Työnimike' : exp.job_title
                     }
                   />
                 )}
-                name="graduation"
+                name="job_title"
+              />
+              <Controller
                 control={control}
+                render={({field: {onChange, onBlur, value}}) => (
+                  <TextInput
+                    style={styles.input}
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                    placeholder={
+                      expEditing === null ? 'Työpaikka' : exp.job_place
+                    }
+                  />
+                )}
+                name="job_place"
+              />
+              <Controller
+                control={control}
+                render={({field: {onChange, onBlur, value}}) => (
+                  <TextInput
+                    style={styles.input}
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                    placeholder={
+                      expEditing === null || !exp.description
+                        ? 'Kuvaus'
+                        : exp.description
+                    }
+                  />
+                )}
+                name="description"
               />
               <Button
                 title="Tallenna"
@@ -207,7 +222,7 @@ export default function Edu({education}: {education: Education[]}) {
               />
               <Button
                 title="Peruuta"
-                onPress={() => setEduEditing(null)}
+                onPress={() => setExpEditing(null)}
                 buttonStyle={styles.cancelButton}
                 titleStyle={{color: '#5d71c9'}}
               />

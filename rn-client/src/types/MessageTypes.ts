@@ -1,4 +1,4 @@
-import {User} from './DBTypes';
+import {Swipe, User} from './DBTypes';
 
 type MessageResponse = {
   message: string;
@@ -18,4 +18,14 @@ type LoginResponse = MessageResponse & {
   user: User;
 };
 
-export type {MessageResponse, ErrorResponse, UserResponse, LoginResponse};
+type SwipeResponse = MessageResponse & {
+  swipe: Swipe;
+};
+
+export type {
+  MessageResponse,
+  ErrorResponse,
+  UserResponse,
+  LoginResponse,
+  SwipeResponse,
+};

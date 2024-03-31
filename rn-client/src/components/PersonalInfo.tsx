@@ -1,4 +1,10 @@
-import {Text, StyleSheet, TouchableOpacity, TextInput} from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  TextInput,
+  View,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Button, Card} from '@rneui/base';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
@@ -54,8 +60,7 @@ export default function PersonalInfo({user}: {user: User}) {
       backgroundColor: '#ffffff',
       margin: 5,
       padding: 10,
-      justifyContent: 'center',
-      alignItems: 'center',
+      marginTop: 15,
       borderRadius: 10,
       borderColor: '#5d71c9',
     },
@@ -64,7 +69,7 @@ export default function PersonalInfo({user}: {user: User}) {
       fontSize: 20,
       fontWeight: 'bold',
       textAlign: 'center',
-      marginBottom: 0,
+      marginVertical: 10,
     },
     input: {
       height: 40,
@@ -78,13 +83,28 @@ export default function PersonalInfo({user}: {user: User}) {
       marginTop: 5,
       marginBottom: 5,
       fontSize: 14,
+      padding: 0,
+      color: '#004AAD',
+    },
+    boldText: {
+      fontSize: 14,
+      fontWeight: 'bold',
+      color: '#5d71c9',
     },
     icon: {
       margin: 5,
       bottom: 35,
       color: '#5d71c9',
     },
-    button: {
+    cancelButton: {
+      margin: 5,
+      backgroundColor: '#ffffff',
+      borderColor: '#5d71c9',
+      borderWidth: 1,
+      color: '#5d71c9',
+      borderRadius: 12,
+    },
+    saveButton: {
       margin: 5,
       backgroundColor: '#5d71c9',
       borderRadius: 12,
@@ -94,19 +114,26 @@ export default function PersonalInfo({user}: {user: User}) {
     <Card containerStyle={styles.card}>
       <Text style={styles.header}>Henkilötiedot</Text>
       {!personalEditing ? (
-        <>
+        <View>
           <TouchableOpacity
             style={{height: 1}}
             onPress={() => setPersonalEditing(!personalEditing)}
           >
             <FontAwesomeIcon icon={faEdit} size={25} style={styles.icon} />
           </TouchableOpacity>
-          <Text style={styles.text}>Nimi: {user?.fullname}</Text>
-          <Text style={styles.text}>Sähköpostiosoite: {user?.email}</Text>
-          <Text style={styles.text}>Käyttäjänimi: {user?.username}</Text>
-          <Text style={styles.text}>Puhelinnumero: {user?.phone}</Text>
-          <Text style={styles.text}>Kerro itsestäsi: {user?.about_me}</Text>
-        </>
+          <Text style={styles.boldText}>Nimi:</Text>
+          <Text style={styles.text}>{user?.fullname}</Text>
+          <Text style={styles.boldText}>Sähköposti:</Text>
+          <Text style={styles.text}>{user?.email}</Text>
+          <Text style={styles.boldText}>Käyttäjänimi:</Text>
+          <Text style={styles.text}>{user?.username}</Text>
+          <Text style={styles.boldText}>Puhelinnumero:</Text>
+          <Text style={styles.text}>{user?.phone}</Text>
+          <Text style={styles.boldText}>Kerro itsestäsi:</Text>
+          <Text style={styles.text}>
+            {user?.about_me ? user?.about_me : 'Ei kuvailua'}
+          </Text>
+        </View>
       ) : (
         <>
           <Controller
@@ -163,15 +190,17 @@ export default function PersonalInfo({user}: {user: User}) {
             )}
             name="about_me"
           />
-          <Button onPress={handleSubmit(edit)} buttonStyle={styles.button}>
-            <Text style={{color: '#ffffff'}}>Tallenna muutokset</Text>
-          </Button>
+          <Button
+            onPress={handleSubmit(edit)}
+            buttonStyle={styles.saveButton}
+            title={'Tallenna'}
+          />
           <Button
             onPress={() => setPersonalEditing(!personalEditing)}
-            buttonStyle={styles.button}
-          >
-            <Text style={{color: '#ffffff'}}>Peruuta</Text>
-          </Button>
+            buttonStyle={styles.cancelButton}
+            titleStyle={{color: '#5d71c9'}}
+            title={'Peruuta'}
+          />
         </>
       )}
     </Card>
