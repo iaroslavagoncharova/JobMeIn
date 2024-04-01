@@ -34,6 +34,7 @@ import PersonalInfo from '../components/PersonalInfo';
 import Edu from '../components/EducationInfo';
 import useUpdateContext from '../hooks/updateHooks';
 import ExperiencePage from '../components/ExperienceInfo';
+import Skills from '../components/Skills';
 
 const Profile = () => {
   const {user, handleLogout} = useUserContext();
@@ -109,15 +110,18 @@ const Profile = () => {
       padding: 10,
       justifyContent: 'center',
       alignItems: 'center',
+      borderRadius: 10,
+      borderColor: '#5d71c9',
     },
     logoutButton: {
       margin: 10,
+      marginTop: 5,
       backgroundColor: '#5d71c9',
       borderRadius: 12,
     },
     deleteButton: {
       margin: 10,
-      marginVertical: 5,
+      marginTop: 15,
       backgroundColor: '#D71313',
       borderRadius: 12,
     },
@@ -137,24 +141,7 @@ const Profile = () => {
             <PersonalInfo user={user} />
             <Edu education={education} />
             <ExperiencePage experience={experience} />
-            <Card containerStyle={styles.card}>
-              <Text style={styles.header}>Taidot (valitse 3-5 taitoa)</Text>
-              {skills.map((skill) => (
-                <Card key={skill.skill_id}>
-                  <Text>Taito: {skill.skill_name}</Text>
-                  <Text>Tyyppi: {skill.type}</Text>
-                  <TouchableOpacity>
-                    <FontAwesomeIcon icon={faEdit} size={20} />
-                  </TouchableOpacity>
-                </Card>
-              ))}
-              {skills.length < 5 ? (
-                <TouchableOpacity>
-                  <FontAwesomeIcon icon={faAdd} size={20} />
-                  <Text>Lisää taito</Text>
-                </TouchableOpacity>
-              ) : null}
-            </Card>
+            <Skills skills={skills} />
             <Card containerStyle={styles.card}>
               <Text style={styles.header}>Testit</Text>
             </Card>

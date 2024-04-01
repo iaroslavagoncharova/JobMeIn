@@ -5,11 +5,12 @@ import {
   TouchableOpacity,
   StyleSheet,
   TextInput,
+  Alert,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Card, Button} from '@rneui/base';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faEdit, faAdd} from '@fortawesome/free-solid-svg-icons';
+import {faEdit, faAdd, faTrash} from '@fortawesome/free-solid-svg-icons';
 import {Controller, useForm} from 'react-hook-form';
 import {
   NavigationProp,
@@ -22,8 +23,9 @@ import useUpdateContext from '../hooks/updateHooks';
 
 export default function Edu({education}: {education: Education[]}) {
   const [eduEditing, setEduEditing] = useState<number | null>(null);
+  const [eduPosting, setEduPosting] = useState<boolean>(false);
   const navigation: NavigationProp<ParamListBase> = useNavigation();
-  const {putEducation} = useEducation();
+  const {putEducation, postEducation, deleteEducation} = useEducation();
   const {update, setUpdate} = useUpdateContext();
   const values: EducationInfo = {
     school: '',
@@ -50,6 +52,35 @@ export default function Edu({education}: {education: Education[]}) {
       setUpdate((prevState) => !prevState);
       resetForm();
     }
+  };
+
+  const handlePost = async (inputs: EducationInfo) => {
+    console.log(inputs);
+    if (!inputs.school || !inputs.degree) {
+      inputs.school = null;
+      inputs.degree = null;
+    }
+    await postEducation(inputs);
+    setUpdate((prevState) => !prevState);
+    resetForm();
+    setEduPosting(false);
+  };
+
+  const handleDelete = async (id: number) => {
+    Alert.alert('Poista koulutus', 'Haluatko varmasti poistaa koulutuksen?', [
+      {
+        text: 'Peruuta',
+        onPress: () => {},
+        style: 'cancel',
+      },
+      {
+        text: 'Poista',
+        onPress: () => {
+          deleteEducation(id);
+          setUpdate((prevState) => !prevState);
+        },
+      },
+    ]);
   };
 
   useEffect(() => {
@@ -119,7 +150,11 @@ export default function Edu({education}: {education: Education[]}) {
   return (
     <Card containerStyle={styles.card}>
       <Text style={styles.header}>Koulutus</Text>
-      {!education && <Text>Loading...</Text>}
+      {education && education.length === 0 && (
+        <Text style={{color: '#5d71c9', textAlign: 'center'}}>
+          Ei lisättyä koulutusta
+        </Text>
+      )}
       {education.map((edu) => (
         <Card key={edu.education_id} containerStyle={{borderRadius: 10}}>
           {eduEditing !== edu.education_id ? (
@@ -129,14 +164,25 @@ export default function Edu({education}: {education: Education[]}) {
               <Text style={styles.boldText}>Tutkinto:</Text>
               <Text style={styles.text}>{edu.degree}</Text>
               <Text style={styles.boldText}>Ala:</Text>
-              <Text style={styles.text}>{edu.field}</Text>
+              <Text style={styles.text}>
+                {edu.field ? edu.field : 'Ei alaa'}
+              </Text>
               <Text style={styles.boldText}>Valmistumispäivä:</Text>
               <Text style={styles.text}>
-                {new Date(edu.graduation).toLocaleDateString('fi-FI')}
+                {edu.graduation
+                  ? new Date(edu.graduation).toLocaleDateString('fi-FI')
+                  : 'Ei valmistumispäivää'}
               </Text>
               <TouchableOpacity onPress={() => setEduEditing(edu.education_id)}>
                 <FontAwesomeIcon
                   icon={faEdit}
+                  size={25}
+                  style={{color: '#5d71c9', margin: 5}}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => handleDelete(edu.education_id)}>
+                <FontAwesomeIcon
+                  icon={faTrash}
                   size={25}
                   style={{color: '#5d71c9', margin: 5}}
                 />
@@ -150,7 +196,7 @@ export default function Edu({education}: {education: Education[]}) {
                     style={styles.input}
                     onBlur={onBlur}
                     onChangeText={onChange}
-                    value={value}
+                    value={value ?? ''}
                     placeholder={eduEditing === null ? 'Koulu' : edu.school}
                   />
                 )}
@@ -163,7 +209,7 @@ export default function Edu({education}: {education: Education[]}) {
                     style={styles.input}
                     onBlur={onBlur}
                     onChangeText={onChange}
-                    value={value}
+                    value={value ?? ''}
                     placeholder={eduEditing === null ? 'Tutkinto' : edu.degree}
                   />
                 )}
@@ -176,8 +222,10 @@ export default function Edu({education}: {education: Education[]}) {
                     style={styles.input}
                     onBlur={onBlur}
                     onChangeText={onChange}
-                    value={value}
-                    placeholder={eduEditing === null ? 'Ala' : edu.field}
+                    value={value ?? ''}
+                    placeholder={
+                      eduEditing === null ? 'Ala' : edu.field ?? 'Ala'
+                    }
                   />
                 )}
                 name="field"
@@ -193,7 +241,9 @@ export default function Edu({education}: {education: Education[]}) {
                     placeholder={
                       eduEditing === null
                         ? 'Valmistumispäivä'
-                        : new Date(edu.graduation).toLocaleDateString('fi-FI')
+                        : new Date(edu.graduation).toLocaleDateString(
+                            'fi-FI',
+                          ) ?? 'Valmistumispäivä'
                     }
                   />
                 )}
@@ -215,9 +265,77 @@ export default function Edu({education}: {education: Education[]}) {
           )}
         </Card>
       ))}
-      <TouchableOpacity>
-        <FontAwesomeIcon icon={faAdd} style={styles.icon} size={30} />
-      </TouchableOpacity>
+      {!eduPosting ? (
+        <TouchableOpacity onPress={() => setEduPosting(true)}>
+          <FontAwesomeIcon icon={faAdd} style={styles.icon} size={30} />
+        </TouchableOpacity>
+      ) : (
+        <>
+          <Controller
+            render={({field: {onChange, onBlur, value}}) => (
+              <TextInput
+                style={styles.input}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value ?? ''}
+                placeholder="Koulu*"
+              />
+            )}
+            name="school"
+            control={control}
+          />
+          <Controller
+            render={({field: {onChange, onBlur, value}}) => (
+              <TextInput
+                style={styles.input}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value ?? ''}
+                placeholder="Tutkinto*"
+              />
+            )}
+            name="degree"
+            control={control}
+          />
+          <Controller
+            render={({field: {onChange, onBlur, value}}) => (
+              <TextInput
+                style={styles.input}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value ?? ''}
+                placeholder="Ala"
+              />
+            )}
+            name="field"
+            control={control}
+          />
+          <Controller
+            render={({field: {onChange, onBlur, value}}) => (
+              <TextInput
+                style={styles.input}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value as string}
+                placeholder="Valmistumispäivä"
+              />
+            )}
+            name="graduation"
+            control={control}
+          />
+          <Button
+            title="Lisää"
+            onPress={handleSubmit(handlePost)}
+            buttonStyle={styles.saveButton}
+          />
+          <Button
+            title="Peruuta"
+            onPress={() => setEduPosting(false)}
+            buttonStyle={styles.cancelButton}
+            titleStyle={{color: '#5d71c9'}}
+          />
+        </>
+      )}
     </Card>
   );
 }

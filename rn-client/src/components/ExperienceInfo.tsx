@@ -5,11 +5,12 @@ import {
   TouchableOpacity,
   StyleSheet,
   TextInput,
+  Alert,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Button, Card} from '@rneui/base';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faAdd, faEdit} from '@fortawesome/free-solid-svg-icons';
+import {faAdd, faEdit, faTrash} from '@fortawesome/free-solid-svg-icons';
 import DatePicker from '@react-native-community/datetimepicker';
 import {
   NavigationProp,
@@ -27,15 +28,17 @@ export default function ExperiencePage({
   experience: Experience[];
 }) {
   const [expEditing, setExpEditing] = useState<number | null>(null);
+  const [expPosting, setExpPosting] = useState<boolean>(false);
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const {update, setUpdate} = useUpdateContext();
   const [show, setShow] = useState(false);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const {putExperience} = useExperience();
+  const {putExperience, deleteExperience} = useExperience();
   const values: ExperienceInfo = {
     job_title: '',
     job_place: '',
+    job_city: '',
     description: '',
     start_date: startDate,
     end_date: endDate,
@@ -59,6 +62,23 @@ export default function ExperiencePage({
       setUpdate((prevState) => !prevState);
       resetForm();
     }
+  };
+
+  const handleDelete = async (id: number) => {
+    Alert.alert('Poistetaanko työkokemus?', '', [
+      {
+        text: 'Peruuta',
+        onPress: () => {},
+        style: 'cancel',
+      },
+      {
+        text: 'Poista',
+        onPress: () => {
+          deleteExperience(id);
+          setUpdate((prevState) => !prevState);
+        },
+      },
+    ]);
   };
 
   useEffect(() => {
@@ -127,7 +147,11 @@ export default function ExperiencePage({
   return (
     <Card containerStyle={styles.card}>
       <Text style={styles.header}>Työkokemus</Text>
-      {!experience && <Text>Loading...</Text>}
+      {experience && experience.length === 0 && (
+        <Text style={{color: '#5d71c9', textAlign: 'center'}}>
+          Ei lisättyä työkokemusta
+        </Text>
+      )}
       {experience.map((exp) => (
         <Card key={exp.experience_id} containerStyle={{borderRadius: 10}}>
           {expEditing !== exp.experience_id ? (
@@ -165,6 +189,13 @@ export default function ExperiencePage({
                   style={{color: '#5d71c9', margin: 5}}
                 />
               </TouchableOpacity>
+              <TouchableOpacity onPress={() => handleDelete(exp.experience_id)}>
+                <FontAwesomeIcon
+                  icon={faTrash}
+                  size={25}
+                  style={{color: '#5d71c9', margin: 5}}
+                />
+              </TouchableOpacity>
             </>
           ) : (
             <>
@@ -175,7 +206,7 @@ export default function ExperiencePage({
                     style={styles.input}
                     onBlur={onBlur}
                     onChangeText={onChange}
-                    value={value}
+                    value={value ?? ''}
                     placeholder={
                       expEditing === null ? 'Työnimike' : exp.job_title
                     }
@@ -190,7 +221,7 @@ export default function ExperiencePage({
                     style={styles.input}
                     onBlur={onBlur}
                     onChangeText={onChange}
-                    value={value}
+                    value={value ?? ''}
                     placeholder={
                       expEditing === null ? 'Työpaikka' : exp.job_place
                     }
@@ -205,7 +236,7 @@ export default function ExperiencePage({
                     style={styles.input}
                     onBlur={onBlur}
                     onChangeText={onChange}
-                    value={value}
+                    value={value ?? ''}
                     placeholder={
                       expEditing === null || !exp.description
                         ? 'Kuvaus'
@@ -230,9 +261,112 @@ export default function ExperiencePage({
           )}
         </Card>
       ))}
-      <TouchableOpacity>
-        <FontAwesomeIcon icon={faAdd} style={styles.icon} size={30} />
-      </TouchableOpacity>
+      {!expPosting ? (
+        <TouchableOpacity onPress={() => setExpPosting(true)}>
+          <FontAwesomeIcon icon={faAdd} style={styles.icon} size={30} />
+        </TouchableOpacity>
+      ) : (
+        <>
+          <Controller
+            control={control}
+            render={({field: {onChange, onBlur, value}}) => (
+              <TextInput
+                style={styles.input}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value ?? ''}
+                placeholder="Työnimike"
+              />
+            )}
+            name="job_title"
+            rules={{required: 'Työnimike vaaditaan'}}
+          />
+          <Controller
+            control={control}
+            render={({field: {onChange, onBlur, value}}) => (
+              <TextInput
+                style={styles.input}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value ?? ''}
+                placeholder="Työpaikka"
+              />
+            )}
+            name="job_place"
+            rules={{required: 'Työpaikka vaaditaan'}}
+          />
+          <Controller
+            control={control}
+            render={({field: {onChange, onBlur, value}}) => (
+              <TextInput
+                style={styles.input}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value ?? ''}
+                placeholder="Työkaupunki"
+              />
+            )}
+            name="job_city"
+          />
+          <Controller
+            control={control}
+            render={({field: {onChange, onBlur, value}}) => (
+              <TextInput
+                style={styles.input}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value ?? ''}
+                placeholder="Kuvaus"
+              />
+            )}
+            name="description"
+          />
+          <Controller
+            control={control}
+            render={({field: {onChange, onBlur, value}}) => (
+              <DatePicker
+                value={value as Date}
+                mode="date"
+                display="default"
+                onChange={(event, selectedDate) => {
+                  const currentDate = selectedDate || value;
+                  onChange(currentDate);
+                  setStartDate(currentDate);
+                }}
+              />
+            )}
+            name="start_date"
+          />
+          <Controller
+            control={control}
+            render={({field: {onChange, onBlur, value}}) => (
+              <DatePicker
+                value={value as Date}
+                mode="date"
+                display="default"
+                onChange={(event, selectedDate) => {
+                  const currentDate = selectedDate || value;
+                  onChange(currentDate);
+                  setEndDate(currentDate);
+                }}
+              />
+            )}
+            name="end_date"
+          />
+
+          <Button
+            title="Tallenna"
+            onPress={handleSubmit(edit)}
+            buttonStyle={styles.saveButton}
+          />
+          <Button
+            title="Peruuta"
+            onPress={() => setExpPosting(false)}
+            buttonStyle={styles.cancelButton}
+            titleStyle={{color: '#5d71c9'}}
+          />
+        </>
+      )}
     </Card>
   );
 }
