@@ -1,18 +1,25 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useEffect, useState} from 'react';
+import {Alert} from 'react-native';
 import {fetchData} from '../lib/functions';
 import {
   Education,
   EducationInfo,
   Experience,
+  ExperienceInfo,
   JobWithSkillsAndKeywords,
   Skill,
+  Swipe,
   Test,
   UpdateUser,
   User,
 } from '../types/DBTypes';
 import {Values} from '../types/LocalTypes';
-import {LoginResponse, UserResponse} from '../types/MessageTypes';
+import {
+  LoginResponse,
+  MessageResponse,
+  UserResponse,
+} from '../types/MessageTypes';
 import useUpdateContext from './updateHooks';
 
 const useUser = () => {
@@ -83,6 +90,19 @@ const useUser = () => {
       },
     );
   };
+
+  const deleteUser = async () => {
+    const token = await AsyncStorage.getItem('token');
+    return await fetchData<MessageResponse>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/users',
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      },
+    );
+  };
   return {
     getUserById,
     getUserByToken,
@@ -90,6 +110,7 @@ const useUser = () => {
     getUsernameAvailability,
     getEmailAvailability,
     putUser,
+    deleteUser,
   };
 };
 
@@ -117,17 +138,25 @@ const useEducation = () => {
   const [education, setEducation] = useState<Education[]>([]);
   const {update} = useUpdateContext();
   const getEducation = async () => {
-    const token = await AsyncStorage.getItem('token');
-    const options = {
-      headers: {
-        Authorization: 'Bearer ' + token,
-      },
-    };
-    const result = await fetchData<Education[]>(
-      process.env.EXPO_PUBLIC_AUTH_API + '/profile/education',
-      options,
-    );
-    setEducation(result);
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const options = {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = await fetchData<Education[]>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/profile/education',
+        options,
+      );
+      setEducation(result);
+    } catch (error) {
+      if ((error as Error).message === 'No education found') {
+        setEducation([]);
+      } else {
+        console.error('Error fetching education', error);
+      }
+    }
   };
 
   useEffect(() => {
@@ -156,16 +185,35 @@ const useEducation = () => {
   };
 
   const putEducation = async (id: number, education: EducationInfo) => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const options = {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        },
+        body: JSON.stringify(education),
+      };
+      return await fetchData<Education>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/profile/education/' + id,
+        options,
+      );
+    } catch (e) {
+      console.error('Error updating education', e);
+      Alert.alert('Error updating education');
+    }
+  };
+
+  const deleteEducation = async (id: number) => {
     const token = await AsyncStorage.getItem('token');
     const options = {
-      method: 'PUT',
+      method: 'DELETE',
       headers: {
-        'Content-Type': 'application/json',
         Authorization: 'Bearer ' + token,
       },
-      body: JSON.stringify(education),
     };
-    return await fetchData<Education>(
+    return await fetchData<MessageResponse>(
       process.env.EXPO_PUBLIC_AUTH_API + '/profile/education/' + id,
       options,
     );
@@ -176,25 +224,99 @@ const useEducation = () => {
     getEducationById,
     putEducation,
     education,
+    deleteEducation,
   };
 };
 
 const useExperience = () => {
   const [experience, setExperience] = useState<Experience[]>([]);
+  const {update} = useUpdateContext();
   const getExperience = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const options = {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = await fetchData<Experience[]>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/profile/experience',
+        options,
+      );
+      console.log(result);
+      setExperience(result);
+    } catch (e) {
+      if ((e as Error).message === 'No experience found') {
+        setExperience([]);
+      } else {
+        console.error('Error fetching experience', e);
+      }
+    }
+  };
+
+  useEffect(() => {
+    getExperience();
+  }, [update]);
+
+  const postExperience = async (experience: ExperienceInfo) => {
     const token = await AsyncStorage.getItem('token');
     const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify(experience),
+    };
+    return await fetchData<Experience>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/profile/experience',
+      options,
+    );
+  };
+
+  const getExperienceById = async (id: number) => {
+    return await fetchData<Experience>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/profile/experience/' + id,
+    );
+  };
+
+  const putExperience = async (id: number, experience: ExperienceInfo) => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify(experience),
+    };
+    return await fetchData<Experience>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/profile/experience/' + id,
+      options,
+    );
+  };
+
+  const deleteExperience = async (id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      method: 'DELETE',
       headers: {
         Authorization: 'Bearer ' + token,
       },
     };
-    const result = await fetchData<Experience[]>(
-      process.env.EXPO_PUBLIC_AUTH_API + '/profile/experience',
+    return await fetchData<MessageResponse>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/profile/experience/' + id,
       options,
     );
-    setExperience(result);
   };
-  return {getExperience, experience};
+  return {
+    getExperience,
+    experience,
+    postExperience,
+    getExperienceById,
+    putExperience,
+    deleteExperience,
+  };
 };
 
 const useSkills = () => {
@@ -216,7 +338,11 @@ const useSkills = () => {
         setSkills(result);
       }
     } catch (e) {
-      console.error('Error fetching skills', e);
+      if ((e as Error).message === 'No skills found') {
+        setSkills([]);
+      } else {
+        console.error('Error fetching skills', e);
+      }
     }
   };
 
@@ -224,23 +350,100 @@ const useSkills = () => {
     getSkills();
   }, [update]);
 
-  return {getSkills, skills};
+  const putSkill = async (id: number, skill: Skill) => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const options = {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        },
+        body: JSON.stringify(skill),
+      };
+      return await fetchData<MessageResponse>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/profile/skills/' + id,
+        options,
+      );
+    } catch (e) {
+      console.error('Error updating skill', e);
+      Alert.alert('Error updating skill');
+    }
+  };
+
+  const deleteSkill = async (id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      method: 'DELETE',
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    return await fetchData<MessageResponse>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/profile/skills/' + id,
+      options,
+    );
+  };
+
+  return {getSkills, skills, putSkill, deleteSkill};
 };
 
 const useJobs = () => {
   const [jobs, setJobs] = useState<JobWithSkillsAndKeywords[]>([]);
+  const {update} = useUpdateContext();
   const getAllJobs = async () => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
     const result = await fetchData<JobWithSkillsAndKeywords[]>(
       process.env.EXPO_PUBLIC_AUTH_API + '/jobs',
+      options,
     );
-    if (result) {
-      setJobs(result);
+    if (!result) {
+      setJobs([]);
+      console.error('Error fetching jobs');
+      return;
     }
+    setJobs(result);
+    console.log(result);
   };
   useEffect(() => {
     getAllJobs();
-  }, []);
+  }, [update]);
   return {getAllJobs, jobs};
 };
 
-export {useUser, useAuth, useEducation, useExperience, useSkills, useJobs};
+const useSwipe = () => {
+  const postSwipe = async (
+    swipe: Omit<Swipe, 'swipe_id' | 'swiper_id' | 'created_at'>,
+  ) => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify(swipe),
+    };
+    console.log(options);
+    return await fetchData<Swipe>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/swipes',
+      options,
+    );
+  };
+  return {postSwipe};
+};
+
+export {
+  useUser,
+  useAuth,
+  useEducation,
+  useExperience,
+  useSkills,
+  useJobs,
+  useSwipe,
+};

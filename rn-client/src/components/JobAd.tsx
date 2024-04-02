@@ -8,15 +8,12 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import {JobWithSkillsAndKeywords} from '../types/DBTypes';
 
-export default function Job({job}: {job: JobWithSkillsAndKeywords}) {
+export default function JobAd({job}: {job: JobWithSkillsAndKeywords}) {
   const styles = StyleSheet.create({
     card: {
-      height: '65%',
-      width: '100%',
-      marginTop: 50,
+      width: '90%',
       margin: 50,
-      padding: 10,
-      left: 25,
+      padding: 20,
       borderRadius: 25,
       alignItems: 'center',
       backgroundColor: '#ffffff',
@@ -78,19 +75,23 @@ export default function Job({job}: {job: JobWithSkillsAndKeywords}) {
       width: 50,
       height: 50,
       top: 40,
-      left: 130,
+      left: 70,
     },
     buttonLeft: {
       color: '#ffffff',
       borderRadius: 25,
       width: 50,
       height: 50,
-      bottom: 7,
-      right: 80,
+      bottom: 5,
+      right: 60,
     },
   });
   return (
-    <View style={{alignItems: 'center', backgroundColor: '#5d71c9'}}>
+    <View
+      style={{
+        alignItems: 'center',
+      }}
+    >
       <Text></Text>
       <Card containerStyle={styles.card}>
         <Text style={styles.header1}>{job.job_title}</Text>

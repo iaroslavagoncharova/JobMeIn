@@ -24,30 +24,35 @@ type Experience = {
   user_id: number;
   job_title: string;
   job_place: string;
-  job_city: string | null;
-  description: string | null;
+  job_city: string;
+  description: string;
   start_date: Date | string;
   end_date: Date | string;
 };
 
-export type ExperienceInfo = Partial<
-  Omit<Experience, 'experience_id' | 'user_id'>
->;
+type ExperienceInfo = {
+  job_title?: string | null;
+  job_place?: string | null;
+  job_city?: string | null;
+  description?: string | null;
+  start_date?: Date | string | null;
+  end_date?: Date | string | null;
+};
 
 type Education = {
   education_id: number;
   user_id: number;
   school: string;
   degree: string;
-  field: string | null;
-  graduation: Date | string;
+  field: string | null | undefined;
+  graduation: string;
 };
 
 export type EducationInfo = {
-  school?: string;
-  degree?: string;
-  field?: string;
-  graduation?: Date | string;
+  school?: string | null;
+  degree?: string | null;
+  field?: string | null;
+  graduation?: Date | null | string;
 };
 
 type Attachment = {
@@ -144,8 +149,9 @@ type Swipe = {
   swipe_id: number;
   swiper_id: number;
   swiped_id: number;
-  swipe_direction: 'left' | 'right';
-  swiped_at: Date | string | null;
+  swipe_type: string;
+  swipe_direction: string;
+  created_at: Date | string | null;
 };
 
 type Match = {
@@ -185,6 +191,7 @@ export type {
   UserLevel,
   User,
   Experience,
+  ExperienceInfo,
   Education,
   Attachment,
   Skill,

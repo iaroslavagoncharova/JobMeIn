@@ -6,8 +6,9 @@ import {
   TouchableOpacity,
   ScrollView,
   TextInput,
+  Alert,
 } from 'react-native';
-import {Card, ListItem} from '@rneui/base';
+import {Button, Card, ListItem} from '@rneui/base';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
   faAdd,
@@ -23,13 +24,21 @@ import {
 } from '@react-navigation/native';
 import {useEffect} from 'react';
 import {useUserContext} from '../hooks/ContextHooks';
-import {useEducation, useExperience, useSkills} from '../hooks/apiHooks';
+import {
+  useEducation,
+  useExperience,
+  useSkills,
+  useUser,
+} from '../hooks/apiHooks';
 import PersonalInfo from '../components/PersonalInfo';
 import Edu from '../components/EducationInfo';
 import useUpdateContext from '../hooks/updateHooks';
+import ExperiencePage from '../components/ExperienceInfo';
+import Skills from '../components/Skills';
 
 const Profile = () => {
   const {user, handleLogout} = useUserContext();
+  const {deleteUser} = useUser();
   const {getEducation, education} = useEducation();
   const {getExperience, experience} = useExperience();
   const {getSkills, skills} = useSkills();
@@ -44,7 +53,29 @@ const Profile = () => {
     console.log(token, user);
     await handleLogout();
     console.log(token, user);
-    navigation.navigate('KIrjaudu/luo profiili');
+    navigation.navigate('Kirjaudu/luo profiili');
+  };
+
+  const handleDelete = async () => {
+    Alert.alert('Poista profiili', 'Haluatko varmasti poistaa profiilisi?', [
+      {
+        text: 'Peruuta',
+        onPress: () => {},
+        style: 'cancel',
+      },
+      {
+        text: 'Poista',
+        onPress: async () => {
+          const result = await deleteUser();
+          if (result) {
+            handleLogout();
+            navigation.navigate('Feed');
+          } else {
+            Alert.alert('Poistaminen epäonnistui');
+          }
+        },
+      },
+    ]);
   };
 
   useEffect(() => {
@@ -57,7 +88,7 @@ const Profile = () => {
     container: {
       backgroundColor: '#ffffff',
       flex: 1,
-      padding: 30,
+      padding: 15,
       marginTop: 40,
       width: '90%',
       borderRadius: 25,
@@ -79,6 +110,20 @@ const Profile = () => {
       padding: 10,
       justifyContent: 'center',
       alignItems: 'center',
+      borderRadius: 10,
+      borderColor: '#5d71c9',
+    },
+    logoutButton: {
+      margin: 10,
+      marginTop: 5,
+      backgroundColor: '#5d71c9',
+      borderRadius: 12,
+    },
+    deleteButton: {
+      margin: 10,
+      marginTop: 15,
+      backgroundColor: '#D71313',
+      borderRadius: 12,
     },
   });
   return (
@@ -91,65 +136,27 @@ const Profile = () => {
     >
       {user && (
         <View style={styles.container}>
-          <ScrollView>
+          <ScrollView showsVerticalScrollIndicator={false}>
             <Text style={styles.bigHeader}>Profiili</Text>
             <PersonalInfo user={user} />
             <Edu education={education} />
-            <Card containerStyle={styles.card}>
-              <Text style={styles.header}>Työkokemus</Text>
-              {experience.map((exp) => (
-                <Card key={exp.experience_id}>
-                  <Text>Työnimike: {exp.job_title}</Text>
-                  <Text>Työpaikka: {exp.job_place}</Text>
-                  {exp.description ? (
-                    <Text>Kuvaus: {exp.description}</Text>
-                  ) : null}
-                  <Text>
-                    Työskentely alkaa:{' '}
-                    {new Date(exp.start_date).toLocaleDateString('fi-FI')}
-                  </Text>
-                  {exp.end_date ? (
-                    <Text>
-                      Työskentely päättyy:{' '}
-                      {new Date(exp.end_date).toLocaleDateString('fi-FI')}
-                    </Text>
-                  ) : (
-                    <Text>Nykyinen työpaikka ✅</Text>
-                  )}
-                  <TouchableOpacity>
-                    <FontAwesomeIcon icon={faEdit} size={20} />
-                  </TouchableOpacity>
-                </Card>
-              ))}
-              <TouchableOpacity>
-                <FontAwesomeIcon icon={faAdd} size={20} />
-                <Text>Lisää työkokemus</Text>
-              </TouchableOpacity>
-            </Card>
-            <Card containerStyle={styles.card}>
-              <Text style={styles.header}>Taidot (valitse 3-5 taitoa)</Text>
-              {skills.map((skill) => (
-                <Card key={skill.skill_id}>
-                  <Text>Taito: {skill.skill_name}</Text>
-                  <Text>Tyyppi: {skill.type}</Text>
-                  <TouchableOpacity>
-                    <FontAwesomeIcon icon={faEdit} size={20} />
-                  </TouchableOpacity>
-                </Card>
-              ))}
-              {skills.length < 5 ? (
-                <TouchableOpacity>
-                  <FontAwesomeIcon icon={faAdd} size={20} />
-                  <Text>Lisää taito</Text>
-                </TouchableOpacity>
-              ) : null}
-            </Card>
+            <ExperiencePage experience={experience} />
+            <Skills skills={skills} />
             <Card containerStyle={styles.card}>
               <Text style={styles.header}>Testit</Text>
             </Card>
-            <TouchableOpacity onPress={logout}>
-              <Text>Kirjaudu ulos</Text>
-            </TouchableOpacity>
+            <Button
+              title="Poista profiili"
+              onPress={() => {
+                handleDelete();
+              }}
+              buttonStyle={styles.deleteButton}
+            />
+            <Button
+              title="Kirjaudu ulos"
+              onPress={logout}
+              buttonStyle={styles.logoutButton}
+            />
           </ScrollView>
         </View>
       )}
