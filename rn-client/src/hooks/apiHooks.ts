@@ -321,7 +321,21 @@ const useExperience = () => {
 
 const useSkills = () => {
   const [skills, setSkills] = useState<Skill[]>([]);
+  const [allSkills, setAllSkills] = useState<Skill[]>([]);
   const {update} = useUpdateContext();
+  const getAllSkills = async () => {
+    const result = await fetchData<Skill[]>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/profile/skills',
+    );
+    if (result) {
+      setAllSkills(result);
+    }
+  };
+
+  useEffect(() => {
+    getAllSkills();
+  }, []);
+
   const getSkills = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
@@ -331,7 +345,7 @@ const useSkills = () => {
         },
       };
       const result = await fetchData<Skill[]>(
-        process.env.EXPO_PUBLIC_AUTH_API + '/profile/skills',
+        process.env.EXPO_PUBLIC_AUTH_API + '/profile/skills/user',
         options,
       );
       if (result) {
@@ -371,6 +385,34 @@ const useSkills = () => {
     }
   };
 
+  const postSkill = async (skill: Skill) => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        },
+        body: JSON.stringify(skill),
+      };
+      const result = await fetchData<Skill>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/profile/skills/' + skill.skill_id,
+        options,
+      );
+      if (result) {
+        Alert.alert('Taito lisätty');
+      }
+    } catch (e) {
+      if ((e as Error).message === 'Skill not added or already exists') {
+        Alert.alert('Taito on jo lisätty');
+      } else {
+        console.error('Error adding skill', e);
+        Alert.alert('Error adding skill');
+      }
+    }
+  };
+
   const deleteSkill = async (id: number) => {
     const token = await AsyncStorage.getItem('token');
     const options = {
@@ -385,7 +427,15 @@ const useSkills = () => {
     );
   };
 
-  return {getSkills, skills, putSkill, deleteSkill};
+  return {
+    getSkills,
+    skills,
+    putSkill,
+    deleteSkill,
+    allSkills,
+    getAllSkills,
+    postSkill,
+  };
 };
 
 const useJobs = () => {
