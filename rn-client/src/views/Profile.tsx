@@ -44,9 +44,6 @@ const Profile = () => {
   const {getSkills, skills, allSkills, getAllSkills} = useSkills();
   const {update} = useUpdateContext();
   const navigation: NavigationProp<ParamListBase> = useNavigation();
-  console.log(user);
-  console.log(education);
-  console.log(experience);
 
   const logout = async () => {
     const token = await AsyncStorage.getItem('token');

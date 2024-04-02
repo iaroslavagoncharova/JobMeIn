@@ -35,7 +35,6 @@ const useUser = () => {
         Authorization: 'Bearer ' + token,
       },
     };
-    console.log(options);
     const result = await fetchData<UserResponse>(
       process.env.EXPO_PUBLIC_AUTH_API + '/users/token',
       options,
@@ -164,19 +163,28 @@ const useEducation = () => {
   }, [update]);
 
   const postEducation = async (education: EducationInfo) => {
-    const token = await AsyncStorage.getItem('token');
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
-      },
-      body: JSON.stringify(education),
-    };
-    return await fetchData<Education>(
-      process.env.EXPO_PUBLIC_AUTH_API + '/profile/education',
-      options,
-    );
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        },
+        body: JSON.stringify(education),
+      };
+      console.log(options);
+      const result = await fetchData<Education>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/profile/education',
+        options,
+      );
+      if (result) {
+        Alert.alert('Koulutus lisätty');
+      }
+    } catch (e) {
+      console.error('Error adding education', e);
+      Alert.alert('Error adding education');
+    }
   };
   const getEducationById = async (id: number) => {
     return await fetchData<Education>(
@@ -243,7 +251,6 @@ const useExperience = () => {
         process.env.EXPO_PUBLIC_AUTH_API + '/profile/experience',
         options,
       );
-      console.log(result);
       setExperience(result);
     } catch (e) {
       if ((e as Error).message === 'No experience found') {
@@ -458,7 +465,6 @@ const useJobs = () => {
       return;
     }
     setJobs(result);
-    console.log(result);
   };
   useEffect(() => {
     getAllJobs();
@@ -479,7 +485,6 @@ const useSwipe = () => {
       },
       body: JSON.stringify(swipe),
     };
-    console.log(options);
     return await fetchData<Swipe>(
       process.env.EXPO_PUBLIC_AUTH_API + '/swipes',
       options,
