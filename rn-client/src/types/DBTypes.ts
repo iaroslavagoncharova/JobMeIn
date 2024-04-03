@@ -181,6 +181,12 @@ export type Job = {
   field: string;
 };
 
+export type Notification = {
+  notification_id: number;
+  match_id: number;
+  created_at: Date | string;
+};
+
 export type JobWithSkillsAndKeywords = Job & {
   skills: string;
   keywords: string;

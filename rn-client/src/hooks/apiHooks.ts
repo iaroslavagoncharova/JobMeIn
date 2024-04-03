@@ -3,11 +3,14 @@ import {useEffect, useState} from 'react';
 import {Alert} from 'react-native';
 import {fetchData} from '../lib/functions';
 import {
+  Chat,
   Education,
   EducationInfo,
   Experience,
   ExperienceInfo,
   JobWithSkillsAndKeywords,
+  Match,
+  Notification,
   Skill,
   Swipe,
   Test,
@@ -473,6 +476,7 @@ const useJobs = () => {
 };
 
 const useSwipe = () => {
+  const {getUserMatches} = useMatch();
   const postSwipe = async (
     swipe: Omit<Swipe, 'swipe_id' | 'swiper_id' | 'created_at'>,
   ) => {
@@ -485,12 +489,99 @@ const useSwipe = () => {
       },
       body: JSON.stringify(swipe),
     };
-    return await fetchData<Swipe>(
+    const result = await fetchData<Swipe>(
       process.env.EXPO_PUBLIC_AUTH_API + '/swipes',
       options,
     );
+    if (result) {
+      getUserMatches();
+      return result;
+    }
   };
   return {postSwipe};
+};
+
+const useNotification = () => {
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const {update} = useUpdateContext();
+  const getUserNotifications = async () => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    const result = await fetchData<Notification[]>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/notifications',
+      options,
+    );
+    if (result) {
+      // for each notification create an alert
+      console.log(result);
+      setNotifications(result);
+      return result;
+    }
+  };
+  useEffect(() => {
+    getUserNotifications();
+  }, [update]);
+  return {getUserNotifications, notifications};
+};
+
+const useMatch = () => {
+  const [matches, setMatches] = useState<Match[]>();
+  const {update} = useUpdateContext();
+  const getUserMatches = async () => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = await fetchData<Match[]>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/matches/user',
+        options,
+      );
+      console.log(result);
+      if (result) {
+        setMatches(result);
+        Alert.alert('Match löytyi! Voit nyt aloittaa keskustelun');
+        return result;
+      }
+    } catch (e) {
+      console.error('Error fetching matches', e);
+    }
+  };
+  useEffect(() => {
+    getUserMatches();
+  }, [update]);
+  return {getUserMatches, matches};
+};
+
+const useChats = () => {
+  const [chats, setChats] = useState<Chat[]>();
+  const getUserChats = async () => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    const result = await fetchData<Chat[]>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/chats/user',
+      options,
+    );
+    console.log('result', result);
+    if (result) {
+      setChats(result);
+      return result;
+    }
+  };
+  useEffect(() => {
+    getUserChats();
+  }, []);
+  return {getUserChats, chats};
 };
 
 export {
@@ -501,4 +592,7 @@ export {
   useSkills,
   useJobs,
   useSwipe,
+  useNotification,
+  useMatch,
+  useChats,
 };
