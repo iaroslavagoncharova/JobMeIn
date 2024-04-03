@@ -1,6 +1,5 @@
 import React from 'react';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {StyleSheet} from 'react-native';
 import Applied from '../components/Applied';
 import Saved from '../components/Saved';
 

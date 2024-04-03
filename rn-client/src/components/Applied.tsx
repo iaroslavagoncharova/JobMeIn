@@ -21,7 +21,6 @@ const appliedApplications: ApplicationApplied[] = [
     testsCompleted: 3,
     totalTests: 3,
   },
-  // Add more mock data here if necessary
 ];
 
 const Applied = () => {
