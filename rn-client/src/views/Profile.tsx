@@ -1,21 +1,5 @@
-import {
-  Text,
-  View,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  TextInput,
-  Alert,
-} from 'react-native';
-import {Button, Card, ListItem} from '@rneui/base';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {
-  faAdd,
-  faEdit,
-  faMarker,
-  faStopCircle,
-} from '@fortawesome/free-solid-svg-icons';
+import {Text, View, StyleSheet, ScrollView, Alert} from 'react-native';
+import {Button, Card} from '@rneui/base';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   NavigationProp,
@@ -28,7 +12,6 @@ import {
   useChats,
   useEducation,
   useExperience,
-  useMatch,
   useNotification,
   useSkills,
   useUser,
@@ -149,6 +132,9 @@ const Profile = () => {
             <Skills skills={skills} allSkills={allSkills} />
             <Card containerStyle={styles.card}>
               <Text style={styles.header}>Testit</Text>
+            </Card>
+            <Card containerStyle={styles.card}>
+              <Text style={styles.header}> Liitteet </Text>
             </Card>
             <Button
               title="Poista profiili"

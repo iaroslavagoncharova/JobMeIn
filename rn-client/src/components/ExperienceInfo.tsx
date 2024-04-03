@@ -11,7 +11,6 @@ import React, {useEffect, useState} from 'react';
 import {Button, Card} from '@rneui/base';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faAdd, faEdit, faTrash} from '@fortawesome/free-solid-svg-icons';
-import DatePicker from '@react-native-community/datetimepicker';
 import {
   NavigationProp,
   ParamListBase,
@@ -21,6 +20,8 @@ import {Controller, useForm} from 'react-hook-form';
 import {Experience, ExperienceInfo} from '../types/DBTypes';
 import useUpdateContext from '../hooks/updateHooks';
 import {useExperience} from '../hooks/apiHooks';
+import ExperiencePost from './ExperiencePost';
+import ExperienceUpdate from './ExperienceUpdate';
 
 export default function ExperiencePage({
   experience,
@@ -31,10 +32,14 @@ export default function ExperiencePage({
   const [expPosting, setExpPosting] = useState<boolean>(false);
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const {update, setUpdate} = useUpdateContext();
-  const [show, setShow] = useState(false);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const {putExperience, deleteExperience} = useExperience();
+  const [editStartDate, setEditStartDate] = useState<Date | null>(null);
+  const [editEndDate, setEditEndDate] = useState<Date | null>(null);
+  const [includeEndDate, setIncludeEndDate] = useState<boolean>(false);
+  const [editIncludeEndDate, setEditIncludeEndDate] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
+  const {putExperience, deleteExperience, postExperience} = useExperience();
   const values: ExperienceInfo = {
     job_title: '',
     job_place: '',
@@ -54,9 +59,18 @@ export default function ExperiencePage({
     reset(values);
   };
 
+  const showMode = () => {
+    setOpen(true);
+  };
+
   const edit = async (inputs: ExperienceInfo) => {
     console.log(inputs, 'inputs');
     if (expEditing) {
+      if (!includeEndDate) {
+        inputs.end_date = null;
+      } else {
+        inputs.end_date = endDate ? endDate.toISOString().split('T')[0] : null;
+      }
       await putExperience(expEditing, inputs);
       setExpEditing(null);
       setUpdate((prevState) => !prevState);
@@ -198,66 +212,11 @@ export default function ExperiencePage({
               </TouchableOpacity>
             </>
           ) : (
-            <>
-              <Controller
-                control={control}
-                render={({field: {onChange, onBlur, value}}) => (
-                  <TextInput
-                    style={styles.input}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value ?? ''}
-                    placeholder={
-                      expEditing === null ? 'Työnimike' : exp.job_title
-                    }
-                  />
-                )}
-                name="job_title"
-              />
-              <Controller
-                control={control}
-                render={({field: {onChange, onBlur, value}}) => (
-                  <TextInput
-                    style={styles.input}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value ?? ''}
-                    placeholder={
-                      expEditing === null ? 'Työpaikka' : exp.job_place
-                    }
-                  />
-                )}
-                name="job_place"
-              />
-              <Controller
-                control={control}
-                render={({field: {onChange, onBlur, value}}) => (
-                  <TextInput
-                    style={styles.input}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value ?? ''}
-                    placeholder={
-                      expEditing === null || !exp.description
-                        ? 'Kuvaus'
-                        : exp.description
-                    }
-                  />
-                )}
-                name="description"
-              />
-              <Button
-                title="Tallenna"
-                onPress={handleSubmit(edit)}
-                buttonStyle={styles.saveButton}
-              />
-              <Button
-                title="Peruuta"
-                onPress={() => setExpEditing(null)}
-                buttonStyle={styles.cancelButton}
-                titleStyle={{color: '#5d71c9'}}
-              />
-            </>
+            <ExperienceUpdate
+              expEditing={expEditing}
+              setExpEditing={setExpEditing}
+              exp={exp}
+            />
           )}
         </Card>
       ))}
@@ -266,106 +225,7 @@ export default function ExperiencePage({
           <FontAwesomeIcon icon={faAdd} style={styles.icon} size={30} />
         </TouchableOpacity>
       ) : (
-        <>
-          <Controller
-            control={control}
-            render={({field: {onChange, onBlur, value}}) => (
-              <TextInput
-                style={styles.input}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value ?? ''}
-                placeholder="Työnimike"
-              />
-            )}
-            name="job_title"
-            rules={{required: 'Työnimike vaaditaan'}}
-          />
-          <Controller
-            control={control}
-            render={({field: {onChange, onBlur, value}}) => (
-              <TextInput
-                style={styles.input}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value ?? ''}
-                placeholder="Työpaikka"
-              />
-            )}
-            name="job_place"
-            rules={{required: 'Työpaikka vaaditaan'}}
-          />
-          <Controller
-            control={control}
-            render={({field: {onChange, onBlur, value}}) => (
-              <TextInput
-                style={styles.input}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value ?? ''}
-                placeholder="Työkaupunki"
-              />
-            )}
-            name="job_city"
-          />
-          <Controller
-            control={control}
-            render={({field: {onChange, onBlur, value}}) => (
-              <TextInput
-                style={styles.input}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value ?? ''}
-                placeholder="Kuvaus"
-              />
-            )}
-            name="description"
-          />
-          <Controller
-            control={control}
-            render={({field: {onChange, onBlur, value}}) => (
-              <DatePicker
-                value={value as Date}
-                mode="date"
-                display="default"
-                onChange={(event, selectedDate) => {
-                  const currentDate = selectedDate || value;
-                  onChange(currentDate);
-                  setStartDate(currentDate);
-                }}
-              />
-            )}
-            name="start_date"
-          />
-          <Controller
-            control={control}
-            render={({field: {onChange, onBlur, value}}) => (
-              <DatePicker
-                value={value as Date}
-                mode="date"
-                display="default"
-                onChange={(event, selectedDate) => {
-                  const currentDate = selectedDate || value;
-                  onChange(currentDate);
-                  setEndDate(currentDate);
-                }}
-              />
-            )}
-            name="end_date"
-          />
-
-          <Button
-            title="Tallenna"
-            onPress={handleSubmit(edit)}
-            buttonStyle={styles.saveButton}
-          />
-          <Button
-            title="Peruuta"
-            onPress={() => setExpPosting(false)}
-            buttonStyle={styles.cancelButton}
-            titleStyle={{color: '#5d71c9'}}
-          />
-        </>
+        <ExperiencePost expPosting={expPosting} setExpPosting={setExpPosting} />
       )}
     </Card>
   );

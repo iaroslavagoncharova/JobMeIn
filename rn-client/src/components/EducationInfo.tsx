@@ -62,7 +62,7 @@ export default function Edu({education}: {education: Education[]}) {
     console.log(inputs, 'inputs');
     if (eduEditing) {
       if (!includeGraduationDate) {
-        inputs.graduation = null; // Set graduation date to null if not included
+        inputs.graduation = null;
       } else {
         // Change graduation date to be in format yyyy-mm-dd
         inputs.graduation = graduation
@@ -82,7 +82,7 @@ export default function Edu({education}: {education: Education[]}) {
       inputs.field = null;
     }
     if (!includeGraduationDate) {
-      inputs.graduation = null; // Set graduation date to null if not included
+      inputs.graduation = null;
     } else {
       // Change graduation date to be in format yyyy-mm-dd
       inputs.graduation = graduation
@@ -316,6 +316,7 @@ export default function Edu({education}: {education: Education[]}) {
             )}
             name="school"
             control={control}
+            rules={{required: 'Koulu on pakollinen'}}
           />
           <Controller
             render={({field: {onChange, onBlur, value}}) => (
@@ -329,6 +330,7 @@ export default function Edu({education}: {education: Education[]}) {
             )}
             name="degree"
             control={control}
+            rules={{required: 'Tutkinto on pakollinen'}}
           />
           <Controller
             render={({field: {onChange, onBlur, value}}) => (
