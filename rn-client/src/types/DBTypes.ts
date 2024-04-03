@@ -170,6 +170,24 @@ type UpdateUser = {
   [key: string]: string | undefined;
 };
 
+type ApplicationApplied = {
+  id: string;
+  companyName: string;
+  position: string;
+  dateApplied: string;
+  matchPercentage: number;
+  testsCompleted: number;
+  totalTests: number;
+};
+
+type ApplicationSaved = {
+  id: string;
+  companyName: string;
+  position: string;
+  dateSaved: string;
+  matchPercentage: number;
+};
+
 export type Job = {
   job_id: number;
   job_address: string;
@@ -210,4 +228,6 @@ export type {
   Swipe,
   Match,
   UpdateUser,
+  ApplicationApplied,
+  ApplicationSaved,
 };

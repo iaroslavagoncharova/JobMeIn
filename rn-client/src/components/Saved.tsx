@@ -1,15 +1,8 @@
 import React from 'react';
 import {View, Text, FlatList, StyleSheet} from 'react-native';
+import {ApplicationSaved} from '../types/DBTypes';
 
-interface JobApplication {
-  id: string;
-  companyName: string;
-  position: string;
-  dateSaved: string;
-  matchPercentage: number;
-}
-
-const savedApplications: JobApplication[] = [
+const savedApplications: ApplicationSaved[] = [
   {
     id: '1',
     companyName: 'Anna Oy',
@@ -20,7 +13,7 @@ const savedApplications: JobApplication[] = [
 ];
 
 const Saved = () => {
-  const renderItem = ({item}: {item: JobApplication}) => (
+  const renderItem = ({item}: {item: ApplicationSaved}) => (
     <View style={styles.itemContainer}>
       <Text style={styles.position}>{item.position}</Text>
       <Text style={styles.date}>{`Saved on ${item.dateSaved}`}</Text>
