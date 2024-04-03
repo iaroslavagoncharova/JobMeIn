@@ -278,10 +278,15 @@ const useExperience = () => {
       },
       body: JSON.stringify(experience),
     };
-    return await fetchData<Experience>(
+    const result = await fetchData<Experience>(
       process.env.EXPO_PUBLIC_AUTH_API + '/profile/experience',
       options,
     );
+    if (result) {
+      Alert.alert('Työkokemus lisätty');
+    } else {
+      Alert.alert('Error adding experience');
+    }
   };
 
   const getExperienceById = async (id: number) => {
