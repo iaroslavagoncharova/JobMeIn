@@ -8,7 +8,7 @@ import {
   Alert,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {Card, Button} from '@rneui/base';
+import {Card, Button, CheckBox} from '@rneui/base';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faEdit, faAdd, faTrash} from '@fortawesome/free-solid-svg-icons';
 import {Controller, useForm} from 'react-hook-form';
@@ -17,6 +17,9 @@ import {
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
+import RNDateTimePicker, {
+  DateTimePickerAndroid,
+} from '@react-native-community/datetimepicker';
 import {Education, EducationInfo} from '../types/DBTypes';
 import {useEducation} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
@@ -24,6 +27,10 @@ import useUpdateContext from '../hooks/updateHooks';
 export default function Edu({education}: {education: Education[]}) {
   const [eduEditing, setEduEditing] = useState<number | null>(null);
   const [eduPosting, setEduPosting] = useState<boolean>(false);
+  const [graduation, setGraduation] = useState<Date | null>(null);
+  const [includeGraduationDate, setIncludeGraduationDate] =
+    useState<boolean>(true);
+  const [open, setOpen] = useState<boolean>(false);
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const {putEducation, postEducation, deleteEducation} = useEducation();
   const {update, setUpdate} = useUpdateContext();
@@ -31,7 +38,7 @@ export default function Edu({education}: {education: Education[]}) {
     school: '',
     degree: '',
     field: '',
-    graduation: '',
+    graduation,
   };
   const {
     control,
@@ -42,6 +49,10 @@ export default function Edu({education}: {education: Education[]}) {
 
   const resetForm = () => {
     reset(values);
+  };
+
+  const showMode = () => {
+    setOpen(true);
   };
 
   const edit = async (inputs: EducationInfo) => {
@@ -56,16 +67,23 @@ export default function Edu({education}: {education: Education[]}) {
 
   const handlePost = async (inputs: EducationInfo) => {
     console.log(inputs);
-    if (!inputs.school || !inputs.degree) {
-      inputs.school = null;
-      inputs.degree = null;
+    if (!inputs.field || inputs.field === '') {
+      inputs.field = null;
     }
+    if (!includeGraduationDate) {
+      inputs.graduation = null; // Set graduation date to null if not included
+    } else {
+      // Change graduation date to be in format yyyy-mm-dd
+      inputs.graduation = graduation
+        ? graduation.toISOString().split('T')[0]
+        : null;
+    }
+    console.log('inputs', inputs);
     await postEducation(inputs);
     setUpdate((prevState) => !prevState);
     resetForm();
     setEduPosting(false);
   };
-
   const handleDelete = async (id: number) => {
     Alert.alert('Poista koulutus', 'Haluatko varmasti poistaa koulutuksen?', [
       {
@@ -231,25 +249,6 @@ export default function Edu({education}: {education: Education[]}) {
                 name="field"
                 control={control}
               />
-              <Controller
-                render={({field: {onChange, onBlur, value}}) => (
-                  <TextInput
-                    style={styles.input}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value as string}
-                    placeholder={
-                      eduEditing === null
-                        ? 'Valmistumispäivä'
-                        : new Date(edu.graduation).toLocaleDateString(
-                            'fi-FI',
-                          ) ?? 'Valmistumispäivä'
-                    }
-                  />
-                )}
-                name="graduation"
-                control={control}
-              />
               <Button
                 title="Tallenna"
                 onPress={handleSubmit(edit)}
@@ -310,19 +309,31 @@ export default function Edu({education}: {education: Education[]}) {
             name="field"
             control={control}
           />
-          <Controller
-            render={({field: {onChange, onBlur, value}}) => (
-              <TextInput
-                style={styles.input}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value as string}
-                placeholder="Valmistumispäivä"
-              />
-            )}
-            name="graduation"
-            control={control}
+          <Button
+            title="Valitse valmistumispäivä"
+            onPress={showMode}
+            buttonStyle={styles.saveButton}
           />
+          <CheckBox
+            checked={includeGraduationDate}
+            onPress={() => setIncludeGraduationDate(!includeGraduationDate)}
+            title="Sisällytä valmistumispäivä"
+          />
+          {open && (
+            <RNDateTimePicker
+              mode="date"
+              display="calendar"
+              onChange={(event, selectedDate) => {
+                const currentDate = selectedDate ?? graduation;
+                setOpen(false);
+                setGraduation(currentDate);
+              }}
+              value={graduation ? graduation : new Date()}
+              maximumDate={new Date()}
+              positiveButton={{label: 'Valitse', textColor: '#5d71c9'}}
+              negativeButton={{label: 'Peruuta', textColor: '#5d71c9'}}
+            />
+          )}
           <Button
             title="Lisää"
             onPress={handleSubmit(handlePost)}

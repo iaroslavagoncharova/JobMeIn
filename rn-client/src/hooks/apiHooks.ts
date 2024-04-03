@@ -35,7 +35,6 @@ const useUser = () => {
         Authorization: 'Bearer ' + token,
       },
     };
-    console.log(options);
     const result = await fetchData<UserResponse>(
       process.env.EXPO_PUBLIC_AUTH_API + '/users/token',
       options,
@@ -164,19 +163,28 @@ const useEducation = () => {
   }, [update]);
 
   const postEducation = async (education: EducationInfo) => {
-    const token = await AsyncStorage.getItem('token');
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
-      },
-      body: JSON.stringify(education),
-    };
-    return await fetchData<Education>(
-      process.env.EXPO_PUBLIC_AUTH_API + '/profile/education',
-      options,
-    );
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        },
+        body: JSON.stringify(education),
+      };
+      console.log(options);
+      const result = await fetchData<Education>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/profile/education',
+        options,
+      );
+      if (result) {
+        Alert.alert('Koulutus lisätty');
+      }
+    } catch (e) {
+      console.error('Error adding education', e);
+      Alert.alert('Error adding education');
+    }
   };
   const getEducationById = async (id: number) => {
     return await fetchData<Education>(
@@ -243,7 +251,6 @@ const useExperience = () => {
         process.env.EXPO_PUBLIC_AUTH_API + '/profile/experience',
         options,
       );
-      console.log(result);
       setExperience(result);
     } catch (e) {
       if ((e as Error).message === 'No experience found') {
@@ -321,7 +328,21 @@ const useExperience = () => {
 
 const useSkills = () => {
   const [skills, setSkills] = useState<Skill[]>([]);
+  const [allSkills, setAllSkills] = useState<Skill[]>([]);
   const {update} = useUpdateContext();
+  const getAllSkills = async () => {
+    const result = await fetchData<Skill[]>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/profile/skills',
+    );
+    if (result) {
+      setAllSkills(result);
+    }
+  };
+
+  useEffect(() => {
+    getAllSkills();
+  }, []);
+
   const getSkills = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
@@ -331,7 +352,7 @@ const useSkills = () => {
         },
       };
       const result = await fetchData<Skill[]>(
-        process.env.EXPO_PUBLIC_AUTH_API + '/profile/skills',
+        process.env.EXPO_PUBLIC_AUTH_API + '/profile/skills/user',
         options,
       );
       if (result) {
@@ -371,6 +392,34 @@ const useSkills = () => {
     }
   };
 
+  const postSkill = async (skill: Skill) => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        },
+        body: JSON.stringify(skill),
+      };
+      const result = await fetchData<Skill>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/profile/skills/' + skill.skill_id,
+        options,
+      );
+      if (result) {
+        Alert.alert('Taito lisätty');
+      }
+    } catch (e) {
+      if ((e as Error).message === 'Skill not added or already exists') {
+        Alert.alert('Taito on jo lisätty');
+      } else {
+        console.error('Error adding skill', e);
+        Alert.alert('Error adding skill');
+      }
+    }
+  };
+
   const deleteSkill = async (id: number) => {
     const token = await AsyncStorage.getItem('token');
     const options = {
@@ -385,7 +434,15 @@ const useSkills = () => {
     );
   };
 
-  return {getSkills, skills, putSkill, deleteSkill};
+  return {
+    getSkills,
+    skills,
+    putSkill,
+    deleteSkill,
+    allSkills,
+    getAllSkills,
+    postSkill,
+  };
 };
 
 const useJobs = () => {
@@ -408,7 +465,6 @@ const useJobs = () => {
       return;
     }
     setJobs(result);
-    console.log(result);
   };
   useEffect(() => {
     getAllJobs();
@@ -429,7 +485,6 @@ const useSwipe = () => {
       },
       body: JSON.stringify(swipe),
     };
-    console.log(options);
     return await fetchData<Swipe>(
       process.env.EXPO_PUBLIC_AUTH_API + '/swipes',
       options,

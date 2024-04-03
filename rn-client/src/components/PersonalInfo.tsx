@@ -29,7 +29,6 @@ export default function PersonalInfo({user}: {user: User}) {
     address: user.address,
     about_me: user.about_me,
   };
-  console.log(values, 'values');
   const {
     control,
     handleSubmit,

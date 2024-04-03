@@ -41,12 +41,9 @@ const Profile = () => {
   const {deleteUser} = useUser();
   const {getEducation, education} = useEducation();
   const {getExperience, experience} = useExperience();
-  const {getSkills, skills} = useSkills();
+  const {getSkills, skills, allSkills, getAllSkills} = useSkills();
   const {update} = useUpdateContext();
   const navigation: NavigationProp<ParamListBase> = useNavigation();
-  console.log(user);
-  console.log(education);
-  console.log(experience);
 
   const logout = async () => {
     const token = await AsyncStorage.getItem('token');
@@ -82,6 +79,7 @@ const Profile = () => {
     getEducation();
     getExperience();
     getSkills();
+    getAllSkills();
   }, [update]);
 
   const styles = StyleSheet.create({
@@ -141,7 +139,7 @@ const Profile = () => {
             <PersonalInfo user={user} />
             <Edu education={education} />
             <ExperiencePage experience={experience} />
-            <Skills skills={skills} />
+            <Skills skills={skills} allSkills={allSkills} />
             <Card containerStyle={styles.card}>
               <Text style={styles.header}>Testit</Text>
             </Card>
