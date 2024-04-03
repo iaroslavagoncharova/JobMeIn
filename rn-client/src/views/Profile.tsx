@@ -25,8 +25,11 @@ import {
 import {useEffect} from 'react';
 import {useUserContext} from '../hooks/ContextHooks';
 import {
+  useChats,
   useEducation,
   useExperience,
+  useMatch,
+  useNotification,
   useSkills,
   useUser,
 } from '../hooks/apiHooks';
@@ -39,6 +42,10 @@ import Skills from '../components/Skills';
 const Profile = () => {
   const {user, handleLogout} = useUserContext();
   const {deleteUser} = useUser();
+  const {notifications} = useNotification();
+  console.log(notifications);
+  const {chats} = useChats();
+  console.log(chats);
   const {getEducation, education} = useEducation();
   const {getExperience, experience} = useExperience();
   const {getSkills, skills, allSkills, getAllSkills} = useSkills();

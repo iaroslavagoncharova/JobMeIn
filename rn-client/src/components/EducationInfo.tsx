@@ -28,7 +28,10 @@ export default function Edu({education}: {education: Education[]}) {
   const [eduEditing, setEduEditing] = useState<number | null>(null);
   const [eduPosting, setEduPosting] = useState<boolean>(false);
   const [graduation, setGraduation] = useState<Date | null>(null);
+  const [editGraduation, setEditGraduation] = useState<Date | null>(null);
   const [includeGraduationDate, setIncludeGraduationDate] =
+    useState<boolean>(true);
+  const [editIncludeGraduationDate, setEditIncludeGraduationDate] =
     useState<boolean>(true);
   const [open, setOpen] = useState<boolean>(false);
   const navigation: NavigationProp<ParamListBase> = useNavigation();
@@ -58,6 +61,14 @@ export default function Edu({education}: {education: Education[]}) {
   const edit = async (inputs: EducationInfo) => {
     console.log(inputs, 'inputs');
     if (eduEditing) {
+      if (!includeGraduationDate) {
+        inputs.graduation = null; // Set graduation date to null if not included
+      } else {
+        // Change graduation date to be in format yyyy-mm-dd
+        inputs.graduation = graduation
+          ? graduation.toISOString().split('T')[0]
+          : null;
+      }
       await putEducation(eduEditing, inputs);
       setEduEditing(null);
       setUpdate((prevState) => !prevState);
@@ -249,6 +260,29 @@ export default function Edu({education}: {education: Education[]}) {
                 name="field"
                 control={control}
               />
+              <Button title="Valitse valmistumispäivä" onPress={showMode} />
+              <CheckBox
+                checked={editIncludeGraduationDate}
+                onPress={() =>
+                  setEditIncludeGraduationDate(!editIncludeGraduationDate)
+                }
+                title="Sisällytä valmistumispäivä"
+              />
+              {open && (
+                <RNDateTimePicker
+                  mode="date"
+                  display="calendar"
+                  onChange={(event, selectedDate) => {
+                    const currentDate = selectedDate ?? editGraduation;
+                    setOpen(false);
+                    setEditGraduation(currentDate);
+                  }}
+                  value={editGraduation ? editGraduation : new Date()}
+                  maximumDate={new Date()}
+                  positiveButton={{label: 'Valitse', textColor: '#5d71c9'}}
+                  negativeButton={{label: 'Peruuta', textColor: '#5d71c9'}}
+                />
+              )}
               <Button
                 title="Tallenna"
                 onPress={handleSubmit(edit)}
