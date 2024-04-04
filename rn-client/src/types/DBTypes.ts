@@ -133,7 +133,10 @@ type Chat = {
 };
 
 type ChatWithMessages = Pick<Chat, 'chat_id'> & {
-  chatting_with: string;
+  chatting_with: {
+    username: string;
+    user_id: number;
+  };
   messages: Omit<MessageWithUser, 'chat_id'>[];
 };
 

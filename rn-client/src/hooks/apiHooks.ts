@@ -589,7 +589,10 @@ const useChats = () => {
         }
         const thisChat = {
           chat_id: chat.chat_id,
-          chatting_with: chattingWith.username.toString(),
+          chatting_with: {
+            username: chattingWith.username.toString(),
+            user_id: chattingWith.user_id,
+          },
         };
 
         const chatWithMessages: ChatWithMessages = {

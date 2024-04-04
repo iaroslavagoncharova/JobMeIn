@@ -13,13 +13,28 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import {Controller, useForm} from 'react-hook-form';
 import {Input} from '@rneui/base';
-import {NavigationProp, ParamListBase} from '@react-navigation/native';
+import {RouteProp} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {ChatWithMessages} from '../types/DBTypes';
 
-const SingleChat = ({
-  navigation,
-}: {
-  navigation: NavigationProp<ParamListBase>;
-}) => {
+type RootStackParamList = {
+  Keskustelu: {chat: ChatWithMessages};
+  Keskustelut: undefined;
+};
+
+type SingleChatRouteProp = RouteProp<RootStackParamList, 'Keskustelu'>;
+type SingleChatNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'Keskustelu'
+>;
+
+type Props = {
+  route: SingleChatRouteProp;
+  navigation: SingleChatNavigationProp;
+};
+
+const SingleChat = ({route, navigation}: Props) => {
+  const {chat} = route.params;
   const {
     control,
     handleSubmit,
@@ -44,21 +59,23 @@ const SingleChat = ({
             size={60}
             style={styles.profilePicture}
           />
-          <Text style={styles.chatParticipant}>Käyttäjä</Text>
+          <Text style={styles.chatParticipant}>
+            {chat.chatting_with.username}
+          </Text>
         </View>
         <ScrollView style={{width: '100%'}}>
-          <View style={styles.theirMessage}>
-            <Text>Hei! Olisiko kiinnostunut tulemaan meille töihin?</Text>
-          </View>
-          <View style={styles.myMessage}>
-            <Text>Kiitos tarjouksesta, mutta en valitettavasti ehdi.</Text>
-          </View>
-          <View style={styles.theirMessage}>
-            <Text>Onko sinulla jotain muuta mielessä?</Text>
-          </View>
-          <View style={styles.myMessage}>
-            <Text>Ei tällä kertaa, mutta kiitos kysymästä.</Text>
-          </View>
+          {chat.messages?.map((message) => (
+            <View
+              key={message.message_id}
+              style={
+                message.user_id === chat.chatting_with.user_id
+                  ? styles.theirMessage
+                  : styles.myMessage
+              }
+            >
+              <Text>{message.message_text}</Text>
+            </View>
+          ))}
         </ScrollView>
         <View style={styles.inputContainer}>
           <Controller

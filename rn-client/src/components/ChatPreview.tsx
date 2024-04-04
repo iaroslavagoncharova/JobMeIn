@@ -15,7 +15,7 @@ export const ChatPreview = ({item, navigation}: ChatPreviewProps) => {
     <TouchableOpacity
       style={styles.chat}
       onPress={() => {
-        navigation.navigate('Keskustelu');
+        navigation.navigate('Keskustelu', {chat: item});
       }}
     >
       <FontAwesomeIcon
@@ -25,7 +25,7 @@ export const ChatPreview = ({item, navigation}: ChatPreviewProps) => {
       />
       <View style={styles.chatInfo}>
         <Text id="name" style={styles.chatParticipant}>
-          {item.chatting_with}
+          {item.chatting_with.username}
         </Text>
         <Text id="msg" style={styles.message}>
           {item.messages[0].message_text}
