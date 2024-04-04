@@ -10,12 +10,10 @@ import {
   Experience,
   ExperienceInfo,
   JobWithSkillsAndKeywords,
-  Match,
   MatchWithUser,
   Notification,
   Skill,
   Swipe,
-  Test,
   UpdateUser,
   User,
 } from '../types/DBTypes';
