@@ -83,6 +83,7 @@ const SingleChat = ({route}: any) => {
     resetForm();
   };
 
+  // testi
   return (
     <View style={styles.container}>
       <View style={styles.chatsContainer}>
