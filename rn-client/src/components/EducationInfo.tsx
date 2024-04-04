@@ -8,7 +8,7 @@ import {
   Alert,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {Card, Button} from '@rneui/base';
+import {Card, Button, CheckBox} from '@rneui/base';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faEdit, faAdd, faTrash} from '@fortawesome/free-solid-svg-icons';
 import {Controller, useForm} from 'react-hook-form';
@@ -17,13 +17,25 @@ import {
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
+import RNDateTimePicker, {
+  DateTimePickerAndroid,
+} from '@react-native-community/datetimepicker';
 import {Education, EducationInfo} from '../types/DBTypes';
 import {useEducation} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
+import EducationPost from './EducationPost';
+import EducationUpdate from './EducationUpdate';
 
 export default function Edu({education}: {education: Education[]}) {
   const [eduEditing, setEduEditing] = useState<number | null>(null);
   const [eduPosting, setEduPosting] = useState<boolean>(false);
+  const [graduation, setGraduation] = useState<Date | null>(null);
+  const [editGraduation, setEditGraduation] = useState<Date | null>(null);
+  const [includeGraduationDate, setIncludeGraduationDate] =
+    useState<boolean>(true);
+  const [editIncludeGraduationDate, setEditIncludeGraduationDate] =
+    useState<boolean>(true);
+  const [open, setOpen] = useState<boolean>(false);
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const {putEducation, postEducation, deleteEducation} = useEducation();
   const {update, setUpdate} = useUpdateContext();
@@ -31,7 +43,7 @@ export default function Edu({education}: {education: Education[]}) {
     school: '',
     degree: '',
     field: '',
-    graduation: '',
+    graduation,
   };
   const {
     control,
@@ -44,26 +56,26 @@ export default function Edu({education}: {education: Education[]}) {
     reset(values);
   };
 
+  const showMode = () => {
+    setOpen(true);
+  };
+
   const edit = async (inputs: EducationInfo) => {
     console.log(inputs, 'inputs');
     if (eduEditing) {
+      if (!includeGraduationDate) {
+        inputs.graduation = null;
+      } else {
+        // Change graduation date to be in format yyyy-mm-dd
+        inputs.graduation = graduation
+          ? graduation.toISOString().split('T')[0]
+          : null;
+      }
       await putEducation(eduEditing, inputs);
       setEduEditing(null);
       setUpdate((prevState) => !prevState);
       resetForm();
     }
-  };
-
-  const handlePost = async (inputs: EducationInfo) => {
-    console.log(inputs);
-    if (!inputs.school || !inputs.degree) {
-      inputs.school = null;
-      inputs.degree = null;
-    }
-    await postEducation(inputs);
-    setUpdate((prevState) => !prevState);
-    resetForm();
-    setEduPosting(false);
   };
 
   const handleDelete = async (id: number) => {
@@ -189,79 +201,13 @@ export default function Edu({education}: {education: Education[]}) {
               </TouchableOpacity>
             </>
           ) : (
-            <>
-              <Controller
-                render={({field: {onChange, onBlur, value}}) => (
-                  <TextInput
-                    style={styles.input}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value ?? ''}
-                    placeholder={eduEditing === null ? 'Koulu' : edu.school}
-                  />
-                )}
-                name="school"
-                control={control}
-              />
-              <Controller
-                render={({field: {onChange, onBlur, value}}) => (
-                  <TextInput
-                    style={styles.input}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value ?? ''}
-                    placeholder={eduEditing === null ? 'Tutkinto' : edu.degree}
-                  />
-                )}
-                name="degree"
-                control={control}
-              />
-              <Controller
-                render={({field: {onChange, onBlur, value}}) => (
-                  <TextInput
-                    style={styles.input}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value ?? ''}
-                    placeholder={
-                      eduEditing === null ? 'Ala' : edu.field ?? 'Ala'
-                    }
-                  />
-                )}
-                name="field"
-                control={control}
-              />
-              <Controller
-                render={({field: {onChange, onBlur, value}}) => (
-                  <TextInput
-                    style={styles.input}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value as string}
-                    placeholder={
-                      eduEditing === null
-                        ? 'Valmistumispäivä'
-                        : new Date(edu.graduation).toLocaleDateString(
-                            'fi-FI',
-                          ) ?? 'Valmistumispäivä'
-                    }
-                  />
-                )}
-                name="graduation"
-                control={control}
-              />
-              <Button
-                title="Tallenna"
-                onPress={handleSubmit(edit)}
-                buttonStyle={styles.saveButton}
-              />
-              <Button
-                title="Peruuta"
-                onPress={() => setEduEditing(null)}
-                buttonStyle={styles.cancelButton}
-                titleStyle={{color: '#5d71c9'}}
-              />
-            </>
+            <EducationUpdate
+              eduEditing={eduEditing}
+              setEduEditing={setEduEditing}
+              edu={edu}
+              includeGraduationDate={includeGraduationDate}
+              setIncludeGraduationDate={setIncludeGraduationDate}
+            />
           )}
         </Card>
       ))}
@@ -270,71 +216,7 @@ export default function Edu({education}: {education: Education[]}) {
           <FontAwesomeIcon icon={faAdd} style={styles.icon} size={30} />
         </TouchableOpacity>
       ) : (
-        <>
-          <Controller
-            render={({field: {onChange, onBlur, value}}) => (
-              <TextInput
-                style={styles.input}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value ?? ''}
-                placeholder="Koulu*"
-              />
-            )}
-            name="school"
-            control={control}
-          />
-          <Controller
-            render={({field: {onChange, onBlur, value}}) => (
-              <TextInput
-                style={styles.input}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value ?? ''}
-                placeholder="Tutkinto*"
-              />
-            )}
-            name="degree"
-            control={control}
-          />
-          <Controller
-            render={({field: {onChange, onBlur, value}}) => (
-              <TextInput
-                style={styles.input}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value ?? ''}
-                placeholder="Ala"
-              />
-            )}
-            name="field"
-            control={control}
-          />
-          <Controller
-            render={({field: {onChange, onBlur, value}}) => (
-              <TextInput
-                style={styles.input}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value as string}
-                placeholder="Valmistumispäivä"
-              />
-            )}
-            name="graduation"
-            control={control}
-          />
-          <Button
-            title="Lisää"
-            onPress={handleSubmit(handlePost)}
-            buttonStyle={styles.saveButton}
-          />
-          <Button
-            title="Peruuta"
-            onPress={() => setEduPosting(false)}
-            buttonStyle={styles.cancelButton}
-            titleStyle={{color: '#5d71c9'}}
-          />
-        </>
+        <EducationPost eduPosting={eduPosting} setEduPosting={setEduPosting} />
       )}
     </Card>
   );

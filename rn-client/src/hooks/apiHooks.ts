@@ -3,11 +3,15 @@ import {useEffect, useState} from 'react';
 import {Alert} from 'react-native';
 import {fetchData} from '../lib/functions';
 import {
+  Attachment,
+  Chat,
   Education,
   EducationInfo,
   Experience,
   ExperienceInfo,
   JobWithSkillsAndKeywords,
+  Match,
+  Notification,
   Skill,
   Swipe,
   Test,
@@ -35,7 +39,6 @@ const useUser = () => {
         Authorization: 'Bearer ' + token,
       },
     };
-    console.log(options);
     const result = await fetchData<UserResponse>(
       process.env.EXPO_PUBLIC_AUTH_API + '/users/token',
       options,
@@ -164,19 +167,28 @@ const useEducation = () => {
   }, [update]);
 
   const postEducation = async (education: EducationInfo) => {
-    const token = await AsyncStorage.getItem('token');
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
-      },
-      body: JSON.stringify(education),
-    };
-    return await fetchData<Education>(
-      process.env.EXPO_PUBLIC_AUTH_API + '/profile/education',
-      options,
-    );
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        },
+        body: JSON.stringify(education),
+      };
+      console.log(options);
+      const result = await fetchData<Education>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/profile/education',
+        options,
+      );
+      if (result) {
+        Alert.alert('Koulutus lisätty');
+      }
+    } catch (e) {
+      console.error('Error adding education', e);
+      Alert.alert('Error adding education');
+    }
   };
   const getEducationById = async (id: number) => {
     return await fetchData<Education>(
@@ -243,7 +255,6 @@ const useExperience = () => {
         process.env.EXPO_PUBLIC_AUTH_API + '/profile/experience',
         options,
       );
-      console.log(result);
       setExperience(result);
     } catch (e) {
       if ((e as Error).message === 'No experience found') {
@@ -268,10 +279,15 @@ const useExperience = () => {
       },
       body: JSON.stringify(experience),
     };
-    return await fetchData<Experience>(
+    const result = await fetchData<Experience>(
       process.env.EXPO_PUBLIC_AUTH_API + '/profile/experience',
       options,
     );
+    if (result) {
+      Alert.alert('Työkokemus lisätty');
+    } else {
+      Alert.alert('Error adding experience');
+    }
   };
 
   const getExperienceById = async (id: number) => {
@@ -281,19 +297,32 @@ const useExperience = () => {
   };
 
   const putExperience = async (id: number, experience: ExperienceInfo) => {
-    const token = await AsyncStorage.getItem('token');
-    const options = {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
-      },
-      body: JSON.stringify(experience),
-    };
-    return await fetchData<Experience>(
-      process.env.EXPO_PUBLIC_AUTH_API + '/profile/experience/' + id,
-      options,
-    );
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const options = {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        },
+        body: JSON.stringify(experience),
+      };
+      const result = await fetchData<Experience>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/profile/experience/' + id,
+        options,
+      );
+      if (result) {
+        Alert.alert('Työkokemus päivitetty');
+      } else {
+        Alert.alert('Error updating experience');
+      }
+    } catch (e) {
+      if ((e as Error).message === 'No fields to update') {
+        Alert.alert('Ei muutoksia');
+        return;
+      }
+      console.error('Error updating experience', e);
+    }
   };
 
   const deleteExperience = async (id: number) => {
@@ -321,7 +350,21 @@ const useExperience = () => {
 
 const useSkills = () => {
   const [skills, setSkills] = useState<Skill[]>([]);
+  const [allSkills, setAllSkills] = useState<Skill[]>([]);
   const {update} = useUpdateContext();
+  const getAllSkills = async () => {
+    const result = await fetchData<Skill[]>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/profile/skills',
+    );
+    if (result) {
+      setAllSkills(result);
+    }
+  };
+
+  useEffect(() => {
+    getAllSkills();
+  }, []);
+
   const getSkills = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
@@ -331,7 +374,7 @@ const useSkills = () => {
         },
       };
       const result = await fetchData<Skill[]>(
-        process.env.EXPO_PUBLIC_AUTH_API + '/profile/skills',
+        process.env.EXPO_PUBLIC_AUTH_API + '/profile/skills/user',
         options,
       );
       if (result) {
@@ -371,6 +414,34 @@ const useSkills = () => {
     }
   };
 
+  const postSkill = async (skill: Skill) => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        },
+        body: JSON.stringify(skill),
+      };
+      const result = await fetchData<Skill>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/profile/skills/' + skill.skill_id,
+        options,
+      );
+      if (result) {
+        Alert.alert('Taito lisätty');
+      }
+    } catch (e) {
+      if ((e as Error).message === 'Skill not added or already exists') {
+        Alert.alert('Taito on jo lisätty');
+      } else {
+        console.error('Error adding skill', e);
+        Alert.alert('Error adding skill');
+      }
+    }
+  };
+
   const deleteSkill = async (id: number) => {
     const token = await AsyncStorage.getItem('token');
     const options = {
@@ -385,7 +456,15 @@ const useSkills = () => {
     );
   };
 
-  return {getSkills, skills, putSkill, deleteSkill};
+  return {
+    getSkills,
+    skills,
+    putSkill,
+    deleteSkill,
+    allSkills,
+    getAllSkills,
+    postSkill,
+  };
 };
 
 const useJobs = () => {
@@ -408,7 +487,6 @@ const useJobs = () => {
       return;
     }
     setJobs(result);
-    console.log(result);
   };
   useEffect(() => {
     getAllJobs();
@@ -417,6 +495,7 @@ const useJobs = () => {
 };
 
 const useSwipe = () => {
+  const {getUserMatches} = useMatch();
   const postSwipe = async (
     swipe: Omit<Swipe, 'swipe_id' | 'swiper_id' | 'created_at'>,
   ) => {
@@ -429,13 +508,124 @@ const useSwipe = () => {
       },
       body: JSON.stringify(swipe),
     };
-    console.log(options);
-    return await fetchData<Swipe>(
+    const result = await fetchData<Swipe>(
       process.env.EXPO_PUBLIC_AUTH_API + '/swipes',
       options,
     );
+    if (result) {
+      getUserMatches();
+      return result;
+    }
   };
   return {postSwipe};
+};
+
+const useNotification = () => {
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const {update} = useUpdateContext();
+  const getUserNotifications = async () => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    const result = await fetchData<Notification[]>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/notifications',
+      options,
+    );
+    if (result) {
+      // for each notification create an alert
+      console.log(result);
+      setNotifications(result);
+      return result;
+    }
+  };
+  useEffect(() => {
+    getUserNotifications();
+  }, [update]);
+  return {getUserNotifications, notifications};
+};
+
+const useMatch = () => {
+  const [matches, setMatches] = useState<Match[]>();
+  const {update} = useUpdateContext();
+  const getUserMatches = async () => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = await fetchData<Match[]>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/matches/user',
+        options,
+      );
+      console.log(result);
+      if (result) {
+        setMatches(result);
+        Alert.alert('Match löytyi! Voit nyt aloittaa keskustelun');
+        return result;
+      }
+    } catch (e) {
+      console.error('Error fetching matches', e);
+    }
+  };
+  useEffect(() => {
+    getUserMatches();
+  }, [update]);
+  return {getUserMatches, matches};
+};
+
+const useChats = () => {
+  const [chats, setChats] = useState<Chat[]>();
+  const getUserChats = async () => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    const result = await fetchData<Chat[]>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/chats/user',
+      options,
+    );
+    console.log('result', result);
+    if (result) {
+      setChats(result);
+      return result;
+    }
+  };
+  useEffect(() => {
+    getUserChats();
+  }, []);
+  return {getUserChats, chats};
+};
+
+const useAttachments = () => {
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const {update} = useUpdateContext();
+  const getUserAttachments = async () => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    const result = await fetchData<Attachment[]>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/profile/attachments',
+      options,
+    );
+    if (result) {
+      setAttachments(result);
+      return result;
+    }
+  };
+  useEffect(() => {
+    getUserAttachments();
+  }, [update]);
+  return {getUserAttachments, attachments};
 };
 
 export {
@@ -446,4 +636,8 @@ export {
   useSkills,
   useJobs,
   useSwipe,
+  useNotification,
+  useMatch,
+  useChats,
+  useAttachments,
 };

@@ -2,7 +2,8 @@ import {Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faAdd, faTrash} from '@fortawesome/free-solid-svg-icons';
-import {Card} from '@rneui/base';
+import {Button, Card} from '@rneui/base';
+import RNPickerSelect from 'react-native-picker-select';
 import {useForm} from 'react-hook-form';
 import {
   NavigationProp,
@@ -13,9 +14,16 @@ import {Skill} from '../types/DBTypes';
 import {useSkills} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
 
-export default function Skills({skills}: {skills: Skill[]}) {
+export default function Skills({
+  skills,
+  allSkills,
+}: {
+  skills: Skill[];
+  allSkills: Skill[];
+}) {
   const [skillAdd, setSkillAdd] = useState<boolean>(false);
-  const {deleteSkill} = useSkills();
+  const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
+  const {deleteSkill, postSkill} = useSkills();
   const {update, setUpdate} = useUpdateContext();
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const values: Omit<Skill, 'skill_id'> = {
@@ -32,7 +40,32 @@ export default function Skills({skills}: {skills: Skill[]}) {
   const resetForm = () => {
     reset(values);
   };
-  const handleAdd = async (inputs: Omit<Skill, 'skill_id'>) => {};
+  const placeholder = {
+    label: 'Valitse taito',
+    value: null,
+    color: '#5d71c9',
+  };
+  const items = allSkills.map((skill) => {
+    return {
+      label: skill.skill_name + ' (' + skill.type + ')',
+      value: skill.skill_name,
+      color: '#5d71c9',
+    };
+  });
+
+  const handleAdd = async () => {
+    const skill = allSkills.find((s) => s.skill_name === selectedSkill);
+    if (skill) {
+      const newSkill = {
+        skill_id: skill.skill_id,
+        skill_name: skill.skill_name,
+        type: skill.type,
+      };
+      postSkill(newSkill);
+      setUpdate((prevState) => !prevState);
+      setSkillAdd(false);
+    }
+  };
   const handleDelete = async (id: number) => {
     Alert.alert('Poista taito', 'Haluatko varmasti poistaa taidon?', [
       {
@@ -110,6 +143,12 @@ export default function Skills({skills}: {skills: Skill[]}) {
       backgroundColor: '#5d71c9',
       borderRadius: 12,
     },
+    pickerInput: {
+      padding: 10,
+      margin: 10,
+      borderRadius: 8,
+      backgroundColor: 'white',
+    },
   });
   return (
     <Card containerStyle={styles.card}>
@@ -141,10 +180,41 @@ export default function Skills({skills}: {skills: Skill[]}) {
           </>
         </Card>
       ))}
-      {skills.length < 5 ? (
-        <TouchableOpacity>
+      {!skillAdd && skills.length < 5 && (
+        <TouchableOpacity onPress={() => setSkillAdd(true)}>
           <FontAwesomeIcon icon={faAdd} style={styles.icon} size={30} />
         </TouchableOpacity>
+      )}
+      {skillAdd ? (
+        <Card containerStyle={styles.card}>
+          <Text style={styles.header}>Lisää taito</Text>
+          <RNPickerSelect
+            items={items}
+            placeholder={placeholder}
+            value={selectedSkill}
+            style={{
+              inputIOS: styles.pickerInput,
+              inputAndroid: styles.pickerInput,
+              placeholder: {
+                color: '#5d71c9',
+              },
+            }}
+            onValueChange={(value) => {
+              setSelectedSkill(value);
+            }}
+          />
+          <Button
+            title="Lisää"
+            onPress={handleSubmit(handleAdd)}
+            buttonStyle={styles.saveButton}
+          />
+          <Button
+            title="Peruuta"
+            titleStyle={{color: '#5d71c9'}}
+            onPress={() => setSkillAdd(false)}
+            buttonStyle={styles.cancelButton}
+          />
+        </Card>
       ) : null}
     </Card>
   );

@@ -1,21 +1,5 @@
-import {
-  Text,
-  View,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  TextInput,
-  Alert,
-} from 'react-native';
-import {Button, Card, ListItem} from '@rneui/base';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {
-  faAdd,
-  faEdit,
-  faMarker,
-  faStopCircle,
-} from '@fortawesome/free-solid-svg-icons';
+import {Text, View, StyleSheet, ScrollView, Alert} from 'react-native';
+import {Button, Card} from '@rneui/base';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   NavigationProp,
@@ -25,8 +9,11 @@ import {
 import {useEffect} from 'react';
 import {useUserContext} from '../hooks/ContextHooks';
 import {
+  useAttachments,
+  useChats,
   useEducation,
   useExperience,
+  useNotification,
   useSkills,
   useUser,
 } from '../hooks/apiHooks';
@@ -35,18 +22,21 @@ import Edu from '../components/EducationInfo';
 import useUpdateContext from '../hooks/updateHooks';
 import ExperiencePage from '../components/ExperienceInfo';
 import Skills from '../components/Skills';
+import Attachments from '../components/Attachments';
 
 const Profile = () => {
   const {user, handleLogout} = useUserContext();
   const {deleteUser} = useUser();
+  const {notifications} = useNotification();
+  console.log(notifications);
+  const {chats} = useChats();
+  console.log(chats);
   const {getEducation, education} = useEducation();
   const {getExperience, experience} = useExperience();
-  const {getSkills, skills} = useSkills();
+  const {getSkills, skills, allSkills, getAllSkills} = useSkills();
+  const {attachments, getUserAttachments} = useAttachments();
   const {update} = useUpdateContext();
   const navigation: NavigationProp<ParamListBase> = useNavigation();
-  console.log(user);
-  console.log(education);
-  console.log(experience);
 
   const logout = async () => {
     const token = await AsyncStorage.getItem('token');
@@ -82,6 +72,8 @@ const Profile = () => {
     getEducation();
     getExperience();
     getSkills();
+    getAllSkills();
+    getUserAttachments();
   }, [update]);
 
   const styles = StyleSheet.create({
@@ -141,10 +133,11 @@ const Profile = () => {
             <PersonalInfo user={user} />
             <Edu education={education} />
             <ExperiencePage experience={experience} />
-            <Skills skills={skills} />
+            <Skills skills={skills} allSkills={allSkills} />
             <Card containerStyle={styles.card}>
               <Text style={styles.header}>Testit</Text>
             </Card>
+            <Attachments attachments={attachments} />
             <Button
               title="Poista profiili"
               onPress={() => {

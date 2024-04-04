@@ -1,26 +1,20 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  TextInput,
-  Alert,
-} from 'react-native';
+import {Text, TouchableOpacity, StyleSheet, Alert} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {Button, Card} from '@rneui/base';
+import {Card} from '@rneui/base';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faAdd, faEdit, faTrash} from '@fortawesome/free-solid-svg-icons';
-import DatePicker from '@react-native-community/datetimepicker';
 import {
   NavigationProp,
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
-import {Controller, useForm} from 'react-hook-form';
+import {useForm} from 'react-hook-form';
 import {Experience, ExperienceInfo} from '../types/DBTypes';
 import useUpdateContext from '../hooks/updateHooks';
 import {useExperience} from '../hooks/apiHooks';
+import ExperiencePost from './ExperiencePost';
+import ExperienceUpdate from './ExperienceUpdate';
 
 export default function ExperiencePage({
   experience,
@@ -31,10 +25,11 @@ export default function ExperiencePage({
   const [expPosting, setExpPosting] = useState<boolean>(false);
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const {update, setUpdate} = useUpdateContext();
-  const [show, setShow] = useState(false);
+  console.log(experience, 'experience');
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const {putExperience, deleteExperience} = useExperience();
+  const [includeEndDate, setIncludeEndDate] = useState<boolean>(false);
+  const {deleteExperience} = useExperience();
   const values: ExperienceInfo = {
     job_title: '',
     job_place: '',
@@ -43,27 +38,6 @@ export default function ExperiencePage({
     start_date: startDate,
     end_date: endDate,
   };
-  const {
-    control,
-    handleSubmit,
-    formState: {errors},
-    reset,
-  } = useForm({defaultValues: values});
-
-  const resetForm = () => {
-    reset(values);
-  };
-
-  const edit = async (inputs: ExperienceInfo) => {
-    console.log(inputs, 'inputs');
-    if (expEditing) {
-      await putExperience(expEditing, inputs);
-      setExpEditing(null);
-      setUpdate((prevState) => !prevState);
-      resetForm();
-    }
-  };
-
   const handleDelete = async (id: number) => {
     Alert.alert('Poistetaanko työkokemus?', '', [
       {
@@ -80,14 +54,6 @@ export default function ExperiencePage({
       },
     ]);
   };
-
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      resetForm();
-    });
-
-    return unsubscribe;
-  }, []);
 
   const styles = StyleSheet.create({
     card: {
@@ -198,66 +164,13 @@ export default function ExperiencePage({
               </TouchableOpacity>
             </>
           ) : (
-            <>
-              <Controller
-                control={control}
-                render={({field: {onChange, onBlur, value}}) => (
-                  <TextInput
-                    style={styles.input}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value ?? ''}
-                    placeholder={
-                      expEditing === null ? 'Työnimike' : exp.job_title
-                    }
-                  />
-                )}
-                name="job_title"
-              />
-              <Controller
-                control={control}
-                render={({field: {onChange, onBlur, value}}) => (
-                  <TextInput
-                    style={styles.input}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value ?? ''}
-                    placeholder={
-                      expEditing === null ? 'Työpaikka' : exp.job_place
-                    }
-                  />
-                )}
-                name="job_place"
-              />
-              <Controller
-                control={control}
-                render={({field: {onChange, onBlur, value}}) => (
-                  <TextInput
-                    style={styles.input}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value ?? ''}
-                    placeholder={
-                      expEditing === null || !exp.description
-                        ? 'Kuvaus'
-                        : exp.description
-                    }
-                  />
-                )}
-                name="description"
-              />
-              <Button
-                title="Tallenna"
-                onPress={handleSubmit(edit)}
-                buttonStyle={styles.saveButton}
-              />
-              <Button
-                title="Peruuta"
-                onPress={() => setExpEditing(null)}
-                buttonStyle={styles.cancelButton}
-                titleStyle={{color: '#5d71c9'}}
-              />
-            </>
+            <ExperienceUpdate
+              expEditing={expEditing}
+              setExpEditing={setExpEditing}
+              exp={exp}
+              includeEndDate={includeEndDate}
+              setIncludeEndDate={setIncludeEndDate}
+            />
           )}
         </Card>
       ))}
@@ -266,106 +179,12 @@ export default function ExperiencePage({
           <FontAwesomeIcon icon={faAdd} style={styles.icon} size={30} />
         </TouchableOpacity>
       ) : (
-        <>
-          <Controller
-            control={control}
-            render={({field: {onChange, onBlur, value}}) => (
-              <TextInput
-                style={styles.input}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value ?? ''}
-                placeholder="Työnimike"
-              />
-            )}
-            name="job_title"
-            rules={{required: 'Työnimike vaaditaan'}}
-          />
-          <Controller
-            control={control}
-            render={({field: {onChange, onBlur, value}}) => (
-              <TextInput
-                style={styles.input}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value ?? ''}
-                placeholder="Työpaikka"
-              />
-            )}
-            name="job_place"
-            rules={{required: 'Työpaikka vaaditaan'}}
-          />
-          <Controller
-            control={control}
-            render={({field: {onChange, onBlur, value}}) => (
-              <TextInput
-                style={styles.input}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value ?? ''}
-                placeholder="Työkaupunki"
-              />
-            )}
-            name="job_city"
-          />
-          <Controller
-            control={control}
-            render={({field: {onChange, onBlur, value}}) => (
-              <TextInput
-                style={styles.input}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value ?? ''}
-                placeholder="Kuvaus"
-              />
-            )}
-            name="description"
-          />
-          <Controller
-            control={control}
-            render={({field: {onChange, onBlur, value}}) => (
-              <DatePicker
-                value={value as Date}
-                mode="date"
-                display="default"
-                onChange={(event, selectedDate) => {
-                  const currentDate = selectedDate || value;
-                  onChange(currentDate);
-                  setStartDate(currentDate);
-                }}
-              />
-            )}
-            name="start_date"
-          />
-          <Controller
-            control={control}
-            render={({field: {onChange, onBlur, value}}) => (
-              <DatePicker
-                value={value as Date}
-                mode="date"
-                display="default"
-                onChange={(event, selectedDate) => {
-                  const currentDate = selectedDate || value;
-                  onChange(currentDate);
-                  setEndDate(currentDate);
-                }}
-              />
-            )}
-            name="end_date"
-          />
-
-          <Button
-            title="Tallenna"
-            onPress={handleSubmit(edit)}
-            buttonStyle={styles.saveButton}
-          />
-          <Button
-            title="Peruuta"
-            onPress={() => setExpPosting(false)}
-            buttonStyle={styles.cancelButton}
-            titleStyle={{color: '#5d71c9'}}
-          />
-        </>
+        <ExperiencePost
+          expPosting={expPosting}
+          setExpPosting={setExpPosting}
+          end_date={endDate}
+          setEndDate={setEndDate}
+        />
       )}
     </Card>
   );
