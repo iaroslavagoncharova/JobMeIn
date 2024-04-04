@@ -55,17 +55,6 @@ export type EducationInfo = {
   graduation?: Date | null | string;
 };
 
-type Attachment = {
-  job_id: number;
-  job_address: string;
-  job_title: string;
-  salary: string;
-  user_id: number;
-  job_description: string;
-  deadline_date: Date | string;
-  field: string;
-};
-
 type Skill = {
   skill_id: number;
   skill_name: string;
@@ -91,6 +80,13 @@ type KeyWord = {
 type KeywordsJob = {
   keyword_id: number;
   job_id: number;
+};
+
+type Attachment = {
+  attachment_id: number;
+  attachment_name: string;
+  user_id: number;
+  link: string;
 };
 
 type Application = {

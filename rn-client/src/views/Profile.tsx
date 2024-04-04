@@ -9,6 +9,7 @@ import {
 import {useEffect} from 'react';
 import {useUserContext} from '../hooks/ContextHooks';
 import {
+  useAttachments,
   useChats,
   useEducation,
   useExperience,
@@ -21,6 +22,7 @@ import Edu from '../components/EducationInfo';
 import useUpdateContext from '../hooks/updateHooks';
 import ExperiencePage from '../components/ExperienceInfo';
 import Skills from '../components/Skills';
+import Attachments from '../components/Attachments';
 
 const Profile = () => {
   const {user, handleLogout} = useUserContext();
@@ -32,6 +34,7 @@ const Profile = () => {
   const {getEducation, education} = useEducation();
   const {getExperience, experience} = useExperience();
   const {getSkills, skills, allSkills, getAllSkills} = useSkills();
+  const {attachments, getUserAttachments} = useAttachments();
   const {update} = useUpdateContext();
   const navigation: NavigationProp<ParamListBase> = useNavigation();
 
@@ -70,6 +73,7 @@ const Profile = () => {
     getExperience();
     getSkills();
     getAllSkills();
+    getUserAttachments();
   }, [update]);
 
   const styles = StyleSheet.create({
@@ -133,9 +137,7 @@ const Profile = () => {
             <Card containerStyle={styles.card}>
               <Text style={styles.header}>Testit</Text>
             </Card>
-            <Card containerStyle={styles.card}>
-              <Text style={styles.header}> Liitteet </Text>
-            </Card>
+            <Attachments attachments={attachments} />
             <Button
               title="Poista profiili"
               onPress={() => {

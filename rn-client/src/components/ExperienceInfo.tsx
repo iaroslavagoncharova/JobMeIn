@@ -1,14 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  TextInput,
-  Alert,
-} from 'react-native';
+import {Text, TouchableOpacity, StyleSheet, Alert} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {Button, Card} from '@rneui/base';
+import {Card} from '@rneui/base';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faAdd, faEdit, faTrash} from '@fortawesome/free-solid-svg-icons';
 import {
@@ -16,7 +9,7 @@ import {
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
-import {Controller, useForm} from 'react-hook-form';
+import {useForm} from 'react-hook-form';
 import {Experience, ExperienceInfo} from '../types/DBTypes';
 import useUpdateContext from '../hooks/updateHooks';
 import {useExperience} from '../hooks/apiHooks';
@@ -35,12 +28,8 @@ export default function ExperiencePage({
   console.log(experience, 'experience');
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const [editStartDate, setEditStartDate] = useState<Date | null>(null);
-  const [editEndDate, setEditEndDate] = useState<Date | null>(null);
   const [includeEndDate, setIncludeEndDate] = useState<boolean>(false);
-  const [editIncludeEndDate, setEditIncludeEndDate] = useState<boolean>(false);
-  const [open, setOpen] = useState<boolean>(false);
-  const {putExperience, deleteExperience, postExperience} = useExperience();
+  const {deleteExperience} = useExperience();
   const values: ExperienceInfo = {
     job_title: '',
     job_place: '',
@@ -49,36 +38,6 @@ export default function ExperiencePage({
     start_date: startDate,
     end_date: endDate,
   };
-  const {
-    control,
-    handleSubmit,
-    formState: {errors},
-    reset,
-  } = useForm({defaultValues: values});
-
-  const resetForm = () => {
-    reset(values);
-  };
-
-  const showMode = () => {
-    setOpen(true);
-  };
-
-  const edit = async (inputs: ExperienceInfo) => {
-    console.log(inputs, 'inputs');
-    if (expEditing) {
-      if (!includeEndDate) {
-        inputs.end_date = null;
-      } else {
-        inputs.end_date = endDate ? endDate.toISOString().split('T')[0] : null;
-      }
-      await putExperience(expEditing, inputs);
-      setExpEditing(null);
-      setUpdate((prevState) => !prevState);
-      resetForm();
-    }
-  };
-
   const handleDelete = async (id: number) => {
     Alert.alert('Poistetaanko työkokemus?', '', [
       {
@@ -95,14 +54,6 @@ export default function ExperiencePage({
       },
     ]);
   };
-
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      resetForm();
-    });
-
-    return unsubscribe;
-  }, []);
 
   const styles = StyleSheet.create({
     card: {
