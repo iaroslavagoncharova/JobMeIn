@@ -17,19 +17,23 @@ export default function ExperienceUpdate({
   expEditing,
   setExpEditing,
   exp,
+  includeEndDate,
+  setIncludeEndDate,
 }: {
   expEditing: number | null;
   setExpEditing: React.Dispatch<React.SetStateAction<number | null>>;
   exp: ExperienceInfo;
+  includeEndDate: boolean;
+  setIncludeEndDate: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const {update, setUpdate} = useUpdateContext();
   const navigation: NavigationProp<ParamListBase> = useNavigation();
-  const [includeEndDate, setIncludeEndDate] = useState<boolean>(false);
   const [openStart, setOpenStart] = useState<boolean>(false);
   const [openEnd, setOpenEnd] = useState<boolean>(false);
   const {putExperience} = useExperience();
+  console.log(exp.start_date, startDate, 'exp.start_date, startDate');
   const values: ExperienceInfo = {
     job_title: '',
     job_place: '',
@@ -60,19 +64,24 @@ export default function ExperienceUpdate({
   };
 
   const edit = async (inputs: ExperienceInfo) => {
-    console.log(inputs, 'inputs');
     if (expEditing) {
       if (!endDate) {
         inputs.end_date = null;
       } else {
         inputs.end_date = endDate ? endDate.toISOString().split('T')[0] : null;
       }
-      inputs.start_date = startDate
-        ? startDate.toISOString().split('T')[0]
-        : null;
-      console.log(inputs, 'inputs');
-      console.log(endDate, inputs.end_date, 'end');
-      await putExperience(expEditing, inputs);
+      // adding one day to startDate to avoid timezone issues
+      startDate?.setDate(startDate.getDate() + 1);
+      console.log(startDate, 'startDate');
+      const data = {
+        job_title: inputs.job_title,
+        job_place: inputs.job_place,
+        description: inputs.description,
+        start_date: startDate?.toISOString().split('T')[0],
+        end_date: endDate?.toISOString().split('T')[0],
+      };
+      console.log(data, 'data');
+      await putExperience(expEditing, data);
       setExpEditing(null);
       setUpdate((prevState) => !prevState);
       resetForm();
@@ -122,11 +131,13 @@ export default function ExperienceUpdate({
       marginBottom: 5,
       fontSize: 14,
       color: '#004AAD',
+      textAlign: 'center',
     },
     boldText: {
       fontSize: 14,
       fontWeight: 'bold',
       color: '#5d71c9',
+      textAlign: 'center',
     },
     cancelButton: {
       margin: 5,
@@ -139,6 +150,13 @@ export default function ExperienceUpdate({
     saveButton: {
       margin: 5,
       backgroundColor: '#5d71c9',
+      borderRadius: 12,
+    },
+    calendarButton: {
+      margin: 5,
+      backgroundColor: '#ffffff',
+      borderColor: '#004AAD',
+      borderWidth: 3,
       borderRadius: 12,
     },
   });
@@ -191,26 +209,28 @@ export default function ExperienceUpdate({
         )}
         name="description"
       />
-      <Text style={styles.boldText}>
-        Työsuhteen alkamispäivä:
+      <Text style={styles.text}>
+        Työsuhteen alkamispäivä:{' '}
         {startDate
-          ? startDate?.toISOString().split('T')[0]
+          ? startDate?.toLocaleString('fi-FI').split(' ')[0]
           : exp.start_date
-            ? new Date(exp.start_date).toISOString().split('T')[0]
-            : ''}
+            ? new Date(exp.start_date).toLocaleString('fi-FI').split(' ')[0]
+            : 'Ei valittu'}
       </Text>
       <Button
         title="Muokkaa työsuhteen alkamispäivää"
+        titleStyle={{color: '#5d71c9', fontSize: 15}}
         onPress={showModeStart}
-        buttonStyle={styles.saveButton}
+        buttonStyle={styles.calendarButton}
       />
       {openStart && (
         <RNDateTimePicker
           mode="date"
           display="default"
           onChange={(event, selectedDate) => {
-            const currentDate = selectedDate ? selectedDate : new Date();
+            const currentDate = selectedDate ? selectedDate : null;
             setOpenStart(false);
+            console.log(currentDate, 'currentDate', exp);
             setStartDate(currentDate);
           }}
           value={exp.start_date ? new Date(exp.start_date) : new Date()}
@@ -219,34 +239,46 @@ export default function ExperienceUpdate({
           negativeButton={{label: 'Peruuta', textColor: '#5d71c9'}}
         />
       )}
-      <Button
-        title="Muokkaa työsuhteen päättymispäivää"
-        onPress={() => showModeEnd()}
-        buttonStyle={styles.saveButton}
+      <CheckBox
+        title="Nykyinen työpaikka"
+        checked={!includeEndDate}
+        onPress={() => setIncludeEndDate(!includeEndDate)}
+        containerStyle={{backgroundColor: '#ffffff', borderWidth: 0}}
+        textStyle={{color: '#5d71c9'}}
       />
-      <Text style={styles.boldText}>
-        Työsuhteen päättymispäivä:{' '}
-        {endDate
-          ? endDate.toISOString().split('T')[0]
-          : exp.end_date
-            ? new Date(exp.end_date).toISOString().split('T')[0]
-            : ''}
-      </Text>
-      {openEnd && (
-        <RNDateTimePicker
-          mode="date"
-          display="default"
-          onChange={(event, selectedDate) => {
-            const currentDate = selectedDate ? selectedDate : null;
-            setOpenEnd(false);
-            setEndDate(currentDate);
-          }}
-          value={exp.end_date ? new Date(exp.end_date) : new Date()}
-          maximumDate={new Date()}
-          positiveButton={{label: 'Valitse', textColor: '#5d71c9'}}
-          negativeButton={{label: 'Peruuta', textColor: '#5d71c9'}}
-        />
-      )}
+      {includeEndDate ? (
+        <>
+          <Button
+            title="Muokkaa työsuhteen päättymispäivää"
+            titleStyle={{color: '#5d71c9', fontSize: 15}}
+            onPress={() => showModeEnd()}
+            buttonStyle={styles.calendarButton}
+          />
+          <Text style={styles.text}>
+            Työsuhteen päättymispäivä:{' '}
+            {endDate
+              ? endDate.toLocaleString('fi-FI').split(' ')[0]
+              : exp.end_date
+                ? new Date(exp.end_date).toLocaleString('fi-FI').split(' ')[0]
+                : 'Ei valittu'}
+          </Text>
+          {openEnd && (
+            <RNDateTimePicker
+              mode="date"
+              display="default"
+              onChange={(event, selectedDate) => {
+                const currentDate = selectedDate ? selectedDate : null;
+                setOpenEnd(false);
+                setEndDate(currentDate);
+              }}
+              value={exp.end_date ? new Date(exp.end_date) : new Date()}
+              maximumDate={new Date()}
+              positiveButton={{label: 'Valitse', textColor: '#5d71c9'}}
+              negativeButton={{label: 'Peruuta', textColor: '#5d71c9'}}
+            />
+          )}
+        </>
+      ) : null}
 
       <Button
         title="Tallenna"

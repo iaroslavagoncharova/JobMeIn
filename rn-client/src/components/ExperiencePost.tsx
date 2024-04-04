@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {TextInput, StyleSheet} from 'react-native';
+import {TextInput, StyleSheet, Alert} from 'react-native';
 import React, {useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {Button} from '@rneui/base';
@@ -12,15 +12,18 @@ import {ExperienceInfo} from '../types/DBTypes';
 export default function ExperiencePost({
   expPosting,
   setExpPosting,
+  end_date,
+  setEndDate,
 }: {
   expPosting: boolean;
   setExpPosting: React.Dispatch<React.SetStateAction<boolean>>;
+  end_date: Date | null;
+  setEndDate: React.Dispatch<React.SetStateAction<Date | null>>;
 }) {
   const {update, setUpdate} = useUpdateContext();
   const [start_date, setStartDate] = useState<Date | null>(null);
-  const [end_date, setEndDate] = useState<Date | null>(null);
-  const [includeEndDate, setIncludeEndDate] = useState<boolean>(false);
   const [openEnd, setOpenEnd] = useState<boolean>(false);
+  const [includeEndDate, setIncludeEndDate] = useState<boolean>(true);
   const [openStart, setOpenStart] = useState<boolean>(false);
   const {postExperience} = useExperience();
   const values: ExperienceInfo = {
@@ -45,6 +48,9 @@ export default function ExperiencePost({
 
   const handlePost = async (inputs: ExperienceInfo) => {
     console.log(inputs, 'inputs');
+    if (!start_date) {
+      return;
+    }
     if (!inputs.job_city || inputs.job_city === '') {
       inputs.job_city = null;
     }
@@ -55,9 +61,6 @@ export default function ExperiencePost({
       inputs.end_date = null;
     } else {
       inputs.end_date = end_date ? end_date.toISOString().split('T')[0] : null;
-    }
-    if (!start_date) {
-      return;
     }
     inputs.start_date = start_date.toISOString().split('T')[0];
     console.log(start_date, 'start_date');
@@ -87,6 +90,13 @@ export default function ExperiencePost({
     saveButton: {
       margin: 5,
       backgroundColor: '#5d71c9',
+      borderRadius: 12,
+    },
+    calendarButton: {
+      margin: 5,
+      backgroundColor: '#ffffff',
+      borderColor: '#004AAD',
+      borderWidth: 3,
       borderRadius: 12,
     },
   });
@@ -149,8 +159,9 @@ export default function ExperiencePost({
       />
       <Button
         title="Valitse työsuhteen alkamispäivä*"
+        titleStyle={{color: '#5d71c9', fontSize: 15}}
         onPress={() => setOpenStart(true)}
-        buttonStyle={styles.saveButton}
+        buttonStyle={styles.calendarButton}
       />
       {openStart && (
         <RNDateTimePicker
@@ -167,13 +178,13 @@ export default function ExperiencePost({
           negativeButton={{label: 'Peruuta', textColor: '#5d71c9'}}
         />
       )}
-      <Text style={{color: '#5d71c9', margin: 5}}>
+      <Text style={{color: '#5d71c9', margin: 5, textAlign: 'center'}}>
         Työsuhteen alkamispäivä:{' '}
-        {start_date ? start_date.toISOString().split('T')[0] : 'Ei valittu'}
+        {start_date ? start_date.toLocaleDateString('fi-FI') : 'Ei valittu'}
       </Text>
       <CheckBox
         title="Nykyinen työpaikka"
-        checked={!includeEndDate}
+        checked={includeEndDate}
         onPress={() => {
           setIncludeEndDate(!includeEndDate);
         }}
@@ -182,8 +193,9 @@ export default function ExperiencePost({
         <>
           <Button
             title="Valitse työsuhteen päättymispäivä"
+            titleStyle={{color: '#5d71c9', fontSize: 15}}
             onPress={() => setOpenEnd(true)}
-            buttonStyle={styles.saveButton}
+            buttonStyle={styles.calendarButton}
           />
           {openEnd && (
             <RNDateTimePicker
@@ -200,9 +212,9 @@ export default function ExperiencePost({
               negativeButton={{label: 'Peruuta', textColor: '#5d71c9'}}
             />
           )}
-          <Text style={{color: '#5d71c9', margin: 5}}>
+          <Text style={{color: '#5d71c9', margin: 5, textAlign: 'center'}}>
             Työsuhteen päättymispäivä:{' '}
-            {end_date ? end_date.toISOString().split('T')[0] : 'Ei valittu'}
+            {end_date ? end_date.toLocaleString('fi-FI') : 'Ei valittu'}
           </Text>
         </>
       ) : null}

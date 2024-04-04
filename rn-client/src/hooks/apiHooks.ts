@@ -296,19 +296,32 @@ const useExperience = () => {
   };
 
   const putExperience = async (id: number, experience: ExperienceInfo) => {
-    const token = await AsyncStorage.getItem('token');
-    const options = {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
-      },
-      body: JSON.stringify(experience),
-    };
-    return await fetchData<Experience>(
-      process.env.EXPO_PUBLIC_AUTH_API + '/profile/experience/' + id,
-      options,
-    );
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const options = {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        },
+        body: JSON.stringify(experience),
+      };
+      const result = await fetchData<Experience>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/profile/experience/' + id,
+        options,
+      );
+      if (result) {
+        Alert.alert('Työkokemus päivitetty');
+      } else {
+        Alert.alert('Error updating experience');
+      }
+    } catch (e) {
+      if ((e as Error).message === 'No fields to update') {
+        Alert.alert('Ei muutoksia');
+        return;
+      }
+      console.error('Error updating experience', e);
+    }
   };
 
   const deleteExperience = async (id: number) => {

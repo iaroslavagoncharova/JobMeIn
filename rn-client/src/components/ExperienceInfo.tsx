@@ -32,6 +32,7 @@ export default function ExperiencePage({
   const [expPosting, setExpPosting] = useState<boolean>(false);
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const {update, setUpdate} = useUpdateContext();
+  console.log(experience, 'experience');
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [editStartDate, setEditStartDate] = useState<Date | null>(null);
@@ -216,6 +217,8 @@ export default function ExperiencePage({
               expEditing={expEditing}
               setExpEditing={setExpEditing}
               exp={exp}
+              includeEndDate={includeEndDate}
+              setIncludeEndDate={setIncludeEndDate}
             />
           )}
         </Card>
@@ -225,7 +228,12 @@ export default function ExperiencePage({
           <FontAwesomeIcon icon={faAdd} style={styles.icon} size={30} />
         </TouchableOpacity>
       ) : (
-        <ExperiencePost expPosting={expPosting} setExpPosting={setExpPosting} />
+        <ExperiencePost
+          expPosting={expPosting}
+          setExpPosting={setExpPosting}
+          end_date={endDate}
+          setEndDate={setEndDate}
+        />
       )}
     </Card>
   );
