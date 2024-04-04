@@ -14,10 +14,12 @@ type User = {
   phone: string;
   about_me: string;
   status: string;
-  user_type: 'Työnhakija' | 'Yritys';
+  user_type: 'candidate' | 'employer';
   link: string;
   field: string;
 };
+
+type UnauthorizedUser = Omit<User, 'password'>;
 
 type Experience = {
   experience_id: number;
@@ -157,6 +159,10 @@ type Match = {
   matched_at: Date | string | null;
 };
 
+type MatchWithUser = Match & {
+  user: UnauthorizedUser;
+};
+
 type UpdateUser = {
   email: string;
   fullname: string;
@@ -232,4 +238,5 @@ export type {
   UpdateUser,
   ApplicationApplied,
   ApplicationSaved,
+  MatchWithUser,
 };

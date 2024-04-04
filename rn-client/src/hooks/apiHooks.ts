@@ -11,6 +11,7 @@ import {
   ExperienceInfo,
   JobWithSkillsAndKeywords,
   Match,
+  MatchWithUser,
   Notification,
   Skill,
   Swipe,
@@ -548,7 +549,7 @@ const useNotification = () => {
 };
 
 const useMatch = () => {
-  const [matches, setMatches] = useState<Match[]>();
+  const [matches, setMatches] = useState<MatchWithUser[]>();
   const {update} = useUpdateContext();
   const getUserMatches = async () => {
     const token = await AsyncStorage.getItem('token');
@@ -558,24 +559,41 @@ const useMatch = () => {
           Authorization: 'Bearer ' + token,
         },
       };
-      const result = await fetchData<Match[]>(
+      const result = await fetchData<MatchWithUser[]>(
         process.env.EXPO_PUBLIC_AUTH_API + '/matches/user',
         options,
       );
       console.log(result);
       if (result) {
         setMatches(result);
-        Alert.alert('Match löytyi! Voit nyt aloittaa keskustelun');
         return result;
       }
     } catch (e) {
-      console.error('Error fetching matches', e);
+      if ((e as Error).message === 'No matches found') {
+        setMatches([]);
+      } else {
+        console.error('Error fetching matches', e);
+      }
     }
   };
   useEffect(() => {
     getUserMatches();
   }, [update]);
-  return {getUserMatches, matches};
+
+  const deleteMatch = async (id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      method: 'DELETE',
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    return await fetchData<MessageResponse>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/matches/' + id,
+      options,
+    );
+  };
+  return {getUserMatches, matches, deleteMatch};
 };
 
 const useChats = () => {
