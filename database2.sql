@@ -223,7 +223,7 @@ INSERT INTO JobTests (job_id, test_id) VALUES (1, 1), (2, 2), (3, 3);
 INSERT INTO UserTests (test_id, user_id, percentage, completed_at) VALUES (1, 1, 85, '2024-03-24'), (3, 1, 70, '2024-03-23');
 INSERT INTO Chats (user1_id, user2_id) VALUES (1, 2), (2, 3);
 INSERT INTO Messages (user_id, chat_id, message_text) VALUES (1, 1, 'Hei, olen maailman paras ohjelmistokehittäjä'), (2, 1, 'Ok, kiva');
-INSERT INTO Swipes (swiper_id, swiped_id, swipe_direction, swipe_type) VALUES (1, 2, 'Right', 'Candidate'), (2, 1, 'Right', 'Job');
+INSERT INTO Swipes (swiper_id, swiped_id, swipe_direction, swipe_type) VALUES (1, 2, 'right', 'candidate'), (2, 1, 'right', 'job');
 INSERT INTO Matches (user1_id, user2_id) VALUES (1, 2);
 INSERT INTO Reports (user_id, reported_item_type, reported_item_id, report_reason) VALUES (2, 'User', 1, 'Kysyi henkilökohtaisia kysymyksiä'), (1, 'Job', 3, 'Marjamyyjä ei voi saada 800 euroa');
 INSERT INTO Animals (animal_name) VALUES ('Leijona'), ('Kissa'), ('Delfiini');
