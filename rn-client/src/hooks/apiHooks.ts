@@ -3,6 +3,7 @@ import {useEffect, useState} from 'react';
 import {Alert} from 'react-native';
 import {fetchData} from '../lib/functions';
 import {
+  Attachment,
   Chat,
   Education,
   EducationInfo,
@@ -602,6 +603,31 @@ const useChats = () => {
   return {getUserChats, chats};
 };
 
+const useAttachments = () => {
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const {update} = useUpdateContext();
+  const getUserAttachments = async () => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    const result = await fetchData<Attachment[]>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/profile/attachments',
+      options,
+    );
+    if (result) {
+      setAttachments(result);
+      return result;
+    }
+  };
+  useEffect(() => {
+    getUserAttachments();
+  }, [update]);
+  return {getUserAttachments, attachments};
+};
+
 export {
   useUser,
   useAuth,
@@ -613,4 +639,5 @@ export {
   useNotification,
   useMatch,
   useChats,
+  useAttachments,
 };
