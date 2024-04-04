@@ -127,12 +127,14 @@ type UserTest = {
 
 type Chat = {
   chat_id: number;
+  user1_id: number;
+  user2_id: number;
   created_at: Date | string;
 };
 
-type UserChat = {
-  user_id: number;
-  chat_id: number;
+type ChatWithMessages = Pick<Chat, 'chat_id'> & {
+  chatting_with: string;
+  messages: Omit<MessageWithUser, 'chat_id'>[];
 };
 
 type Message = {
@@ -140,8 +142,10 @@ type Message = {
   user_id: number;
   chat_id: number;
   message_text: string;
-  sent_at: Date | string | null;
+  sent_at: Date | string;
 };
+
+type MessageWithUser = Message & Pick<User, 'username'>;
 
 type Swipe = {
   swipe_id: number;
@@ -231,7 +235,8 @@ export type {
   JobTest,
   UserTest,
   Chat,
-  UserChat,
+  ChatWithMessages,
+  MessageWithUser,
   Message,
   Swipe,
   Match,
