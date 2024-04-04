@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {View, ActivityIndicator, TouchableOpacity, Alert} from 'react-native';
 // @ts-ignore
 import SwipeCards from 'react-native-swipe-cards';
