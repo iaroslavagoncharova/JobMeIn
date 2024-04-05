@@ -1,5 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {View, ActivityIndicator, TouchableOpacity, Alert} from 'react-native';
+import {
+  View,
+  ActivityIndicator,
+  TouchableOpacity,
+  Alert,
+  StyleSheet,
+} from 'react-native';
 // @ts-ignore
 import SwipeCards from 'react-native-swipe-cards';
 import {useEffect, useState} from 'react';
@@ -11,6 +17,8 @@ import {
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
+import RNPickerSelect from 'react-native-picker-select';
+import {Button} from '@rneui/base';
 import {useUserContext} from '../hooks/ContextHooks';
 import {useJobs, useMatch, useSwipe} from '../hooks/apiHooks';
 import {JobWithSkillsAndKeywords} from '../types/DBTypes';
@@ -19,14 +27,45 @@ import useUpdateContext from '../hooks/updateHooks';
 
 const Feed = () => {
   const {handleAutoLogin} = useUserContext();
-  const {jobs} = useJobs();
+  const {jobs, fields} = useJobs();
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const {update, setUpdate} = useUpdateContext();
+  const [selectedField, setSelectedField] = useState<string>('');
   const {postSwipe} = useSwipe();
   const {matches, deleteMatch} = useMatch();
-  console.log(matches);
   const [loading, setLoading] = useState(false);
   const [swipingEnabled, setSwipingEnabled] = useState(true);
+
+  const placeholder = {
+    label: 'Valitse ala',
+    value: null,
+    color: '#5d71c9',
+  };
+
+  const items = fields.map((field) => ({
+    label: field,
+    value: field,
+    color: '#5d71c9',
+  }));
+
+  const filteredJobs =
+    selectedField === null || selectedField === ''
+      ? jobs
+      : jobs.filter((job) => job.field === selectedField);
+  console.log(selectedField, 'selectedField');
+  console.log(jobs, 'jobs', filteredJobs, 'filteredJobs');
+  const [resetTriggered, setResetTriggered] = useState<boolean>(false);
+
+  const resetFilters = () => {
+    setSelectedField('');
+    setResetTriggered(!resetTriggered);
+  };
+
+  useEffect(() => {
+    if (resetTriggered) {
+      setResetTriggered(false);
+    }
+  }, [resetTriggered]);
 
   // display the match alerts and after a user clicks ok, delete the match
   useEffect(() => {
@@ -112,11 +151,49 @@ const Feed = () => {
     handleLeft(job);
   };
 
+  const styles = StyleSheet.create({
+    pickerInput: {
+      color: '#ffffff',
+      backgroundColor: '#004AAD',
+      padding: 5,
+      marginBottom: 15,
+      width: '70%',
+      alignSelf: 'center',
+      top: 10,
+    },
+    button: {
+      margin: 5,
+      backgroundColor: '#ffffff',
+      borderColor: '#004AAD',
+      borderWidth: 3,
+      borderRadius: 12,
+    },
+  });
+
   return (
-    <View style={{flex: 1, backgroundColor: '#5d71c9'}}>
+    <View style={{flex: 1, backgroundColor: '#5d71c9', alignItems: 'center'}}>
+      <RNPickerSelect
+        placeholder={placeholder}
+        items={items}
+        value={selectedField}
+        onValueChange={(value) => setSelectedField(value)}
+        style={{
+          inputIOS: styles.pickerInput,
+          inputAndroid: styles.pickerInput,
+          placeholder: {
+            color: '#ffffff',
+          },
+        }}
+      />
+      <Button
+        title={'Tyhjennä suodattimet'}
+        titleStyle={{color: '#5d71c9'}}
+        onPress={resetFilters}
+        buttonStyle={styles.button}
+      />
       <SwipeCards
         key={jobs.length}
-        cards={jobs}
+        cards={filteredJobs}
         renderCard={(jobData: JobWithSkillsAndKeywords) => (
           <JobAd job={jobData} />
         )}

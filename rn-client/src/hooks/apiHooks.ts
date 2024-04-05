@@ -468,6 +468,7 @@ const useSkills = () => {
 
 const useJobs = () => {
   const [jobs, setJobs] = useState<JobWithSkillsAndKeywords[]>([]);
+  const [fields, setFields] = useState<string[]>([]);
   const {update} = useUpdateContext();
   const getAllJobs = async () => {
     const token = await AsyncStorage.getItem('token');
@@ -489,8 +490,18 @@ const useJobs = () => {
   };
   useEffect(() => {
     getAllJobs();
+    getFields();
   }, [update]);
-  return {getAllJobs, jobs};
+
+  const getFields = async () => {
+    const result = await fetchData<string[]>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/jobs/fields',
+    );
+    if (result) {
+      setFields(result);
+    }
+  };
+  return {getAllJobs, jobs, getFields, fields};
 };
 
 const useSwipe = () => {

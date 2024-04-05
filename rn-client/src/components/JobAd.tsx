@@ -24,9 +24,9 @@ export default function JobAd({job}: {job: JobWithSkillsAndKeywords}) {
   const styles = StyleSheet.create({
     card: {
       width: 350,
-      height: 500,
-      margin: 50,
-      padding: 20,
+      height: 470,
+      margin: 10,
+      padding: 10,
       borderRadius: 25,
       alignItems: 'center',
       backgroundColor: '#ffffff',
@@ -35,7 +35,7 @@ export default function JobAd({job}: {job: JobWithSkillsAndKeywords}) {
       color: '#5d71c9',
       fontSize: 25,
       fontWeight: 'bold',
-      marginTop: 50,
+      marginTop: 30,
       textAlign: 'center',
       margin: 5,
     },
@@ -98,17 +98,17 @@ export default function JobAd({job}: {job: JobWithSkillsAndKeywords}) {
     buttonRight: {
       color: '#ffffff',
       borderRadius: 25,
-      width: 50,
-      height: 50,
-      top: -10,
+      width: 30,
+      height: 30,
+      bottom: 30,
       left: 70,
     },
     buttonLeft: {
       color: '#ffffff',
       borderRadius: 25,
-      width: 50,
-      height: 50,
-      top: 35,
+      width: 30,
+      height: 30,
+      top: 15,
       right: 60,
     },
   });
@@ -241,36 +241,3 @@ export default function JobAd({job}: {job: JobWithSkillsAndKeywords}) {
     </View>
   );
 }
-// return (
-//   <View
-//     style={{
-//       alignItems: 'center',
-//     }}
-//   >
-//     <Text></Text>
-//     <Card containerStyle={styles.card}>
-//       <Text style={styles.header1}>{job.job_title}</Text>
-//       <Text style={styles.header2}>Yritys: {job.username}</Text>
-//       <Text style={styles.header3}>Sijainti: {job.job_address}</Text>
-//       <Text style={styles.header3}>Palkka: {job.salary}€/kk</Text>
-//       <Text style={styles.percent}>56%</Text>
-//       <Text style={styles.skills}>{job.skills}</Text>
-//       <Text style={styles.keywords}>{job.keywords}</Text>
-//     </Card>
-//     <TouchableOpacity>
-//       <FontAwesomeIcon
-//         icon={faArrowAltCircleRight}
-//         size={45}
-//         style={styles.buttonRight}
-//       />
-//     </TouchableOpacity>
-//     <TouchableOpacity>
-//       <FontAwesomeIcon
-//         icon={faArrowAltCircleLeft}
-//         size={45}
-//         style={styles.buttonLeft}
-//       />
-//     </TouchableOpacity>
-//   </View>
-// );
-// }
