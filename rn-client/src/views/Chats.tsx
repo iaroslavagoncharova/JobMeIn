@@ -12,7 +12,7 @@ const Chats = ({navigation}: {navigation: NavigationProp<ParamListBase>}) => {
       <View style={styles.chatsContainer}>
         <View style={styles.msgIncCount}>
           <Text style={styles.pageHeader}>Messages</Text>
-          <Text style={styles.unread}>3</Text>
+          <Text style={styles.unread}>{chats?.length}</Text>
         </View>
         {chats?.map((chat) => (
           <ChatPreview key={chat.chat_id} item={chat} navigation={navigation} />

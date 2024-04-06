@@ -2,6 +2,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -12,14 +13,15 @@ import {
   faAngleLeft,
 } from '@fortawesome/free-solid-svg-icons';
 import {Controller, useForm} from 'react-hook-form';
-import {Input} from '@rneui/base';
 import {RouteProp} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {ChatWithMessages, PostMessage} from '../types/DBTypes';
+import {useEffect, useRef, useState} from 'react';
+import {ChatWithMessages, PostMessage, PostMessageText} from '../types/DBTypes';
 import {useChats} from '../hooks/apiHooks';
+import useUpdateContext from '../hooks/updateHooks';
 
 type RootStackParamList = {
-  Keskustelu: {chat: ChatWithMessages};
+  Keskustelu: {chat_id: number};
   Keskustelut: undefined;
 };
 
@@ -35,11 +37,10 @@ type Props = {
 };
 
 const SingleChat = ({route, navigation}: Props) => {
-  const {chat} = route.params;
-  const {postMessageToChat} = useChats();
-  const values: PostMessage = {
-    user_id: null,
-    chat_id: chat.chat_id,
+  const chatId = route.params.chat_id;
+  const {update, setUpdate} = useUpdateContext();
+  const {getChatById, thisChat, postMessageToChat} = useChats();
+  const values: PostMessageText = {
     message_text: '',
   };
   const {
@@ -49,9 +50,26 @@ const SingleChat = ({route, navigation}: Props) => {
     reset,
   } = useForm({defaultValues: values});
 
-  const handlePostMessage = async (msgData: PostMessage) => {
-    console.log('message data', msgData);
-    await postMessageToChat(msgData);
+  const resetForm = () => {
+    reset(values);
+  };
+
+  useEffect(() => {
+    getChatById(chatId);
+  }, [update]);
+
+  const scrollViewRef = useRef<ScrollView>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  const edit = async (inputs: PostMessageText) => {
+    console.log(inputs, 'inputs');
+    const data = {
+      chat_id: chatId,
+      message_text: inputs.message_text,
+    };
+    await postMessageToChat(data);
+    setUpdate((prevState) => !prevState);
+    resetForm();
   };
 
   return (
@@ -66,30 +84,41 @@ const SingleChat = ({route, navigation}: Props) => {
             <FontAwesomeIcon icon={faAngleLeft} size={30} color={'#004aad'} />
           </TouchableOpacity>
         </View>
-        <View style={styles.chattingWith}>
-          <FontAwesomeIcon
-            icon={faCircleUser}
-            size={60}
-            style={styles.profilePicture}
-          />
-          <Text style={styles.chatParticipant}>
-            {chat.chatting_with.username}
-          </Text>
-        </View>
-        <ScrollView style={{width: '100%'}}>
-          {chat.messages?.map((message) => (
-            <View
-              key={message.message_id}
-              style={
-                message.user_id === chat.chatting_with.user_id
-                  ? styles.theirMessage
-                  : styles.myMessage
-              }
-            >
-              <Text>{message.message_text}</Text>
+        {thisChat && (
+          <>
+            <View style={styles.chattingWith}>
+              <FontAwesomeIcon
+                icon={faCircleUser}
+                size={60}
+                style={styles.profilePicture}
+              />
+              <Text style={styles.chatParticipant}>
+                {thisChat.chatting_with.username}
+              </Text>
             </View>
-          ))}
-        </ScrollView>
+            <ScrollView
+              style={styles.msgContainer}
+              ref={scrollViewRef}
+              onContentSizeChange={() =>
+                isLoaded && scrollViewRef.current?.scrollToEnd({animated: true})
+              }
+              onLayout={() => setIsLoaded(true)}
+            >
+              {thisChat.messages?.map((message) => (
+                <View
+                  key={message.message_id}
+                  style={
+                    message.user_id === thisChat.chatting_with.user_id
+                      ? styles.theirMessage
+                      : styles.myMessage
+                  }
+                >
+                  <Text>{message.message_text}</Text>
+                </View>
+              ))}
+            </ScrollView>
+          </>
+        )}
         <View style={styles.inputContainer}>
           <Controller
             control={control}
@@ -97,25 +126,26 @@ const SingleChat = ({route, navigation}: Props) => {
               required: {value: true, message: 'is required'},
             }}
             render={({field: {onChange, onBlur, value}}) => (
-              <Input
-                style={{backgroundColor: '#f4f4f4', borderRadius: 5}}
+              <TextInput
+                style={{
+                  backgroundColor: '#f4f4f4',
+                  borderRadius: 5,
+                  width: '90%',
+                }}
                 placeholder="Kirjoita jotain..."
                 onBlur={onBlur}
                 onChangeText={onChange}
-                value={value}
+                value={value ?? ''}
                 autoCapitalize="none"
               />
             )}
             name="message_text"
           />
-          <TouchableOpacity
-            onPress={() => {
-              handlePostMessage();
-            }}
-          >
+          <TouchableOpacity onPress={handleSubmit(edit)}>
             <FontAwesomeIcon
+              style={{marginLeft: 10}}
               icon={faCircleChevronRight}
-              size={40}
+              size={30}
               color={'#004aad'}
             />
           </TouchableOpacity>
@@ -136,7 +166,7 @@ const styles = StyleSheet.create({
     flex: 1,
     position: 'relative',
     width: 350,
-    height: 700,
+    height: 750,
     marginVertical: 50,
     marginHorizontal: 20,
     borderRadius: 20,
@@ -149,10 +179,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 20,
     paddingBottom: 10,
+    position: 'relative',
+    top: 0,
   },
   chattingWith: {
     flexDirection: 'row',
-    marginBottom: 20,
+    marginBottom: 0,
+    paddingBottom: 0,
+    position: 'relative',
+    top: 0,
   },
   profilePicture: {
     margin: 20,
@@ -165,6 +200,15 @@ const styles = StyleSheet.create({
     color: '#004aad',
     textAlignVertical: 'center',
   },
+  msgContainer: {
+    width: '90%',
+    height: 270,
+    position: 'relative',
+    marginHorizontal: '5%',
+    padding: 10,
+    marginBottom: 10,
+    backgroundColor: '#f4f4f4',
+  },
   theirMessage: {
     flexDirection: 'row',
     alignSelf: 'flex-start',
@@ -176,25 +220,30 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 5,
     borderBottomLeftRadius: 5,
     padding: 10,
+    backgroundColor: '#ffffff',
   },
   myMessage: {
     flexDirection: 'row',
     alignSelf: 'flex-end',
     marginRight: 10,
     marginBottom: 10,
-    borderWidth: 1,
+    borderWidth: 0,
     maxWidth: 300,
     borderTopLeftRadius: 5,
     borderBottomRightRadius: 5,
     borderBottomLeftRadius: 5,
     padding: 10,
-    backgroundColor: '#f4f4f4',
+    backgroundColor: '#5d71c9',
+    color: '#ffffff',
   },
   inputContainer: {
     backgroundColor: '#ffffff',
-    width: 280,
-    position: 'absolute',
-    bottom: 0,
+    width: '90%',
+    marginHorizontal: 'auto',
+    paddingTop: 15,
+    position: 'relative',
+    bottom: 10,
+    left: 15,
     flexDirection: 'row',
     alignContent: 'flex-end',
   },

@@ -19,6 +19,7 @@ import {
   Swipe,
   UpdateUser,
   User,
+  Attachment,
 } from '../types/DBTypes';
 import {Values} from '../types/LocalTypes';
 import {
@@ -453,6 +454,7 @@ const useSkills = () => {
 
 const useJobs = () => {
   const [jobs, setJobs] = useState<JobWithSkillsAndKeywords[]>([]);
+  const [fields, setFields] = useState<string[]>([]);
   const {update} = useUpdateContext();
   const getAllJobs = async () => {
     const token = await AsyncStorage.getItem('token');
@@ -474,9 +476,18 @@ const useJobs = () => {
   };
   useEffect(() => {
     getAllJobs();
+    getFields();
   }, [update]);
 
-  return {getAllJobs, jobs};
+  const getFields = async () => {
+    const result = await fetchData<string[]>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/jobs/fields',
+    );
+    if (result) {
+      setFields(result);
+    }
+  };
+  return {getAllJobs, jobs, getFields, fields};
 };
 
 const useSwipe = () => {
@@ -533,7 +544,7 @@ const useNotification = () => {
 };
 
 const useMatch = () => {
-  const [matches, setMatches] = useState<Match[]>();
+  const [matches, setMatches] = useState<MatchWithUser[]>();
   const {update} = useUpdateContext();
   const getUserMatches = async () => {
     const token = await AsyncStorage.getItem('token');
@@ -543,7 +554,7 @@ const useMatch = () => {
           Authorization: 'Bearer ' + token,
         },
       };
-      const result = await fetchData<Match[]>(
+      const result = await fetchData<MatchWithUser[]>(
         process.env.EXPO_PUBLIC_AUTH_API + '/matches/user',
         options,
       );
@@ -553,18 +564,36 @@ const useMatch = () => {
         return result;
       }
     } catch (e) {
-      console.error('Error fetching matches', e);
+      if ((e as Error).message === 'No matches found') {
+        setMatches([]);
+      } else {
+        console.error('Error fetching matches', e);
+      }
     }
   };
   useEffect(() => {
     getUserMatches();
   }, [update]);
 
-  return {getUserMatches, matches};
+  const deleteMatch = async (id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      method: 'DELETE',
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    return await fetchData<MessageResponse>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/matches/' + id,
+      options,
+    );
+  };
+  return {getUserMatches, matches, deleteMatch};
 };
 
 const useChats = () => {
   const [chats, setChats] = useState<ChatWithMessages[]>();
+  const [thisChat, setThisChat] = useState<ChatWithMessages>();
   const [chatMessages, setChatMessages] = useState<MessageWithUser[]>();
 
   const getUserChats = async () => {
@@ -614,6 +643,47 @@ const useChats = () => {
     }
   };
 
+  const getChatById = async (chatId: number) => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    const result = await fetchData<Chat>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/chats/' + chatId,
+      options,
+    );
+
+    if (result) {
+      const chattingWith = await getOtherUserFromChat(chatId);
+      if (!chattingWith) {
+        return null;
+      }
+      const thisChat = {
+        chat_id: chatId,
+        chatting_with: {
+          username: chattingWith.username.toString(),
+          user_id: chattingWith.user_id,
+        },
+      };
+
+      const chatWithMessages: ChatWithMessages = {
+        ...thisChat,
+        messages: [],
+      };
+      const msgs = await getMessagesFromChat(chatId);
+      if (msgs) {
+        for (const msg of msgs) {
+          const {chat_id, ...msgNoChatId} = msg;
+          chatWithMessages.messages.push(msgNoChatId);
+        }
+      }
+      setThisChat(chatWithMessages);
+      return result;
+    }
+  };
+
   const getMessagesFromChat = async (chatId: number) => {
     const token = await AsyncStorage.getItem('token');
     const options = {
@@ -655,6 +725,7 @@ const useChats = () => {
 
   const postMessageToChat = async (message: PostMessage) => {
     const token = await AsyncStorage.getItem('token');
+    console.log('postMessageToChat', message);
     const options = {
       method: 'POST',
       headers: {
@@ -671,6 +742,7 @@ const useChats = () => {
       options,
     );
     if (result) {
+      getUserChats();
       return result;
     }
   };
@@ -679,7 +751,40 @@ const useChats = () => {
     getUserChats();
   }, []);
 
-  return {getUserChats, chats, postMessageToChat};
+  return {
+    getUserChats,
+    getChatById,
+    getOtherUserFromChat,
+    getMessagesFromChat,
+    chats,
+    thisChat,
+    postMessageToChat,
+  };
+};
+
+const useAttachments = () => {
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const {update} = useUpdateContext();
+  const getUserAttachments = async () => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    const result = await fetchData<Attachment[]>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/profile/attachments',
+      options,
+    );
+    if (result) {
+      setAttachments(result);
+      return result;
+    }
+  };
+  useEffect(() => {
+    getUserAttachments();
+  }, [update]);
+  return {getUserAttachments, attachments};
 };
 
 export {
@@ -693,4 +798,5 @@ export {
   useNotification,
   useMatch,
   useChats,
+  useAttachments,
 };

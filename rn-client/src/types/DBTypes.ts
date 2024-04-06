@@ -149,8 +149,11 @@ type Message = {
 };
 
 type PostMessage = {
-  user_id: number | null;
   chat_id: number;
+  message_text: string;
+};
+
+type PostMessageText = {
   message_text: string;
 };
 
@@ -248,6 +251,7 @@ export type {
   MessageWithUser,
   Message,
   PostMessage,
+  PostMessageText,
   Swipe,
   Match,
   UpdateUser,
