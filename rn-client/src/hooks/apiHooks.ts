@@ -14,6 +14,7 @@ import {
   Match,
   MessageWithUser,
   Notification,
+  PostMessage,
   Skill,
   Swipe,
   UpdateUser,
@@ -652,11 +653,33 @@ const useChats = () => {
     }
   };
 
+  const postMessageToChat = async (message: PostMessage) => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify(message),
+    };
+    const result = await fetchData<MessageWithUser>(
+      process.env.EXPO_PUBLIC_AUTH_API +
+        '/chats/' +
+        message.chat_id +
+        '/messages',
+      options,
+    );
+    if (result) {
+      return result;
+    }
+  };
+
   useEffect(() => {
     getUserChats();
   }, []);
 
-  return {getUserChats, chats};
+  return {getUserChats, chats, postMessageToChat};
 };
 
 export {

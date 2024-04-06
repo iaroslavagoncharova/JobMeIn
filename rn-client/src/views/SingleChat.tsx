@@ -15,7 +15,8 @@ import {Controller, useForm} from 'react-hook-form';
 import {Input} from '@rneui/base';
 import {RouteProp} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {ChatWithMessages} from '../types/DBTypes';
+import {ChatWithMessages, PostMessage} from '../types/DBTypes';
+import {useChats} from '../hooks/apiHooks';
 
 type RootStackParamList = {
   Keskustelu: {chat: ChatWithMessages};
@@ -35,11 +36,23 @@ type Props = {
 
 const SingleChat = ({route, navigation}: Props) => {
   const {chat} = route.params;
+  const {postMessageToChat} = useChats();
+  const values: PostMessage = {
+    user_id: null,
+    chat_id: chat.chat_id,
+    message_text: '',
+  };
   const {
     control,
     handleSubmit,
     formState: {errors},
-  } = useForm();
+    reset,
+  } = useForm({defaultValues: values});
+
+  const handlePostMessage = async (msgData: PostMessage) => {
+    console.log('message data', msgData);
+    await postMessageToChat(msgData);
+  };
 
   return (
     <View style={styles.container}>
@@ -93,9 +106,13 @@ const SingleChat = ({route, navigation}: Props) => {
                 autoCapitalize="none"
               />
             )}
-            name="username"
+            name="message_text"
           />
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              handlePostMessage();
+            }}
+          >
             <FontAwesomeIcon
               icon={faCircleChevronRight}
               size={40}

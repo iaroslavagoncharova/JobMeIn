@@ -148,6 +148,12 @@ type Message = {
   sent_at: Date | string;
 };
 
+type PostMessage = {
+  user_id: number | null;
+  chat_id: number;
+  message_text: string;
+};
+
 type MessageWithUser = Message & Pick<User, 'username'>;
 
 type Swipe = {
@@ -241,6 +247,7 @@ export type {
   ChatWithMessages,
   MessageWithUser,
   Message,
+  PostMessage,
   Swipe,
   Match,
   UpdateUser,
