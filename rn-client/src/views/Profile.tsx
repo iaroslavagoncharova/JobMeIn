@@ -13,7 +13,6 @@ import {
   useChats,
   useEducation,
   useExperience,
-  useNotification,
   useSkills,
   useUser,
 } from '../hooks/apiHooks';
@@ -27,8 +26,6 @@ import Attachments from '../components/Attachments';
 const Profile = () => {
   const {user, handleLogout} = useUserContext();
   const {deleteUser} = useUser();
-  const {notifications} = useNotification();
-  console.log(notifications);
   const {chats} = useChats();
   console.log(chats);
   const {getEducation, education} = useEducation();

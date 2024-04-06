@@ -13,7 +13,6 @@ import {
   MatchWithUser,
   Match,
   MessageWithUser,
-  Notification,
   PostMessage,
   Skill,
   Swipe,
@@ -516,33 +515,6 @@ const useSwipe = () => {
   return {postSwipe};
 };
 
-const useNotification = () => {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  const {update} = useUpdateContext();
-  const getUserNotifications = async () => {
-    const token = await AsyncStorage.getItem('token');
-    const options = {
-      headers: {
-        Authorization: 'Bearer ' + token,
-      },
-    };
-    const result = await fetchData<Notification[]>(
-      process.env.EXPO_PUBLIC_AUTH_API + '/notifications',
-      options,
-    );
-    if (result) {
-      // for each notification create an alert
-      console.log(result);
-      setNotifications(result);
-      return result;
-    }
-  };
-  useEffect(() => {
-    getUserNotifications();
-  }, [update]);
-  return {getUserNotifications, notifications};
-};
-
 const useMatch = () => {
   const [matches, setMatches] = useState<MatchWithUser[]>();
   const {update} = useUpdateContext();
@@ -796,7 +768,6 @@ export {
   useSkills,
   useJobs,
   useSwipe,
-  useNotification,
   useMatch,
   useChats,
   useAttachments,
