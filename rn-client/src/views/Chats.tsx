@@ -2,75 +2,21 @@ import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faCircleUser} from '@fortawesome/free-solid-svg-icons';
 import {NavigationProp, ParamListBase} from '@react-navigation/native';
+import {useChats} from '../hooks/apiHooks';
+import {ChatPreview} from '../components/ChatPreview';
 
 const Chats = ({navigation}: {navigation: NavigationProp<ParamListBase>}) => {
+  const {chats} = useChats();
   return (
     <View style={styles.container}>
       <View style={styles.chatsContainer}>
         <View style={styles.msgIncCount}>
           <Text style={styles.pageHeader}>Messages</Text>
-          <Text style={styles.unread}>3</Text>
+          <Text style={styles.unread}>{chats?.length}</Text>
         </View>
-        <TouchableOpacity
-          style={styles.chat}
-          onPress={() => {
-            navigation.navigate('Keskustelu');
-          }}
-        >
-          <FontAwesomeIcon
-            icon={faCircleUser}
-            size={70}
-            style={styles.profilePicture}
-          />
-          <View style={styles.chatInfo}>
-            <Text id="name" style={styles.chatParticipant}>
-              Käyttäjä
-            </Text>
-            <Text id="msg" style={styles.message}>
-              Hei! Olisiko kiinnostunut...
-            </Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.chat}
-          onPress={() => {
-            navigation.navigate('Keskustelu');
-          }}
-        >
-          <FontAwesomeIcon
-            icon={faCircleUser}
-            size={70}
-            style={styles.profilePicture}
-          />
-          <View style={styles.chatInfo}>
-            <Text id="name" style={styles.chatParticipant}>
-              Käyttäjä
-            </Text>
-            <Text id="msg" style={styles.message}>
-              Hei! Olisiko kiinnostunut...
-            </Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.chat}
-          onPress={() => {
-            navigation.navigate('Keskustelu');
-          }}
-        >
-          <FontAwesomeIcon
-            icon={faCircleUser}
-            size={70}
-            style={styles.profilePicture}
-          />
-          <View style={styles.chatInfo}>
-            <Text id="name" style={styles.chatParticipant}>
-              Käyttäjä
-            </Text>
-            <Text id="msg" style={styles.message}>
-              Hei! Olisiko kiinnostunut...
-            </Text>
-          </View>
-        </TouchableOpacity>
+        {chats?.map((chat) => (
+          <ChatPreview key={chat.chat_id} item={chat} navigation={navigation} />
+        ))}
       </View>
     </View>
   );
@@ -117,36 +63,6 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     borderRadius: 50,
     padding: 5,
-  },
-  chat: {
-    flexDirection: 'row',
-    marginHorizontal: 20,
-    width: 310,
-    marginTop: 10,
-    borderColor: '#004aad',
-    borderWidth: 1,
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
-  profilePicture: {
-    margin: 10,
-    color: '#004aad',
-  },
-  chatInfo: {
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-    backgroundColor: '#ffffff',
-  },
-  chatParticipant: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginLeft: 10,
-  },
-  message: {
-    fontSize: 15,
-    marginLeft: 10,
-    marginTop: 5,
   },
 });
 

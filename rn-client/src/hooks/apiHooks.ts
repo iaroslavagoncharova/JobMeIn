@@ -3,19 +3,23 @@ import {useEffect, useState} from 'react';
 import {Alert} from 'react-native';
 import {fetchData} from '../lib/functions';
 import {
-  Attachment,
   Chat,
+  ChatWithMessages,
   Education,
   EducationInfo,
   Experience,
   ExperienceInfo,
   JobWithSkillsAndKeywords,
   MatchWithUser,
+  Match,
+  MessageWithUser,
   Notification,
+  PostMessage,
   Skill,
   Swipe,
   UpdateUser,
   User,
+  Attachment,
 } from '../types/DBTypes';
 import {Values} from '../types/LocalTypes';
 import {
@@ -278,15 +282,10 @@ const useExperience = () => {
       },
       body: JSON.stringify(experience),
     };
-    const result = await fetchData<Experience>(
+    return await fetchData<Experience>(
       process.env.EXPO_PUBLIC_AUTH_API + '/profile/experience',
       options,
     );
-    if (result) {
-      Alert.alert('Työkokemus lisätty');
-    } else {
-      Alert.alert('Error adding experience');
-    }
   };
 
   const getExperienceById = async (id: number) => {
@@ -296,32 +295,19 @@ const useExperience = () => {
   };
 
   const putExperience = async (id: number, experience: ExperienceInfo) => {
-    try {
-      const token = await AsyncStorage.getItem('token');
-      const options = {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + token,
-        },
-        body: JSON.stringify(experience),
-      };
-      const result = await fetchData<Experience>(
-        process.env.EXPO_PUBLIC_AUTH_API + '/profile/experience/' + id,
-        options,
-      );
-      if (result) {
-        Alert.alert('Työkokemus päivitetty');
-      } else {
-        Alert.alert('Error updating experience');
-      }
-    } catch (e) {
-      if ((e as Error).message === 'No fields to update') {
-        Alert.alert('Ei muutoksia');
-        return;
-      }
-      console.error('Error updating experience', e);
-    }
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify(experience),
+    };
+    return await fetchData<Experience>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/profile/experience/' + id,
+      options,
+    );
   };
 
   const deleteExperience = async (id: number) => {
@@ -606,7 +592,10 @@ const useMatch = () => {
 };
 
 const useChats = () => {
-  const [chats, setChats] = useState<Chat[]>();
+  const [chats, setChats] = useState<ChatWithMessages[]>();
+  const [thisChat, setThisChat] = useState<ChatWithMessages>();
+  const [chatMessages, setChatMessages] = useState<MessageWithUser[]>();
+
   const getUserChats = async () => {
     const token = await AsyncStorage.getItem('token');
     const options = {
@@ -619,15 +608,158 @@ const useChats = () => {
       options,
     );
     console.log('result', result);
+
+    const chatsWithMessages: ChatWithMessages[] = [];
+
     if (result) {
-      setChats(result);
+      for (const chat of result) {
+        const chattingWith = await getOtherUserFromChat(chat.chat_id);
+        if (!chattingWith) {
+          continue;
+        }
+        const thisChat = {
+          chat_id: chat.chat_id,
+          chatting_with: {
+            username: chattingWith.username.toString(),
+            user_id: chattingWith.user_id,
+          },
+        };
+
+        const chatWithMessages: ChatWithMessages = {
+          ...thisChat,
+          messages: [],
+        };
+        const msgs = await getMessagesFromChat(chat.chat_id);
+        if (msgs) {
+          for (const msg of msgs) {
+            const {chat_id, ...msgNoChatId} = msg;
+            chatWithMessages.messages.push(msgNoChatId);
+          }
+        }
+        chatsWithMessages.push(chatWithMessages);
+      }
+      setChats(chatsWithMessages);
       return result;
     }
   };
+
+  const getChatById = async (chatId: number) => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    const result = await fetchData<Chat>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/chats/' + chatId,
+      options,
+    );
+
+    if (result) {
+      const chattingWith = await getOtherUserFromChat(chatId);
+      if (!chattingWith) {
+        return null;
+      }
+      const thisChat = {
+        chat_id: chatId,
+        chatting_with: {
+          username: chattingWith.username.toString(),
+          user_id: chattingWith.user_id,
+        },
+      };
+
+      const chatWithMessages: ChatWithMessages = {
+        ...thisChat,
+        messages: [],
+      };
+      const msgs = await getMessagesFromChat(chatId);
+      if (msgs) {
+        for (const msg of msgs) {
+          const {chat_id, ...msgNoChatId} = msg;
+          chatWithMessages.messages.push(msgNoChatId);
+        }
+      }
+      setThisChat(chatWithMessages);
+      return result;
+    }
+  };
+
+  const getMessagesFromChat = async (chatId: number) => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    try {
+      const result = await fetchData<MessageWithUser[]>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/chats/' + chatId + '/messages',
+        options,
+      );
+      console.log('result', result);
+      if (result) {
+        setChatMessages(result);
+        return result;
+      }
+    } catch (e) {
+      console.error('Error fetching messages', e);
+    }
+  };
+
+  const getOtherUserFromChat = async (chatId: number) => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    const result = await fetchData<Pick<User, 'username' | 'user_id'>>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/chats/' + chatId + '/otherUser',
+      options,
+    );
+    if (result) {
+      console.log('other user from caht', result);
+      return result;
+    }
+  };
+
+  const postMessageToChat = async (message: PostMessage) => {
+    const token = await AsyncStorage.getItem('token');
+    console.log('postMessageToChat', message);
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify(message),
+    };
+    const result = await fetchData<MessageWithUser>(
+      process.env.EXPO_PUBLIC_AUTH_API +
+        '/chats/' +
+        message.chat_id +
+        '/messages',
+      options,
+    );
+    if (result) {
+      getUserChats();
+      return result;
+    }
+  };
+
   useEffect(() => {
     getUserChats();
   }, []);
-  return {getUserChats, chats};
+
+  return {
+    getUserChats,
+    getChatById,
+    getOtherUserFromChat,
+    getMessagesFromChat,
+    chats,
+    thisChat,
+    postMessageToChat,
+  };
 };
 
 const useAttachments = () => {
