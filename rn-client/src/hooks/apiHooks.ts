@@ -593,6 +593,7 @@ const useMatch = () => {
 
 const useChats = () => {
   const [chats, setChats] = useState<ChatWithMessages[]>();
+  const {update} = useUpdateContext();
   const [thisChat, setThisChat] = useState<ChatWithMessages>();
   const [chatMessages, setChatMessages] = useState<MessageWithUser[]>();
 
@@ -749,7 +750,7 @@ const useChats = () => {
 
   useEffect(() => {
     getUserChats();
-  }, []);
+  }, [update]);
 
   return {
     getUserChats,

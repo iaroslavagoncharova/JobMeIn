@@ -28,7 +28,7 @@ export const ChatPreview = ({item, navigation}: ChatPreviewProps) => {
           {item.chatting_with.username}
         </Text>
         <Text id="msg" style={styles.message}>
-          {item.messages[item.messages.length-1].message_text}
+          {item.messages[item.messages.length - 1].message_text}
         </Text>
       </View>
     </TouchableOpacity>
