@@ -18,6 +18,7 @@ import Chats from '../views/Chats';
 import Profile from '../views/Profile';
 import Auth from '../views/Auth';
 import SingleChat from '../views/SingleChat';
+import CandidateProfile from '../views/CandidateProfile';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -66,8 +67,8 @@ const TabNavigator = () => {
         </>
       ) : (
         <>
-        <Tab.Screen name="Feed" component={Feed} />
-        <Tab.Screen name="Kirjaudu/luo profiili" component={Auth} />
+          <Tab.Screen name="Feed" component={Feed} />
+          <Tab.Screen name="Kirjaudu/luo profiili" component={Auth} />
         </>
       )}
     </Tab.Navigator>
@@ -87,6 +88,10 @@ const StackNavigator = () => {
             options={{headerShown: false}}
           />
           <Stack.Screen name="Keskustelu" component={SingleChat} />
+          <Stack.Screen
+            name="Työnhakijan profiili"
+            component={CandidateProfile}
+          />
         </>
       ) : (
         <>
