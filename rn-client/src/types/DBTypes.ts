@@ -98,6 +98,7 @@ type Application = {
   status: string;
   application_text: string | null;
   created_at: Date | string;
+  job: JobWithUser;
 };
 
 type ApplicationLink = {
@@ -189,7 +190,7 @@ type UpdateUser = {
 };
 
 type ApplicationApplied = {
-  id: string;
+  application_id: string;
   companyName: string;
   position: string;
   dateApplied: string;
@@ -215,6 +216,10 @@ export type Job = {
   job_description: string;
   deadline_date: Date | string;
   field: string;
+};
+
+export type JobWithUser = Job & {
+  username: string;
 };
 
 export type Notification = {

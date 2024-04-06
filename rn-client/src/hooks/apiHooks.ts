@@ -11,7 +11,6 @@ import {
   ExperienceInfo,
   JobWithSkillsAndKeywords,
   MatchWithUser,
-  Match,
   MessageWithUser,
   PostMessage,
   Skill,
@@ -19,6 +18,10 @@ import {
   UpdateUser,
   User,
   Attachment,
+  ApplicationSaved,
+  ApplicationApplied,
+  Application,
+  JobWithUser,
 } from '../types/DBTypes';
 import {Values} from '../types/LocalTypes';
 import {
@@ -486,7 +489,41 @@ const useJobs = () => {
       setFields(result);
     }
   };
-  return {getAllJobs, jobs, getFields, fields};
+
+  const getJobById = async (id: number) => {
+    return await fetchData<JobWithSkillsAndKeywords>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/jobs/' + id,
+    );
+  };
+
+  const getJobForApplication = async (job_id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      console.log(options);
+      const result = await fetchData<JobWithUser>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/jobs/application/' + job_id,
+        options,
+      );
+      if (result) {
+        return result;
+      }
+    } catch (e) {
+      console.error('Error fetching job for application', e);
+    }
+  };
+  return {
+    getAllJobs,
+    jobs,
+    getFields,
+    fields,
+    getJobById,
+    getJobForApplication,
+  };
 };
 
 const useSwipe = () => {
@@ -760,6 +797,50 @@ const useAttachments = () => {
   return {getUserAttachments, attachments};
 };
 
+const useApplications = () => {
+  const [savedApplications, setSavedApplications] = useState<Application[]>();
+  const [sentApplications, setSentApplications] = useState<Application[]>();
+  const {update} = useUpdateContext();
+  const getSavedApplications = async () => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = await fetchData<Application[]>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/applications/user/saved',
+        options,
+      );
+      if (result) {
+        for (const app of result) {
+          const job = await fetchData<JobWithUser>(
+            process.env.EXPO_PUBLIC_AUTH_API +
+            '/jobs/application/' +
+            app.job_id,
+            options,
+          );
+          app.job = job;
+        }
+        setSavedApplications(result);
+        console.log('saved applications', result);
+        return result;
+      }
+    } catch (e) {
+      if ((e as Error).message === 'No saved applications found') {
+        setSavedApplications([]);
+      } else {
+        console.error('Error fetching saved applications', e);
+      }
+    }
+  };
+  useEffect(() => {
+    getSavedApplications();
+  }, [update]);
+  return {getSavedApplications, savedApplications};
+};
+
 export {
   useUser,
   useAuth,
@@ -770,5 +851,6 @@ export {
   useSwipe,
   useMatch,
   useChats,
+  useApplications,
   useAttachments,
 };

@@ -1,24 +1,50 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, FlatList, StyleSheet} from 'react-native';
-import {ApplicationSaved} from '../types/DBTypes';
-
-const savedApplications: ApplicationSaved[] = [
-  {
-    id: '1',
-    companyName: 'Anna Oy',
-    position: 'Senior Scrum Master',
-    dateSaved: '12.3.2024',
-    matchPercentage: 99,
-  },
-];
+import {
+  Application,
+  ApplicationSaved,
+  Job,
+  JobWithUser,
+} from '../types/DBTypes';
+import {useApplications, useJobs, useUser} from '../hooks/apiHooks';
 
 const Saved = () => {
-  const renderItem = ({item}: {item: ApplicationSaved}) => (
+  const {savedApplications} = useApplications();
+  const {getJobForApplication} = useJobs();
+  const {getUserById} = useUser();
+  const [jobs, setJobs] = useState<JobWithUser[]>([]);
+
+  console.log(savedApplications, 'savedApplications ');
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      const jobsData: JobWithUser[] = [];
+      if (!savedApplications || savedApplications.length === 0) {
+        return;
+      }
+      for (const application of savedApplications as Application[]) {
+        const job = await getJobForApplication(application.job_id);
+        if (job) {
+          jobsData.push(job);
+        }
+        console.log(jobsData, 'jobsData');
+      }
+    };
+
+    fetchJobs();
+  }, [savedApplications]);
+
+  const renderItem = ({item}: {item: Application}) => (
     <View style={styles.itemContainer}>
-      <Text style={styles.position}>{item.position}</Text>
-      <Text style={styles.date}>{`Saved on ${item.dateSaved}`}</Text>
+      <Text style={styles.position}>{item.job.username}</Text>
+      {item.job.job_title && (
+        <Text style={styles.position}>{item.job.job_title}</Text>
+      )}
+      <Text
+        style={styles.date}
+      >{`Tallennettu ${item.created_at.toString().slice(0, 10)}`}</Text>
       <View style={styles.matchContainer}>
-        <Text style={styles.matchPercentage}>{`${item.matchPercentage}%`}</Text>
+        <Text style={styles.matchPercentage}>{`100%`}</Text>
       </View>
     </View>
   );
@@ -27,7 +53,7 @@ const Saved = () => {
     <FlatList
       data={savedApplications}
       renderItem={renderItem}
-      keyExtractor={(item) => item.id}
+      keyExtractor={(item) => item.job_id.toString()}
       contentContainerStyle={styles.listContainer}
     />
   );
