@@ -1,5 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, FlatList, StyleSheet} from 'react-native';
+import {View, Text, FlatList, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+} from '@react-navigation/native';
 import {
   Application,
   ApplicationSaved,
@@ -7,12 +12,14 @@ import {
   JobWithUser,
 } from '../types/DBTypes';
 import {useApplications, useJobs, useUser} from '../hooks/apiHooks';
+import useUpdateContext from '../hooks/updateHooks';
 
 const Saved = () => {
   const {savedApplications} = useApplications();
   const {getJobForApplication} = useJobs();
-  const {getUserById} = useUser();
+  const {update} = useUpdateContext();
   const [jobs, setJobs] = useState<JobWithUser[]>([]);
+  const navigation: NavigationProp<ParamListBase> = useNavigation();
 
   console.log(savedApplications, 'savedApplications ');
 
@@ -32,21 +39,23 @@ const Saved = () => {
     };
 
     fetchJobs();
-  }, [savedApplications]);
+  }, [update]);
 
   const renderItem = ({item}: {item: Application}) => (
-    <View style={styles.itemContainer}>
-      <Text style={styles.position}>{item.job.username}</Text>
-      {item.job.job_title && (
-        <Text style={styles.position}>{item.job.job_title}</Text>
-      )}
-      <Text
-        style={styles.date}
-      >{`Tallennettu ${item.created_at.toString().slice(0, 10)}`}</Text>
-      <View style={styles.matchContainer}>
-        <Text style={styles.matchPercentage}>{`100%`}</Text>
+    <TouchableOpacity onPress={() => navigation.navigate('Hakemuksesi', item)}>
+      <View style={styles.itemContainer}>
+        <Text style={styles.position}>{item.job.username}</Text>
+        {item.job.job_title && (
+          <Text style={styles.position}>{item.job.job_title}</Text>
+        )}
+        <Text
+          style={styles.date}
+        >{`Tallennettu ${item.created_at.toString().slice(0, 10)}`}</Text>
+        <View style={styles.matchContainer}>
+          <Text style={styles.matchPercentage}>{`100%`}</Text>
+        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   return (

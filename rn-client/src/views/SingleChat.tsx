@@ -13,9 +13,14 @@ import {
   faAngleLeft,
 } from '@fortawesome/free-solid-svg-icons';
 import {Controller, useForm} from 'react-hook-form';
-import {RouteProp} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {useEffect, useRef, useState} from 'react';
+import {
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+  RouteProp,
+} from '@react-navigation/native';
 import {ChatWithMessages, PostMessage, PostMessageText} from '../types/DBTypes';
 import {useChats} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
@@ -36,8 +41,10 @@ type Props = {
   navigation: SingleChatNavigationProp;
 };
 
-const SingleChat = ({route, navigation}: Props) => {
-  const chatId = route.params.chat_id;
+const SingleChat = ({route}: any) => {
+  const props: Props = route.params;
+  const navigation: NavigationProp<ParamListBase> = useNavigation();
+  const chatId: number = route.params.chat_id;
   const {update, setUpdate} = useUpdateContext();
   const {getChatById, thisChat, postMessageToChat} = useChats();
   const values: PostMessageText = {
@@ -62,7 +69,6 @@ const SingleChat = ({route, navigation}: Props) => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   const edit = async (inputs: PostMessageText) => {
-    console.log(inputs, 'inputs');
     const data = {
       chat_id: chatId,
       message_text: inputs.message_text,

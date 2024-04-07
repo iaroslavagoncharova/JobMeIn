@@ -460,21 +460,26 @@ const useJobs = () => {
   const {update} = useUpdateContext();
   const getAllJobs = async () => {
     const token = await AsyncStorage.getItem('token');
-    const options = {
-      headers: {
-        Authorization: 'Bearer ' + token,
-      },
-    };
-    const result = await fetchData<JobWithSkillsAndKeywords[]>(
-      process.env.EXPO_PUBLIC_AUTH_API + '/jobs',
-      options,
-    );
-    if (!result) {
-      setJobs([]);
-      console.error('Error fetching jobs');
-      return;
+    try {
+      const options = {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = await fetchData<JobWithSkillsAndKeywords[]>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/jobs',
+        options,
+      );
+      if (result) {
+        setJobs(result);
+      }
+    } catch (e) {
+      if ((e as Error).message === 'No jobs found') {
+        setJobs([]);
+      } else {
+        console.error('Error fetching jobs', e);
+      }
     }
-    setJobs(result);
   };
   useEffect(() => {
     getAllJobs();
@@ -801,6 +806,35 @@ const useApplications = () => {
   const [savedApplications, setSavedApplications] = useState<Application[]>();
   const [sentApplications, setSentApplications] = useState<Application[]>();
   const {update} = useUpdateContext();
+  const getApplicationById = async (id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    return await fetchData<Application>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/applications/' + id,
+      options,
+    );
+  };
+  const putApplication = async (application: Application) => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify(application),
+    };
+    return await fetchData<Application>(
+      process.env.EXPO_PUBLIC_AUTH_API +
+        '/applications/' +
+        application.application_id,
+      options,
+    );
+  };
   const getSavedApplications = async () => {
     const token = await AsyncStorage.getItem('token');
     try {
@@ -817,8 +851,8 @@ const useApplications = () => {
         for (const app of result) {
           const job = await fetchData<JobWithUser>(
             process.env.EXPO_PUBLIC_AUTH_API +
-            '/jobs/application/' +
-            app.job_id,
+              '/jobs/application/' +
+              app.job_id,
             options,
           );
           app.job = job;
@@ -835,10 +869,44 @@ const useApplications = () => {
       }
     }
   };
+
+  const sendApplication = async (application: Application) => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        },
+        body: JSON.stringify(application),
+      };
+      const result = await fetchData<Application>(
+        process.env.EXPO_PUBLIC_AUTH_API +
+          '/applications/' +
+          application.application_id +
+          '/send',
+        options,
+      );
+      if (result) {
+        return result;
+      }
+    } catch (e) {
+      console.error('Error posting application', e);
+    }
+  };
+
   useEffect(() => {
     getSavedApplications();
   }, [update]);
-  return {getSavedApplications, savedApplications};
+
+  return {
+    getSavedApplications,
+    savedApplications,
+    putApplication,
+    getApplicationById,
+    sendApplication,
+  };
 };
 
 export {
