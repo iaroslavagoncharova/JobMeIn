@@ -208,10 +208,18 @@ export default function JobAd({job}: {job: JobWithSkillsAndKeywords}) {
   };
 
   const navigateToNextScreen = () => {
+    if (currentScreen === 2) {
+      setCurrentScreen(0);
+      return;
+    }
     setCurrentScreen(currentScreen + 1);
   };
 
   const navigateToPreviousScreen = () => {
+    if (currentScreen === 0) {
+      setCurrentScreen(2);
+      return;
+    }
     setCurrentScreen(currentScreen - 1);
   };
 

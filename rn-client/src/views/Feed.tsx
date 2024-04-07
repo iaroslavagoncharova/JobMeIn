@@ -73,7 +73,7 @@ const Feed = () => {
       const match = matches[0];
       Alert.alert(
         'Uusi match!',
-        `Sinulla on uusi match yrityksen ${match.user.fullname} kanssa! Voit aloittaa keskustelun napauttamalla ilmoitusta.`,
+        `Sinulla on uusi match yrityksen ${match.user.username} kanssa! Voit aloittaa keskustelun napauttamalla ilmoitusta.`,
         [
           {
             text: 'OK',
@@ -124,9 +124,7 @@ const Feed = () => {
         swipe_type: 'job',
       };
       const result = await postSwipe(data);
-      console.log(result);
       if (result) {
-        console.log('swipe saved');
         setUpdate((prevState) => !prevState);
       }
     } catch (error) {

@@ -27,7 +27,6 @@ const Profile = () => {
   const {user, handleLogout} = useUserContext();
   const {deleteUser} = useUser();
   const {chats} = useChats();
-  console.log(chats);
   const {getEducation, education} = useEducation();
   const {getExperience, experience} = useExperience();
   const {getSkills, skills, allSkills, getAllSkills} = useSkills();
@@ -36,10 +35,7 @@ const Profile = () => {
   const navigation: NavigationProp<ParamListBase> = useNavigation();
 
   const logout = async () => {
-    const token = await AsyncStorage.getItem('token');
-    console.log(token, user);
     await handleLogout();
-    console.log(token, user);
     navigation.navigate('Kirjaudu/luo profiili');
   };
 

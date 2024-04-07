@@ -19,6 +19,7 @@ import Profile from '../views/Profile';
 import Auth from '../views/Auth';
 import SingleChat from '../views/SingleChat';
 import CandidateProfile from '../views/CandidateProfile';
+import SingleApplication from '../views/SingleApplication';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -92,6 +93,7 @@ const StackNavigator = () => {
             name="Työnhakijan profiili"
             component={CandidateProfile}
           />
+          <Stack.Screen name="Hakemuksesi" component={SingleApplication} />
         </>
       ) : (
         <>
