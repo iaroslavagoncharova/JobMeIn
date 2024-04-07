@@ -896,8 +896,44 @@ const useApplications = () => {
     }
   };
 
+  const getSentApplications = async () => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = await fetchData<Application[]>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/applications/user/sent',
+        options,
+      );
+      if (result) {
+        for (const app of result) {
+          const job = await fetchData<JobWithUser>(
+            process.env.EXPO_PUBLIC_AUTH_API +
+              '/jobs/application/' +
+              app.job_id,
+            options,
+          );
+          app.job = job;
+        }
+        setSentApplications(result);
+        console.log('sent applications', result);
+        return result;
+      }
+    } catch (e) {
+      if ((e as Error).message === 'No sent applications found') {
+        setSentApplications([]);
+      } else {
+        console.error('Error fetching sent applications', e);
+      }
+    }
+  };
+
   useEffect(() => {
     getSavedApplications();
+    getSentApplications();
   }, [update]);
 
   return {
@@ -906,6 +942,8 @@ const useApplications = () => {
     putApplication,
     getApplicationById,
     sendApplication,
+    getSentApplications,
+    sentApplications,
   };
 };
 

@@ -1,24 +1,18 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {View, Text, FlatList, StyleSheet, TouchableOpacity} from 'react-native';
 import {
   NavigationProp,
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
-import {
-  Application,
-  ApplicationSaved,
-  Job,
-  JobWithUser,
-} from '../types/DBTypes';
-import {useApplications, useJobs, useUser} from '../hooks/apiHooks';
+import {Application, JobWithUser} from '../types/DBTypes';
+import {useApplications, useJobs} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
 
 const Saved = () => {
   const {savedApplications} = useApplications();
   const {getJobForApplication} = useJobs();
   const {update} = useUpdateContext();
-  const [jobs, setJobs] = useState<JobWithUser[]>([]);
   const navigation: NavigationProp<ParamListBase> = useNavigation();
 
   console.log(savedApplications, 'savedApplications ');
@@ -48,9 +42,21 @@ const Saved = () => {
         {item.job.job_title && (
           <Text style={styles.position}>{item.job.job_title}</Text>
         )}
+        <Text style={styles.date}>
+          Hae ennen{' '}
+          {item.job.deadline_date
+            .toString()
+            .substring(0, 10)
+            .split('-')
+            .reverse()
+            .join('.')}
+        </Text>
         <Text
-          style={styles.date}
-        >{`Tallennettu ${item.created_at.toString().slice(0, 10)}`}</Text>
+          style={{
+            color: 'grey',
+            textAlign: 'center',
+          }}
+        >{`Luotu ${item.created_at.toString().substring(0, 10).split('-').reverse().join('.')}`}</Text>
         <View style={styles.matchContainer}>
           <Text style={styles.matchPercentage}>{`100%`}</Text>
         </View>
@@ -77,15 +83,22 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 20,
     marginBottom: 10,
+    borderColor: '#5d71c9',
+    borderWidth: 2,
   },
   position: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
+    color: '#5d71c9',
+    textAlign: 'center',
   },
   date: {
     fontSize: 14,
-    color: 'grey',
+    color: '#5d71c9',
+    fontWeight: 'bold',
+    marginBottom: 5,
+    textAlign: 'center',
   },
   matchContainer: {
     position: 'absolute',

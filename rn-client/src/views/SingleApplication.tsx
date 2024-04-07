@@ -27,6 +27,7 @@ export default function SingleApplication({route}: {route: any}) {
   const [editing, setEditing] = useState<boolean>(false);
   const {update, setUpdate} = useUpdateContext();
   const {getUserById} = useUser();
+  const isSubmitted = application.status === 'Submitted';
   const {getJobById} = useJobs();
   const {
     putApplication,
@@ -56,7 +57,7 @@ export default function SingleApplication({route}: {route: any}) {
     if (result) {
       Alert.alert('Hakemus lähetetty!');
       setUpdate((prevState) => !prevState);
-      navigation.navigate('Tallennetut');
+      navigation.navigate('Haetut');
     } else {
       Alert.alert('Hakemuksen lähettäminen epäonnistui');
     }
@@ -198,19 +199,24 @@ export default function SingleApplication({route}: {route: any}) {
                 ? application.created_at.toString().slice(0, 10)
                 : 'Ei määritelty'}
             </Text>
-            <Text style={styles.boldText}>
-              Sinulla on vielä aikaa hakea tähän työpaikkaan:{' '}
-            </Text>
-            <Text style={styles.text}>
-              {application.job.deadline_date
-                ? Math.ceil(
-                    (new Date(application.job.deadline_date).getTime() -
-                      new Date().getTime()) /
-                      (1000 * 3600 * 24),
-                  )
-                : 'Ei määritelty'}{' '}
-              päivää
-            </Text>
+            {!isSubmitted && (
+              <>
+                <Text style={styles.boldText}>
+                  Sinulla on vielä aikaa hakea tähän työpaikkaan:{' '}
+                </Text>
+
+                <Text style={styles.text}>
+                  {application.job.deadline_date
+                    ? Math.ceil(
+                        (new Date(application.job.deadline_date).getTime() -
+                          new Date().getTime()) /
+                          (1000 * 3600 * 24),
+                      )
+                    : 'Ei määritelty'}{' '}
+                  päivää
+                </Text>
+              </>
+            )}
             <Text style={styles.boldText}>Hakemuksen vastaanottaja: </Text>
             <Text style={styles.text}>
               {user?.username ? user.fullname : 'Ei määritelty'}
@@ -223,41 +229,45 @@ export default function SingleApplication({route}: {route: any}) {
                 ? applicationInfo.application_text
                 : application.application_text}
             </Text>
-            {!editing ? (
-              <Button
-                title="Muokkaa"
-                onPress={() => setEditing(!editing)}
-                buttonStyle={styles.saveButton}
-              ></Button>
-            ) : (
+            {!isSubmitted && (
               <>
-                <Controller
-                  control={control}
-                  render={({field: {onChange, onBlur, value}}) => (
-                    <TextInput
-                      style={styles.input}
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value ?? ''}
-                      placeholder={'Kirjoita hakemuksen teksti tähän'}
+                {!editing ? (
+                  <Button
+                    title="Muokkaa"
+                    onPress={() => setEditing(!editing)}
+                    buttonStyle={styles.saveButton}
+                  ></Button>
+                ) : (
+                  <>
+                    <Controller
+                      control={control}
+                      render={({field: {onChange, onBlur, value}}) => (
+                        <TextInput
+                          style={styles.input}
+                          onBlur={onBlur}
+                          onChangeText={onChange}
+                          value={value ?? ''}
+                          placeholder={'Kirjoita hakemuksen teksti tähän'}
+                        />
+                      )}
+                      name="application_text"
                     />
-                  )}
-                  name="application_text"
-                />
-                <Button
-                  title="Tallenna muutokset"
-                  onPress={() => {
-                    handleSubmit(addText)();
-                    resetForm();
-                  }}
-                  buttonStyle={styles.saveButton}
-                ></Button>
-                <Button
-                  title="Peruuta"
-                  titleStyle={{color: '#5d71c9'}}
-                  onPress={() => setEditing(!editing)}
-                  buttonStyle={styles.cancelButton}
-                ></Button>
+                    <Button
+                      title="Tallenna muutokset"
+                      onPress={() => {
+                        handleSubmit(addText)();
+                        resetForm();
+                      }}
+                      buttonStyle={styles.saveButton}
+                    ></Button>
+                    <Button
+                      title="Peruuta"
+                      titleStyle={{color: '#5d71c9'}}
+                      onPress={() => setEditing(!editing)}
+                      buttonStyle={styles.cancelButton}
+                    ></Button>
+                  </>
+                )}
               </>
             )}
           </Card>
@@ -338,11 +348,19 @@ export default function SingleApplication({route}: {route: any}) {
               {user?.address ? user.address : 'Ei määritelty'}
             </Text>
           </Card>
-          <Button
-            title="Lähetä hakemus!"
-            onPress={() => send()}
-            buttonStyle={styles.saveButton}
-          ></Button>
+          {isSubmitted ? (
+            <Button
+              title="Hakemus on jo lähetetty"
+              titleStyle={{color: '#5d71c9'}}
+              buttonStyle={styles.cancelButton}
+            ></Button>
+          ) : (
+            <Button
+              title="Lähetä hakemus!"
+              onPress={() => send()}
+              buttonStyle={styles.saveButton}
+            ></Button>
+          )}
         </ScrollView>
       </View>
     </View>
