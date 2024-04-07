@@ -194,6 +194,7 @@ export default function CandidateProfile() {
                   containerStyle={{
                     borderRadius: 10,
                   }}
+                  key={exp.experience_id}
                 >
                   <Text style={styles.boldText}>{exp.job_title}</Text>
                   <Text style={styles.boldText}>
