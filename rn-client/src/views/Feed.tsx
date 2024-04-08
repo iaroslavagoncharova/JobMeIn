@@ -67,7 +67,7 @@ const Feed = () => {
     }
   }, [resetTriggered]);
 
-  // display the match alerts and after a user clicks ok, delete the match
+  // display the match alerts and after a user clicks ok, delete the match and navigate to the chat
   useEffect(() => {
     if (matches && matches.length > 0) {
       const match = matches[0];
