@@ -74,7 +74,7 @@ const Profile = () => {
       backgroundColor: '#ffffff',
       flex: 1,
       padding: 15,
-      marginTop: 40,
+      margin: 30,
       width: '90%',
       borderRadius: 25,
     },

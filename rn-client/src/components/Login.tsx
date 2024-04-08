@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 0,
     flex: 1,
-    paddingTop: Platform.OS === 'android' ? 30 : 0,
+    paddingTop: Platform.OS === 'android' ? 25 : 0,
     backgroundColor: '#5d71c9',
     alignItems: 'center',
     justifyContent: 'center',
@@ -48,10 +48,11 @@ const styles = StyleSheet.create({
   },
   links: {
     justifyContent: 'space-between',
-    marginVertical: 10,
+    marginVertical: 15,
   },
   linkText: {
     margin: 0,
+    padding: 0,
     alignItems: 'center',
   },
   loginForm: {
