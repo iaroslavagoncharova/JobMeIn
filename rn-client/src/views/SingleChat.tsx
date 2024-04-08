@@ -63,6 +63,11 @@ const SingleChat = ({route}: any) => {
 
   useEffect(() => {
     getChatById(chatId);
+    const interval = setInterval(() => {
+      getChatById(chatId);
+    }, 5000);
+
+    return () => clearInterval(interval);
   }, [update]);
 
   const scrollViewRef = useRef<ScrollView>(null);
@@ -110,18 +115,25 @@ const SingleChat = ({route}: any) => {
               }
               onLayout={() => setIsLoaded(true)}
             >
-              {thisChat.messages?.map((message) => (
-                <View
-                  key={message.message_id}
-                  style={
-                    message.user_id === thisChat.chatting_with.user_id
-                      ? styles.theirMessage
-                      : styles.myMessage
-                  }
-                >
-                  <Text>{message.message_text}</Text>
-                </View>
-              ))}
+              {thisChat.messages && thisChat.messages.length > 0 ? (
+                thisChat.messages.map((message) => (
+                  <View
+                    key={message.message_id}
+                    style={
+                      message.user_id === thisChat.chatting_with.user_id
+                        ? styles.theirMessage
+                        : styles.myMessage
+                    }
+                  >
+                    <Text>{message.message_text}</Text>
+                  </View>
+                ))
+              ) : (
+                <Text style={styles.startConvo}>
+                  Aloita keskustelu käyttäjän {thisChat.chatting_with.username}{' '}
+                  kanssa!
+                </Text>
+              )}
             </ScrollView>
           </>
         )}
@@ -252,6 +264,15 @@ const styles = StyleSheet.create({
     left: 15,
     flexDirection: 'row',
     alignContent: 'flex-end',
+  },
+  startConvo: {
+    backgroundColor: '#004aad',
+    width: '95%',
+    marginHorizontal: 'auto',
+    padding: 5,
+    borderRadius: 5,
+    color: '#ffffff',
+    textAlign: 'center',
   },
 });
 
