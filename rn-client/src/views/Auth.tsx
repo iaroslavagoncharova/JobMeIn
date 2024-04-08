@@ -31,8 +31,8 @@ export default function Auth() {
       {!register ? <Login /> : <Register handleToggle={handleToggle} />}
       <TouchableOpacity style={styles.linkText} onPress={handleToggle}>
         <View>
-          <Text style={{color: '#004aad'}}>
-            {register ? 'Luo profiili' : 'Kirjaudu sisään'}
+          <Text style={{color: '#004aad', paddingBottom: 20}}>
+            {!register ? 'Luo profiili' : 'Kirjaudu sisään'}
           </Text>
         </View>
       </TouchableOpacity>
