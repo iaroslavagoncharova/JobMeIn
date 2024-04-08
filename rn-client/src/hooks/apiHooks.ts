@@ -606,7 +606,7 @@ const useMatch = () => {
 };
 
 const useChats = () => {
-  const [chats, setChats] = useState<ChatWithMessages[]>();
+  const [chats, setChats] = useState<ChatWithMessages[] | null>();
   const {update} = useUpdateContext();
   const [thisChat, setThisChat] = useState<ChatWithMessages>();
   const [chatMessages, setChatMessages] = useState<MessageWithUser[]>();
@@ -646,15 +646,20 @@ const useChats = () => {
         };
         const msgs = await getMessagesFromChat(chat.chat_id);
         if (msgs) {
+          const messages: Omit<MessageWithUser, 'chat_id'>[] = [];
           for (const msg of msgs) {
             const {chat_id, ...msgNoChatId} = msg;
-            chatWithMessages.messages.push(msgNoChatId);
+            messages.push(msgNoChatId);
           }
+          chatWithMessages.messages = messages;
         }
         chatsWithMessages.push(chatWithMessages);
       }
       setChats(chatsWithMessages);
       return result;
+    } else {
+      setChats(null);
+      return 'No chats found';
     }
   };
 
@@ -689,10 +694,12 @@ const useChats = () => {
       };
       const msgs = await getMessagesFromChat(chatId);
       if (msgs) {
+        const messages: Omit<MessageWithUser, 'chat_id'>[] = [];
         for (const msg of msgs) {
           const {chat_id, ...msgNoChatId} = msg;
-          chatWithMessages.messages.push(msgNoChatId);
+          messages.push(msgNoChatId);
         }
+        chatWithMessages.messages = messages;
       }
       setThisChat(chatWithMessages);
       return result;
