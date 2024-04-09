@@ -87,10 +87,6 @@ const Feed = () => {
     }
   }, [matches]);
 
-  useEffect(() => {
-    handleAutoLogin();
-  }, []);
-
   const handleRight = async (job: JobWithSkillsAndKeywords) => {
     setLoading(true);
     setSwipingEnabled(false);

@@ -11,12 +11,20 @@ const Chats = ({navigation}: {navigation: NavigationProp<ParamListBase>}) => {
     <View style={styles.container}>
       <View style={styles.chatsContainer}>
         <View style={styles.msgIncCount}>
-          <Text style={styles.pageHeader}>Messages</Text>
+          <Text style={styles.pageHeader}>Keskustelut</Text>
           <Text style={styles.unread}>{chats?.length}</Text>
         </View>
-        {chats?.map((chat) => (
-          <ChatPreview key={chat.chat_id} item={chat} navigation={navigation} />
-        ))}
+        {chats ? (
+          chats.map((chat) => (
+            <ChatPreview
+              key={chat.chat_id}
+              item={chat}
+              navigation={navigation}
+            />
+          ))
+        ) : (
+          <Text>No chats found!</Text>
+        )}
       </View>
     </View>
   );

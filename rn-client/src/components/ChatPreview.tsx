@@ -27,9 +27,21 @@ export const ChatPreview = ({item, navigation}: ChatPreviewProps) => {
         <Text id="name" style={styles.chatParticipant}>
           {item.chatting_with.username}
         </Text>
-        <Text id="msg" style={styles.message}>
-          {item.messages[item.messages.length - 1].message_text}
-        </Text>
+        {item.messages && item.messages.length > 0 ? (
+          <Text id="msg" style={styles.message}>
+            {item.messages[item.messages.length - 1].user_id !==
+            item.chatting_with.user_id ? (
+              <Text style={{fontStyle: 'italic'}}>Sinä: </Text>
+            ) : (
+              <Text style={{fontStyle: 'italic'}}>
+                {item.chatting_with.username}:{' '}
+              </Text>
+            )}
+            {item.messages[item.messages.length - 1].message_text}
+          </Text>
+        ) : (
+          <Text style={styles.newConvo}>Aloita keskustelu!</Text>
+        )}
       </View>
     </TouchableOpacity>
   );
@@ -62,6 +74,12 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   message: {
+    fontSize: 15,
+    marginLeft: 10,
+    marginTop: 5,
+  },
+  newConvo: {
+    fontStyle: 'italic',
     fontSize: 15,
     marginLeft: 10,
     marginTop: 5,

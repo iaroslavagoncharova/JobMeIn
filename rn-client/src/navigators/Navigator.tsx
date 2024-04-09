@@ -20,6 +20,7 @@ import Auth from '../views/Auth';
 import SingleChat from '../views/SingleChat';
 import CandidateProfile from '../views/CandidateProfile';
 import SingleApplication from '../views/SingleApplication';
+import ExampleFeed from '../views/ExampleFeed';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -45,6 +46,9 @@ const TabNavigator = () => {
           if (route.name === 'Feed') {
             iconName = faBriefcase as any;
           }
+          if (route.name === 'ExampleFeed') {
+            iconName = faBriefcase as any;
+          }
           if (route.name === 'Keskustelut') {
             iconName = faComments as any;
           }
@@ -68,7 +72,7 @@ const TabNavigator = () => {
         </>
       ) : (
         <>
-          <Tab.Screen name="Feed" component={Feed} />
+          <Tab.Screen name="ExampleFeed" component={ExampleFeed} />
           <Tab.Screen name="Kirjaudu/luo profiili" component={Auth} />
         </>
       )}

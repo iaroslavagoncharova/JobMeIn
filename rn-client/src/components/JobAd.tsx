@@ -108,6 +108,9 @@ export default function JobAd({job}: {job: JobWithSkillsAndKeywords}) {
   });
 
   const addEmployerInfo = async () => {
+    if (!job.user_id) {
+      return;
+    }
     const user = await getUserById(job.user_id);
     setUser(user);
     console.log(user);
