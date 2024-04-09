@@ -21,6 +21,7 @@ import SingleChat from '../views/SingleChat';
 import CandidateProfile from '../views/CandidateProfile';
 import SingleApplication from '../views/SingleApplication';
 import ExampleFeed from '../views/ExampleFeed';
+import EmployerFeed from '../views/EmployerFeed';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -63,13 +64,23 @@ const TabNavigator = () => {
       })}
     >
       {user ? (
-        <>
-          <Tab.Screen name="Työhakemukset" component={Applications} />
-          <Tab.Screen name="Testit" component={Tests} />
-          <Tab.Screen name="Feed" component={Feed} />
-          <Tab.Screen name="Keskustelut" component={Chats} />
-          <Tab.Screen name="Profiili" component={Profile} />
-        </>
+        user.user_type === 'candidate' ? (
+          <>
+            <Tab.Screen name="Työhakemukset" component={Applications} />
+            <Tab.Screen name="Testit" component={Tests} />
+            <Tab.Screen name="Feed" component={Feed} />
+            <Tab.Screen name="Keskustelut" component={Chats} />
+            <Tab.Screen name="Profiili" component={Profile} />
+          </>
+        ) : (
+          <>
+            <Tab.Screen name="Työhakemukset" component={Applications} />
+            <Tab.Screen name="Testit" component={Tests} />
+            <Tab.Screen name="Feed" component={EmployerFeed} />
+            <Tab.Screen name="Keskustelut" component={Chats} />
+            <Tab.Screen name="Profiili" component={Profile} />
+          </>
+        )
       ) : (
         <>
           <Tab.Screen name="ExampleFeed" component={ExampleFeed} />

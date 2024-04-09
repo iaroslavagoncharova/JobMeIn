@@ -34,7 +34,6 @@ export default function ExperiencePost({
     start_date,
     end_date,
   };
-  console.log(values, 'values');
   const {
     control,
     handleSubmit,
@@ -47,7 +46,6 @@ export default function ExperiencePost({
   };
 
   const handlePost = async (inputs: ExperienceInfo) => {
-    console.log(inputs, 'inputs');
     if (!start_date) {
       return;
     }
@@ -63,8 +61,6 @@ export default function ExperiencePost({
       inputs.end_date = end_date ? end_date.toISOString().split('T')[0] : null;
     }
     inputs.start_date = start_date.toISOString().split('T')[0];
-    console.log(start_date, 'start_date');
-    console.log(inputs, 'inputs');
     await postExperience(inputs);
     setUpdate((prevState) => !prevState);
     resetForm();

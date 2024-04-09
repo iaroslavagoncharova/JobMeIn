@@ -113,7 +113,6 @@ export default function JobAd({job}: {job: JobWithSkillsAndKeywords}) {
     }
     const user = await getUserById(job.user_id);
     setUser(user);
-    console.log(user);
   };
 
   useEffect(() => {

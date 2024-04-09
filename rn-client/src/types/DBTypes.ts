@@ -32,6 +32,22 @@ type Experience = {
   end_date: Date | string;
 };
 
+type SkillName = {
+  skill_name: string;
+};
+
+type CandidateProfile = {
+  user_id: number;
+  username: string;
+  about_me: string;
+  link: string;
+  field: string;
+  skills: SkillName[];
+  experience: Experience[];
+  education: Education[];
+  attachments: Attachment[];
+};
+
 type ExperienceInfo = {
   job_title?: string | null;
   job_place?: string | null;
@@ -237,6 +253,9 @@ export type JobWithSkillsAndKeywords = Job & {
 export type {
   UserLevel,
   User,
+  UnauthorizedUser,
+  CandidateProfile,
+  SkillName,
   Experience,
   ExperienceInfo,
   Education,
