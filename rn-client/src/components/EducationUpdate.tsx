@@ -47,7 +47,6 @@ export default function EducationUpdate({
   };
 
   const edit = async (inputs: EducationInfo) => {
-    console.log(inputs, 'inputs');
     if (eduEditing) {
       if (!includeGraduationDate) {
         inputs.graduation = null;
@@ -65,7 +64,6 @@ export default function EducationUpdate({
         graduation: graduation?.toISOString().split('T')[0],
       };
       await putEducation(eduEditing, data);
-      console.log(data, 'data');
       setEduEditing(null);
       setUpdate((prevState) => !prevState);
       resetForm();

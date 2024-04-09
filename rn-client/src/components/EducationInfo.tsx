@@ -61,7 +61,6 @@ export default function Edu({education}: {education: Education[]}) {
   };
 
   const edit = async (inputs: EducationInfo) => {
-    console.log(inputs, 'inputs');
     if (eduEditing) {
       if (!includeGraduationDate) {
         inputs.graduation = null;

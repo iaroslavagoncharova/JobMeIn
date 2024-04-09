@@ -43,7 +43,6 @@ export default function EducationPost({
   };
 
   const handlePost = async (inputs: EducationInfo) => {
-    console.log(inputs);
     if (!inputs.field || inputs.field === '') {
       inputs.field = null;
     }
@@ -55,7 +54,6 @@ export default function EducationPost({
         ? graduation.toISOString().split('T')[0]
         : null;
     }
-    console.log('inputs', inputs);
     await postEducation(inputs);
     setUpdate((prevState) => !prevState);
     resetForm();

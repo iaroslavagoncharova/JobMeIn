@@ -14,7 +14,6 @@ const Applied = () => {
   const {getJobForApplication} = useJobs();
   const {update} = useUpdateContext();
   const navigation: NavigationProp<ParamListBase> = useNavigation();
-  console.log(sentApplications, 'sentApplications');
   useEffect(() => {
     const fetchJobs = async () => {
       const jobsData: JobWithUser[] = [];
@@ -26,7 +25,6 @@ const Applied = () => {
         if (job) {
           jobsData.push(job);
         }
-        console.log(jobsData, 'jobsData');
       }
     };
 

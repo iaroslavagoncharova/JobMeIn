@@ -22,6 +22,7 @@ import {
   ApplicationApplied,
   Application,
   JobWithUser,
+  CandidateProfile,
 } from '../types/DBTypes';
 import {Values} from '../types/LocalTypes';
 import {
@@ -32,10 +33,36 @@ import {
 import useUpdateContext from './updateHooks';
 
 const useUser = () => {
+  const [candidates, setCandidates] = useState<CandidateProfile[]>();
   const getUserById = async (id: number) => {
     return await fetchData<User>(
       process.env.EXPO_PUBLIC_AUTH_API + '/users/' + id,
     );
+  };
+
+  const getAllCandidates = async () => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = await fetchData<CandidateProfile[]>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/users/candidates',
+        options,
+      );
+      if (result) {
+        setCandidates(result);
+      }
+      return result;
+    } catch (e) {
+      if ((e as Error).message === 'Users not found') {
+        setCandidates([]);
+      } else {
+        console.error('Error fetching candidates', e);
+      }
+    }
   };
 
   const getUserByToken = async (token: string) => {
@@ -114,6 +141,8 @@ const useUser = () => {
   return {
     getUserById,
     getUserByToken,
+    candidates,
+    getAllCandidates,
     postUser,
     getUsernameAvailability,
     getEmailAvailability,
@@ -131,12 +160,10 @@ const useAuth = () => {
       },
       body: JSON.stringify(values),
     };
-    console.log(options);
     const result = await fetchData<LoginResponse>(
       process.env.EXPO_PUBLIC_AUTH_API + '/auth/login',
       options,
     );
-    console.log(result);
     return result;
   };
   return {postLogin};
@@ -182,7 +209,6 @@ const useEducation = () => {
         },
         body: JSON.stringify(education),
       };
-      console.log(options);
       const result = await fetchData<Education>(
         process.env.EXPO_PUBLIC_AUTH_API + '/profile/education',
         options,
@@ -509,7 +535,6 @@ const useJobs = () => {
           Authorization: 'Bearer ' + token,
         },
       };
-      console.log(options);
       const result = await fetchData<JobWithUser>(
         process.env.EXPO_PUBLIC_AUTH_API + '/jobs/application/' + job_id,
         options,
@@ -572,7 +597,6 @@ const useMatch = () => {
         process.env.EXPO_PUBLIC_AUTH_API + '/matches/user',
         options,
       );
-      console.log(result);
       if (result) {
         setMatches(result);
         return result;
@@ -622,7 +646,6 @@ const useChats = () => {
       process.env.EXPO_PUBLIC_AUTH_API + '/chats/user',
       options,
     );
-    console.log('result', result);
 
     const chatsWithMessages: ChatWithMessages[] = [];
 
@@ -718,13 +741,16 @@ const useChats = () => {
         process.env.EXPO_PUBLIC_AUTH_API + '/chats/' + chatId + '/messages',
         options,
       );
-      console.log('result', result);
       if (result) {
         setChatMessages(result);
         return result;
       }
     } catch (e) {
-      console.error('Error fetching messages', e);
+      if ((e as Error).message === 'Messages not found') {
+        return [];
+      } else {
+        console.error('Error fetching messages', e);
+      }
     }
   };
 
@@ -740,14 +766,12 @@ const useChats = () => {
       options,
     );
     if (result) {
-      console.log('other user from caht', result);
       return result;
     }
   };
 
   const postMessageToChat = async (message: PostMessage) => {
     const token = await AsyncStorage.getItem('token');
-    console.log('postMessageToChat', message);
     const options = {
       method: 'POST',
       headers: {
@@ -865,7 +889,6 @@ const useApplications = () => {
           app.job = job;
         }
         setSavedApplications(result);
-        console.log('saved applications', result);
         return result;
       }
     } catch (e) {
@@ -926,7 +949,6 @@ const useApplications = () => {
           app.job = job;
         }
         setSentApplications(result);
-        console.log('sent applications', result);
         return result;
       }
     } catch (e) {

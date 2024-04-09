@@ -25,7 +25,6 @@ export default function ExperiencePage({
   const [expPosting, setExpPosting] = useState<boolean>(false);
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const {update, setUpdate} = useUpdateContext();
-  console.log(experience, 'experience');
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [includeEndDate, setIncludeEndDate] = useState<boolean>(false);
