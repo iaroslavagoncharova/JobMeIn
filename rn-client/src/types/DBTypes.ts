@@ -202,6 +202,10 @@ type UpdateUser = {
   phone: string;
   address: string;
   about_me: string;
+  field: string;
+  link: string;
+  status: string;
+  username: string;
   [key: string]: string | undefined;
 };
 
