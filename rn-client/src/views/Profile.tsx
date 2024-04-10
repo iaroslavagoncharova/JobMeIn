@@ -126,38 +126,61 @@ const Profile = () => {
         backgroundColor: '#5d71c9',
       }}
     >
-      {user && (
-        <View style={styles.container}>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <Text style={styles.bigHeader}>Profiili</Text>
-            <Button
-              title="Täältä profiilisi näkyy työnantajille"
-              titleStyle={{color: '#5d71c9'}}
-              buttonStyle={styles.candidateProfileButton}
-              onPress={() => navigation.navigate('Työnhakijan profiili')}
-            ></Button>
-            <PersonalInfo user={user} />
-            <Edu education={education} />
-            <ExperiencePage experience={experience} />
-            <Skills skills={skills} allSkills={allSkills} />
-            <Card containerStyle={styles.card}>
-              <Text style={styles.header}>Testit</Text>
-            </Card>
-            <Attachments attachments={attachments} />
-            <Button
-              title="Poista profiili"
-              onPress={() => {
-                handleDelete();
-              }}
-              buttonStyle={styles.deleteButton}
-            />
-            <Button
-              title="Kirjaudu ulos"
-              onPress={logout}
-              buttonStyle={styles.logoutButton}
-            />
-          </ScrollView>
-        </View>
+      {user ? (
+        user.user_type === 'candidate' ? (
+          <View style={styles.container}>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <Text style={styles.bigHeader}>Profiili</Text>
+              <Button
+                title="Täältä profiilisi näkyy työnantajille"
+                titleStyle={{color: '#5d71c9'}}
+                buttonStyle={styles.candidateProfileButton}
+                onPress={() => navigation.navigate('Työnhakijan profiili')}
+              ></Button>
+              <PersonalInfo user={user} />
+              <Edu education={education} />
+              <ExperiencePage experience={experience} />
+              <Skills skills={skills} allSkills={allSkills} />
+              <Card containerStyle={styles.card}>
+                <Text style={styles.header}>Testit</Text>
+              </Card>
+              <Attachments attachments={attachments} />
+              <Button
+                title="Poista profiili"
+                onPress={() => {
+                  handleDelete();
+                }}
+                buttonStyle={styles.deleteButton}
+              />
+              <Button
+                title="Kirjaudu ulos"
+                onPress={logout}
+                buttonStyle={styles.logoutButton}
+              />
+            </ScrollView>
+          </View>
+        ) : (
+          <View style={styles.container}>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <Text style={styles.bigHeader}>Profiili</Text>
+              <PersonalInfo user={user} />
+              <Button
+                title="Poista profiili"
+                onPress={() => {
+                  handleDelete();
+                }}
+                buttonStyle={styles.deleteButton}
+              />
+              <Button
+                title="Kirjaudu ulos"
+                onPress={logout}
+                buttonStyle={styles.logoutButton}
+              />
+            </ScrollView>
+          </View>
+        )
+      ) : (
+        <Text style={{color: '#ffffff'}}>Loading...</Text>
       )}
     </View>
   );
