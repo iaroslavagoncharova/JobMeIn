@@ -164,7 +164,11 @@ const useAuth = () => {
       process.env.EXPO_PUBLIC_AUTH_API + '/auth/login',
       options,
     );
-    return result;
+    if (result) {
+      return result;
+    } else {
+      return null;
+    }
   };
   return {postLogin};
 };
