@@ -14,12 +14,13 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import RegisterForm from '../components/RegisterForm';
+import CompanyRegisterForm from '../components/CompanyRegisterForm';
 
 const styles = StyleSheet.create({
   container: {
     padding: 0,
     flex: 1,
-    paddingTop: Platform.OS === 'android' ? 30 : 0,
+    paddingTop: Platform.OS === 'android' ? 10 : 0,
     backgroundColor: '#5d71c9',
     alignItems: 'center',
     justifyContent: 'center',
@@ -62,14 +63,14 @@ const styles = StyleSheet.create({
   },
 });
 
-const Register = ({handleToggle}: {handleToggle: () => void}) => {
+const CompanyRegister = () => {
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   return (
     <View style={styles.container}>
       <View style={styles.topContainer}>
         <TouchableOpacity
           onPress={() => {
-            handleToggle();
+            navigation.goBack();
           }}
         >
           <FontAwesomeIcon
@@ -81,23 +82,25 @@ const Register = ({handleToggle}: {handleToggle: () => void}) => {
         </TouchableOpacity>
       </View>
       <View style={styles.registerContainer}>
-        <Text style={styles.headerText}>Luo profiili</Text>
+        <Text style={styles.headerText}>Luo yrityksen profiili</Text>
         <View style={styles.links}>
           <TouchableOpacity
             style={styles.linkText}
             onPress={() => {
-              navigation.navigate('RekisteröiYritys');
+              navigation.goBack();
             }}
           >
             <View>
-              <Text style={{color: '#004aad'}}>Teetkö tiliä yritykselle?</Text>
+              <Text style={{color: '#004aad'}}>
+                Teetkö tiliä työnhakijalle?
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
-        <RegisterForm handleToggle={handleToggle} />
+        <CompanyRegisterForm />
       </View>
     </View>
   );
 };
 
-export default Register;
+export default CompanyRegister;

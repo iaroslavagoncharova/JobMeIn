@@ -22,6 +22,9 @@ import CandidateProfile from '../views/CandidateProfile';
 import SingleApplication from '../views/SingleApplication';
 import ExampleFeed from '../views/ExampleFeed';
 import EmployerFeed from '../views/EmployerFeed';
+import CompanyRegister from '../views/CompanyRegister';
+import JobsApplications from '../components/JobsApplications';
+import SingleJob from '../views/SingleJob';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -74,7 +77,7 @@ const TabNavigator = () => {
           </>
         ) : (
           <>
-            <Tab.Screen name="Työhakemukset" component={Applications} />
+            <Tab.Screen name="Työhakemukset" component={JobsApplications} />
             <Tab.Screen name="Testit" component={Tests} />
             <Tab.Screen name="Feed" component={EmployerFeed} />
             <Tab.Screen name="Keskustelut" component={Chats} />
@@ -109,6 +112,7 @@ const StackNavigator = () => {
             component={CandidateProfile}
           />
           <Stack.Screen name="Hakemuksesi" component={SingleApplication} />
+          <Stack.Screen name="Työpaikka" component={SingleJob} />
         </>
       ) : (
         <>
@@ -117,6 +121,7 @@ const StackNavigator = () => {
             component={TabNavigator}
             options={{headerShown: false}}
           />
+          <Stack.Screen name="RekisteröiYritys" component={CompanyRegister} />
         </>
       )}
     </Stack.Navigator>

@@ -164,7 +164,11 @@ const useAuth = () => {
       process.env.EXPO_PUBLIC_AUTH_API + '/auth/login',
       options,
     );
-    return result;
+    if (result) {
+      return result;
+    } else {
+      return null;
+    }
   };
   return {postLogin};
 };
@@ -483,6 +487,9 @@ const useSkills = () => {
 const useJobs = () => {
   const [jobs, setJobs] = useState<JobWithSkillsAndKeywords[]>([]);
   const [fields, setFields] = useState<string[]>([]);
+  const [companyJobs, setCompanyJobs] = useState<JobWithSkillsAndKeywords[]>(
+    [],
+  );
   const {update} = useUpdateContext();
   const getAllJobs = async () => {
     const token = await AsyncStorage.getItem('token');
@@ -510,7 +517,32 @@ const useJobs = () => {
   useEffect(() => {
     getAllJobs();
     getFields();
+    getJobsByCompany();
   }, [update]);
+
+  const getJobsByCompany = async () => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = await fetchData<JobWithSkillsAndKeywords[]>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/jobs/company',
+        options,
+      );
+      if (result) {
+        setCompanyJobs(result);
+      }
+    } catch (e) {
+      if ((e as Error).message === 'No jobs found') {
+        setCompanyJobs([]);
+      } else {
+        console.error('Error fetching jobs', e);
+      }
+    }
+  };
 
   const getFields = async () => {
     const result = await fetchData<string[]>(
@@ -546,6 +578,74 @@ const useJobs = () => {
       console.error('Error fetching job for application', e);
     }
   };
+
+  const postJob = async (job: JobWithSkillsAndKeywords) => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        },
+        body: JSON.stringify(job),
+      };
+      const result = await fetchData<JobWithSkillsAndKeywords>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/jobs',
+        options,
+      );
+      if (result) {
+        return result;
+      }
+    } catch (e) {
+      console.error((e as Error).message);
+    }
+  };
+
+  const putJob = async (job_id: number, job: JobWithSkillsAndKeywords) => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        },
+        body: JSON.stringify(job),
+      };
+      const result = await fetchData<JobWithSkillsAndKeywords>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/jobs/' + job_id,
+        options,
+      );
+      if (result) {
+        return result;
+      }
+    } catch (e) {
+      console.error('Error updating job', e);
+    }
+  };
+
+  const deleteJob = async (job_id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        method: 'DELETE',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = await fetchData<MessageResponse>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/jobs/' + job_id,
+        options,
+      );
+      if (!result) {
+        console.error('Error deleting job');
+      }
+      return result;
+    } catch (e) {
+      console.error('Error deleting job', e);
+    }
+  };
   return {
     getAllJobs,
     jobs,
@@ -553,6 +653,11 @@ const useJobs = () => {
     fields,
     getJobById,
     getJobForApplication,
+    getJobsByCompany,
+    companyJobs,
+    postJob,
+    putJob,
+    deleteJob,
   };
 };
 

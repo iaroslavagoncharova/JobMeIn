@@ -20,7 +20,7 @@ export const ChatPreview = ({item, navigation}: ChatPreviewProps) => {
     >
       <FontAwesomeIcon
         icon={faCircleUser}
-        size={70}
+        size={60}
         style={styles.profilePicture}
       />
       <View style={styles.chatInfo}>

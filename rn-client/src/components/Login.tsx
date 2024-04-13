@@ -5,6 +5,7 @@ import {
   Dimensions,
   TouchableOpacity,
   Platform,
+  Alert,
 } from 'react-native';
 import {
   NavigationProp,
@@ -13,6 +14,13 @@ import {
 } from '@react-navigation/native';
 import {Controller, useForm} from 'react-hook-form';
 import {Card, Input} from '@rneui/base';
+import {useState} from 'react';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {
+  faExclamationCircle,
+  faEye,
+  faEyeSlash,
+} from '@fortawesome/free-solid-svg-icons';
 import Logo from '../components/Logo';
 import {useUserContext} from '../hooks/ContextHooks';
 import {Values} from '../types/LocalTypes';
@@ -35,24 +43,25 @@ const styles = StyleSheet.create({
     flex: 1.7,
     width: Dimensions.get('window').width,
     marginTop: 0,
+    paddingTop: 10,
     borderTopRightRadius: 50,
     backgroundColor: '#ffffff',
     alignItems: 'center',
     justifyContent: 'center',
   },
   headerText: {
-    marginTop: 20,
-    fontSize: 45,
+    marginTop: 30,
+    fontSize: 30,
     fontWeight: 'bold',
     color: '#004aad',
   },
   links: {
     justifyContent: 'space-between',
-    marginVertical: 15,
+    marginVertical: 10,
   },
   linkText: {
-    margin: 0,
-    padding: 0,
+    margin: 5,
+    padding: 5,
     alignItems: 'center',
   },
   loginForm: {
@@ -84,16 +93,51 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     marginTop: 0,
-    width: 250,
+    width: '100%',
     backgroundColor: '#5d71c9',
     marginBottom: 10,
     borderRadius: 5,
+  },
+  captionContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    maxWidth: '90%',
+  },
+  captionText: {
+    fontSize: 15,
+    fontWeight: '400',
+    color: '#8F9BB3',
   },
 });
 
 const Login = () => {
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const {handleLogin} = useUserContext();
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const toggleShowPassword = () => setShowPassword(!showPassword);
+  const renderIcon = (props: any) => (
+    <TouchableOpacity onPress={toggleShowPassword}>
+      <FontAwesomeIcon
+        icon={!showPassword ? faEyeSlash : faEye}
+        size={props.size}
+        color={!showPassword ? 'grey' : '#5D71C9'}
+      />
+    </TouchableOpacity>
+  );
+  const renderCaption = () => {
+    return (
+      <View style={styles.captionContainer}>
+        <FontAwesomeIcon
+          icon={faExclamationCircle}
+          color="#D71313"
+        ></FontAwesomeIcon>
+        <Text style={styles.captionText}>
+          Password must be at least 8 characters long.
+        </Text>
+      </View>
+    );
+  };
   const initValues: Values = {email: '', password: ''};
   const {
     control,
@@ -129,7 +173,7 @@ const Login = () => {
             render={({field: {onChange, onBlur, value}}) => (
               <Input
                 style={styles.input}
-                placeholder="example@mail.com"
+                placeholder="sähköpostiosoite"
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
@@ -157,7 +201,9 @@ const Login = () => {
                 value={value}
                 inputMode="text"
                 autoCapitalize="none"
-                secureTextEntry
+                label={renderCaption()}
+                secureTextEntry={!showPassword}
+                rightIcon={renderIcon({size: 25})}
                 errorMessage={errors.password?.message}
               />
             )}
