@@ -25,6 +25,7 @@ import EmployerFeed from '../views/EmployerFeed';
 import CompanyRegister from '../views/CompanyRegister';
 import JobsApplications from '../components/JobsApplications';
 import SingleJob from '../views/SingleJob';
+import NewJob from '../views/NewJob';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -62,6 +63,9 @@ const TabNavigator = () => {
           if (route.name === 'Kirjaudu/luo profiili') {
             iconName = faRightToBracket as any;
           }
+          if (route.name === 'Ilmoitukset/ hakemukset') {
+            iconName = faBriefcase as any;
+          }
           return <FontAwesomeIcon icon={iconName} color={color} size={size} />;
         },
       })}
@@ -77,7 +81,10 @@ const TabNavigator = () => {
           </>
         ) : (
           <>
-            <Tab.Screen name="Työhakemukset" component={JobsApplications} />
+            <Tab.Screen
+              name="Ilmoitukset/ hakemukset"
+              component={JobsApplications}
+            />
             <Tab.Screen name="Testit" component={Tests} />
             <Tab.Screen name="Feed" component={EmployerFeed} />
             <Tab.Screen name="Keskustelut" component={Chats} />
@@ -113,6 +120,7 @@ const StackNavigator = () => {
           />
           <Stack.Screen name="Hakemuksesi" component={SingleApplication} />
           <Stack.Screen name="Työpaikka" component={SingleJob} />
+          <Stack.Screen name="UusiTyöpaikka" component={NewJob} />
         </>
       ) : (
         <>

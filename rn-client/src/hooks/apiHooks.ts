@@ -941,6 +941,7 @@ const useAttachments = () => {
 const useApplications = () => {
   const [savedApplications, setSavedApplications] = useState<Application[]>();
   const [sentApplications, setSentApplications] = useState<Application[]>();
+  const [jobApplications, setJobApplications] = useState<Application[]>();
   const {update} = useUpdateContext();
   const getApplicationById = async (id: number) => {
     const token = await AsyncStorage.getItem('token');
@@ -953,6 +954,22 @@ const useApplications = () => {
       process.env.EXPO_PUBLIC_AUTH_API + '/applications/' + id,
       options,
     );
+  };
+  const getApplicationByJobId = async (job_id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    const result = await fetchData<Application[]>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/applications/job/' + job_id,
+      options,
+    );
+    if (result) {
+      setJobApplications(result);
+      return result;
+    }
   };
   const putApplication = async (application: Application) => {
     const token = await AsyncStorage.getItem('token');
@@ -1072,7 +1089,9 @@ const useApplications = () => {
 
   return {
     getSavedApplications,
+    getApplicationByJobId,
     savedApplications,
+    jobApplications,
     putApplication,
     getApplicationById,
     sendApplication,
