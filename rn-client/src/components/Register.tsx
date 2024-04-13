@@ -69,7 +69,7 @@ const Register = ({handleToggle}: {handleToggle: () => void}) => {
       <View style={styles.topContainer}>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('Kirjaudu');
+            handleToggle();
           }}
         >
           <FontAwesomeIcon
