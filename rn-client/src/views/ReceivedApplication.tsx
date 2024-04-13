@@ -1,7 +1,12 @@
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Button, Card} from '@rneui/base';
-import {useUser} from '../hooks/apiHooks';
+import {
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+} from '@react-navigation/native';
+import {useApplications, useMatch, useUser} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
 import {
   CandidateProfile,
@@ -13,18 +18,29 @@ import {
 export default function ReceivedApplication({route}: {route: any}) {
   console.log(route.params, 'route.params');
   const application = route.params;
-  const {update} = useUpdateContext();
+  const {update, setUpdate} = useUpdateContext();
+  const {postMatch} = useMatch();
   const {getCandidate} = useUser();
+  const {dismissApplication} = useApplications();
   const [user, setUser] = useState<CandidateProfile>();
+  const navigation: NavigationProp<ParamListBase> = useNavigation();
 
   const getUser = async () => {
     const user = await getCandidate(application.user_id);
     setUser(user);
   };
 
-  user?.skills.map((skill: SkillName) => {
-    console.log(skill);
-  });
+  const handleDismiss = async () => {
+    await dismissApplication(application.application_id);
+    setUpdate((prevState) => !prevState);
+    navigation.goBack();
+  };
+
+  // const handleAccept = async () => {
+  //   await postMatch(application.application_id);
+  //   setUpdate((prevState) => !prevState);
+  //   navigation.goBack();
+  // };
 
   useEffect(() => {
     getUser();
@@ -231,6 +247,7 @@ export default function ReceivedApplication({route}: {route: any}) {
               title="Hylkää"
               buttonStyle={styles.cancelButton}
               titleStyle={{color: '#5d71c9'}}
+              onPress={handleDismiss}
             />
           </Card>
         </ScrollView>

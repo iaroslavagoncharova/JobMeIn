@@ -42,9 +42,11 @@ export default function Received() {
   // Render applications for a job
   const renderApplications = (jobId: number) => {
     const jobApplications = applications[jobId] || [];
-    return (
+    return jobApplications.length === 0 ? (
+      <Text style={styles.date}>Ei hakemuksia tähän työpaikkaan</Text>
+    ) : (
       <FlatList
-        data={jobApplications}
+        data={jobApplications ? jobApplications : []}
         renderItem={({item}) => (
           <TouchableOpacity
             onPress={() => navigation.navigate('SaapunutHakemus', item)}

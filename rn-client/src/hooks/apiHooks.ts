@@ -23,6 +23,7 @@ import {
   Application,
   JobWithUser,
   CandidateProfile,
+  Match,
 } from '../types/DBTypes';
 import {Values} from '../types/LocalTypes';
 import {
@@ -733,6 +734,22 @@ const useMatch = () => {
     getUserMatches();
   }, [update]);
 
+  const postMatch = async (match: Match) => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify(match),
+    };
+    return await fetchData<MatchWithUser>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/matches',
+      options,
+    );
+  };
+
   const deleteMatch = async (id: number) => {
     const token = await AsyncStorage.getItem('token');
     const options = {
@@ -746,7 +763,7 @@ const useMatch = () => {
       options,
     );
   };
-  return {getUserMatches, matches, deleteMatch};
+  return {getUserMatches, matches, deleteMatch, postMatch};
 };
 
 const useChats = () => {
@@ -972,18 +989,26 @@ const useApplications = () => {
   };
   const getApplicationByJobId = async (job_id: number) => {
     const token = await AsyncStorage.getItem('token');
-    const options = {
-      headers: {
-        Authorization: 'Bearer ' + token,
-      },
-    };
-    const result = await fetchData<Application[]>(
-      process.env.EXPO_PUBLIC_AUTH_API + '/applications/job/' + job_id,
-      options,
-    );
-    if (result) {
-      setJobApplications(result);
-      return result;
+    try {
+      const options = {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = await fetchData<Application[]>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/applications/job/' + job_id,
+        options,
+      );
+      if (result) {
+        setJobApplications(result);
+        return result;
+      }
+    } catch (e) {
+      if ((e as Error).message === 'No applications found') {
+        setJobApplications([]);
+      } else {
+        console.error('Error fetching applications', e);
+      }
     }
   };
   const putApplication = async (application: Application) => {
@@ -1102,6 +1127,34 @@ const useApplications = () => {
     getSentApplications();
   }, [update]);
 
+  const deleteApplication = async (id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      method: 'DELETE',
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    return await fetchData<MessageResponse>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/applications/' + id,
+      options,
+    );
+  };
+
+  const dismissApplication = async (id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      method: 'PUT',
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    return await fetchData<MessageResponse>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/applications/dismiss/' + id,
+      options,
+    );
+  };
+
   return {
     getSavedApplications,
     getApplicationByJobId,
@@ -1109,9 +1162,11 @@ const useApplications = () => {
     jobApplications,
     putApplication,
     getApplicationById,
+    dismissApplication,
     sendApplication,
     getSentApplications,
     sentApplications,
+    deleteApplication,
   };
 };
 
