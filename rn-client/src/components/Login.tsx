@@ -50,17 +50,17 @@ const styles = StyleSheet.create({
   },
   headerText: {
     marginTop: 20,
-    fontSize: 45,
+    fontSize: 30,
     fontWeight: 'bold',
     color: '#004aad',
   },
   links: {
     justifyContent: 'space-between',
-    marginVertical: 15,
+    marginVertical: 10,
   },
   linkText: {
-    margin: 0,
-    padding: 0,
+    margin: 5,
+    padding: 5,
     alignItems: 'center',
   },
   loginForm: {

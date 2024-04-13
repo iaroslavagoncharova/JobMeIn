@@ -22,6 +22,7 @@ import CandidateProfile from '../views/CandidateProfile';
 import SingleApplication from '../views/SingleApplication';
 import ExampleFeed from '../views/ExampleFeed';
 import EmployerFeed from '../views/EmployerFeed';
+import CompanyRegister from '../views/CompanyRegister';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -117,6 +118,7 @@ const StackNavigator = () => {
             component={TabNavigator}
             options={{headerShown: false}}
           />
+          <Stack.Screen name="RekisteröiYritys" component={CompanyRegister} />
         </>
       )}
     </Stack.Navigator>

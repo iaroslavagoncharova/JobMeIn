@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   },
   arrowIcon: {
     marginLeft: 20,
-    marginTop: 50,
+    marginTop: 30,
     backgroundColor: '#5d71c9',
   },
   registerContainer: {
@@ -49,17 +49,15 @@ const styles = StyleSheet.create({
   },
   headerText: {
     marginTop: 15,
-    fontSize: 45,
+    fontSize: 35,
     fontWeight: 'bold',
     color: '#004aad',
   },
   links: {
-    height: 50,
     justifyContent: 'space-between',
-    marginVertical: 10,
   },
   linkText: {
-    marginTop: 20,
+    marginTop: 10,
     alignItems: 'center',
   },
 });
@@ -84,13 +82,11 @@ const Register = ({handleToggle}: {handleToggle: () => void}) => {
       </View>
       <View style={styles.registerContainer}>
         <Text style={styles.headerText}>Luo profiili</Text>
-        <RegisterForm handleToggle={handleToggle} />
         <View style={styles.links}>
           <TouchableOpacity
             style={styles.linkText}
             onPress={() => {
-              // TODO: Navigate to the company registration screen
-              // navigation.navigate('RekisteröiYritys');
+              navigation.navigate('RekisteröiYritys');
             }}
           >
             <View>
@@ -98,6 +94,7 @@ const Register = ({handleToggle}: {handleToggle: () => void}) => {
             </View>
           </TouchableOpacity>
         </View>
+        <RegisterForm handleToggle={handleToggle} />
       </View>
     </View>
   );
