@@ -78,6 +78,12 @@ const useUser = () => {
     return result;
   };
 
+  const getCandidate = async (id: number) => {
+    return await fetchData<CandidateProfile>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/users/candidate/' + id,
+    );
+  };
+
   const postUser = async (user: Record<string, string>) => {
     const options = {
       method: 'POST',
@@ -143,6 +149,7 @@ const useUser = () => {
     getUserByToken,
     candidates,
     getAllCandidates,
+    getCandidate,
     postUser,
     getUsernameAvailability,
     getEmailAvailability,
@@ -410,6 +417,13 @@ const useSkills = () => {
     getSkills();
   }, [update]);
 
+  const getSkillsByUserId = async (id: number) => {
+    console.log(id, 'id');
+    return await fetchData<Skill[]>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/profile/skills/user/' + id,
+    );
+  };
+
   const putSkill = async (id: number, skill: Skill) => {
     try {
       const token = await AsyncStorage.getItem('token');
@@ -481,6 +495,7 @@ const useSkills = () => {
     allSkills,
     getAllSkills,
     postSkill,
+    getSkillsByUserId,
   };
 };
 

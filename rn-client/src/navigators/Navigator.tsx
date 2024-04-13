@@ -26,6 +26,7 @@ import CompanyRegister from '../views/CompanyRegister';
 import JobsApplications from '../components/JobsApplications';
 import SingleJob from '../views/SingleJob';
 import NewJob from '../views/NewJob';
+import ReceivedApplication from '../views/ReceivedApplication';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -121,6 +122,10 @@ const StackNavigator = () => {
           <Stack.Screen name="Hakemuksesi" component={SingleApplication} />
           <Stack.Screen name="Työpaikka" component={SingleJob} />
           <Stack.Screen name="UusiTyöpaikka" component={NewJob} />
+          <Stack.Screen
+            name="SaapunutHakemus"
+            component={ReceivedApplication}
+          />
         </>
       ) : (
         <>

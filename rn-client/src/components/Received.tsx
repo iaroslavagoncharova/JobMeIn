@@ -5,6 +5,8 @@ import {
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {faRotateRight} from '@fortawesome/free-solid-svg-icons';
 import {useApplications, useJobs} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
 import {Application, JobWithSkillsAndKeywords} from '../types/DBTypes';
@@ -12,10 +14,10 @@ import {Application, JobWithSkillsAndKeywords} from '../types/DBTypes';
 export default function Received() {
   const {companyJobs, getJobsByCompany} = useJobs();
   const {getApplicationByJobId} = useApplications();
+  const {update, setUpdate} = useUpdateContext();
   const [applications, setApplications] = useState<{
     [jobId: number]: Application[];
   }>({});
-  const {update} = useUpdateContext();
   const navigation: NavigationProp<ParamListBase> = useNavigation();
 
   // Fetch applications for each job
@@ -44,23 +46,27 @@ export default function Received() {
       <FlatList
         data={jobApplications}
         renderItem={({item}) => (
-          <View style={styles.itemContainer}>
-            <Text style={styles.date}>
-              Työhakemuksen ID: {''}
-              {item.application_id}
-            </Text>
-            <Text style={styles.date}>
-              Lähetetty:{' '}
-              {item.created_at
-                ? item.created_at
-                    .toString()
-                    .substring(0, 10)
-                    .split('-')
-                    .reverse()
-                    .join('.')
-                : ''}
-            </Text>
-          </View>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('SaapunutHakemus', item)}
+          >
+            <View style={styles.itemContainer}>
+              <Text style={styles.date}>
+                Työhakemuksen ID: {''}
+                {item.application_id}
+              </Text>
+              <Text style={styles.date}>
+                Lähetetty:{' '}
+                {item.created_at
+                  ? item.created_at
+                      .toString()
+                      .substring(0, 10)
+                      .split('-')
+                      .reverse()
+                      .join('.')
+                  : ''}
+              </Text>
+            </View>
+          </TouchableOpacity>
         )}
         keyExtractor={(item) => item.application_id.toString()}
       />
@@ -69,22 +75,23 @@ export default function Received() {
 
   // Render each job along with its applications
   const renderItem = ({item}: {item: JobWithSkillsAndKeywords}) => (
-    <TouchableOpacity
-      onPress={() => navigation.navigate('JobDetails', {jobId: item.job_id})}
-    >
-      <View style={styles.itemContainer}>
-        <Text style={styles.position}>{item.job_title}</Text>
-        {renderApplications(item.job_id)}
-      </View>
-    </TouchableOpacity>
+    <View style={styles.itemContainer}>
+      <Text style={styles.position}>{item.job_title}</Text>
+      {renderApplications(item.job_id)}
+    </View>
   );
 
   return (
-    <FlatList
-      data={companyJobs}
-      renderItem={renderItem}
-      keyExtractor={(item) => item.job_id.toString()}
-    />
+    <>
+      <TouchableOpacity onPress={() => setUpdate(!update)}>
+        <FontAwesomeIcon icon={faRotateRight} size={40} color={'#5d71c9'} />
+      </TouchableOpacity>
+      <FlatList
+        data={companyJobs}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.job_id.toString()}
+      />
+    </>
   );
 }
 
