@@ -624,6 +624,28 @@ const useJobs = () => {
       console.error('Error updating job', e);
     }
   };
+
+  const deleteJob = async (job_id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        method: 'DELETE',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = await fetchData<MessageResponse>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/jobs/' + job_id,
+        options,
+      );
+      if (!result) {
+        console.error('Error deleting job');
+      }
+      return result;
+    } catch (e) {
+      console.error('Error deleting job', e);
+    }
+  };
   return {
     getAllJobs,
     jobs,
@@ -635,6 +657,7 @@ const useJobs = () => {
     companyJobs,
     postJob,
     putJob,
+    deleteJob,
   };
 };
 

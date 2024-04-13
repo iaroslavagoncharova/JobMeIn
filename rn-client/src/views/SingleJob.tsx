@@ -1,3 +1,4 @@
+// TODO: add datepicker
 import {
   View,
   Text,
@@ -19,7 +20,7 @@ import {useJobs} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
 
 export default function SingleJob({route}: {route: any}) {
-  const {putJob, getJobById} = useJobs();
+  const {putJob, getJobById, deleteJob} = useJobs();
   const [job, setJob] = useState<JobWithSkillsAndKeywords>(route.params);
   const {update, setUpdate} = useUpdateContext();
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -55,12 +56,33 @@ export default function SingleJob({route}: {route: any}) {
     console.log(inputs, 'inputs');
     await putJob(job.job_id, inputs);
     Alert.alert('Työilmoitus muokattu onnistuneesti');
-    // do not change any job info except the edited ones
     const result = await getJobById(job.job_id);
     setJob(result);
     console.log(result, 'result');
     setIsEditing(false);
     setUpdate((prevState) => !prevState);
+  };
+  const handleDelete = async () => {
+    Alert.alert('Haluatko varmasti poistaa työilmoituksen?', '', [
+      {
+        text: 'Peruuta',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {
+        text: 'Poista',
+        onPress: async () => {
+          const result = await deleteJob(job.job_id);
+          if (!result) {
+            Alert.alert('Poistaminen epäonnistui');
+            return;
+          }
+          Alert.alert('Työilmoitus poistettu onnistuneesti');
+          navigation.navigate('Minun työpaikat');
+          setUpdate((prevState) => !prevState);
+        },
+      },
+    ]);
   };
 
   console.log(job, 'job');
@@ -120,6 +142,11 @@ export default function SingleJob({route}: {route: any}) {
       backgroundColor: '#5d71c9',
       borderRadius: 12,
     },
+    deleteButton: {
+      margin: 5,
+      backgroundColor: '#D71313',
+      borderRadius: 12,
+    },
     input: {
       height: 40,
       margin: 5,
@@ -147,7 +174,7 @@ export default function SingleJob({route}: {route: any}) {
           <Card
             containerStyle={{
               borderRadius: 10,
-              width: '100%',
+              width: 300,
               margin: 0,
               marginTop: 15,
               alignItems: 'center',
@@ -189,6 +216,11 @@ export default function SingleJob({route}: {route: any}) {
                 >
                   Muokkaa
                 </Button>
+                <Button
+                  onPress={handleDelete}
+                  buttonStyle={styles.deleteButton}
+                  title={'Poista'}
+                />
               </>
             ) : (
               <View
