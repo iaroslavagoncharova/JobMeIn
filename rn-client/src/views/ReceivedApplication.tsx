@@ -160,11 +160,8 @@ export default function ReceivedApplication({route}: {route: any}) {
               {user?.about_me ? user.about_me : 'Ei kuvausta'}
             </Text>
             <Text style={styles.boldText}>Taidot: </Text>
-            {user?.skills.map((skill: SkillName) => (
-              <Card
-                key={skill.skill_id}
-                containerStyle={{borderRadius: 10, margin: 5}}
-              >
+            {user?.skills.map((skill: SkillName, index: number) => (
+              <Card key={index} containerStyle={{borderRadius: 10, margin: 5}}>
                 <Text style={styles.text}>{String(skill)}</Text>
               </Card>
             ))}

@@ -24,6 +24,7 @@ import {
   JobWithUser,
   CandidateProfile,
   Match,
+  KeyWord,
 } from '../types/DBTypes';
 import {Values} from '../types/LocalTypes';
 import {
@@ -595,7 +596,9 @@ const useJobs = () => {
     }
   };
 
-  const postJob = async (job: JobWithSkillsAndKeywords) => {
+  const postJob = async (
+    job: Omit<JobWithSkillsAndKeywords, 'job_id' | 'user_id' | 'username'>,
+  ) => {
     const token = await AsyncStorage.getItem('token');
     try {
       const options = {
@@ -1170,6 +1173,23 @@ const useApplications = () => {
   };
 };
 
+const useKeywords = () => {
+  const [keywords, setKeywords] = useState<KeyWord[]>();
+  const {update} = useUpdateContext();
+  const getKeywords = async () => {
+    const result = await fetchData<KeyWord[]>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/jobs/keywords',
+    );
+    if (result) {
+      setKeywords(result);
+    }
+  };
+  useEffect(() => {
+    getKeywords();
+  }, [update]);
+  return {keywords, getKeywords};
+};
+
 export {
   useUser,
   useAuth,
@@ -1182,4 +1202,5 @@ export {
   useChats,
   useApplications,
   useAttachments,
+  useKeywords,
 };
