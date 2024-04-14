@@ -237,7 +237,7 @@ export type Job = {
   salary: string;
   user_id: number;
   job_description: string;
-  deadline_date: Date | string;
+  deadline_date: Date | string | null | undefined;
   field: string;
 };
 
