@@ -32,7 +32,10 @@ export default function SingleJob({route}: {route: any}) {
     job_address: '',
     salary: '',
     deadline_date: '',
+    skills: '',
+    keywords: '',
   };
+  console.log(job, 'job');
   const {
     control,
     handleSubmit,
@@ -209,6 +212,14 @@ export default function SingleJob({route}: {route: any}) {
                   {job.deadline_date
                     ? job.deadline_date.toString().slice(0, 10)
                     : 'Ei määritelty'}
+                </Text>
+                <Text style={styles.boldText}>Taidot: </Text>
+                <Text style={styles.text}>
+                  {job.skills ? job.skills : 'Ei taitoja'}
+                </Text>
+                <Text style={styles.boldText}>Avainsanat: </Text>
+                <Text style={styles.text}>
+                  {job.keywords ? job.keywords : 'Ei avainsanoja'}
                 </Text>
                 <Button
                   onPress={() => setIsEditing(true)}
