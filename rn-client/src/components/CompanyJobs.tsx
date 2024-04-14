@@ -1,26 +1,20 @@
-import {
-  View,
-  Text,
-  Touchable,
-  TouchableOpacity,
-  FlatList,
-  StyleSheet,
-} from 'react-native';
+import {View, Text, TouchableOpacity, FlatList, StyleSheet} from 'react-native';
 import React, {useEffect} from 'react';
 import {
   NavigationProp,
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {faPlus} from '@fortawesome/free-solid-svg-icons';
+import {JobWithSkillsAndKeywords} from '../types/DBTypes';
 import {useJobs} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
-import {Job, JobWithSkillsAndKeywords} from '../types/DBTypes';
 
 export default function CompanyJobs() {
   const {companyJobs, getJobsByCompany} = useJobs();
   const {update} = useUpdateContext();
   const navigation: NavigationProp<ParamListBase> = useNavigation();
-  console.log(companyJobs);
   const renderJob = ({item}: {item: JobWithSkillsAndKeywords}) => (
     <TouchableOpacity onPress={() => navigation.navigate('Työpaikka', item)}>
       <View style={styles.itemContainer}>
@@ -42,12 +36,22 @@ export default function CompanyJobs() {
     getJobsByCompany();
   }, [update]);
   return (
-    <FlatList
-      data={companyJobs}
-      renderItem={renderJob}
-      keyExtractor={(item) => item.job_id.toString()}
-      contentContainerStyle={styles.listContainer}
-    />
+    <>
+      <FlatList
+        data={companyJobs}
+        renderItem={renderJob}
+        keyExtractor={(item) => item.job_id.toString()}
+        contentContainerStyle={styles.listContainer}
+      />
+      <TouchableOpacity onPress={() => navigation.navigate('UusiTyöpaikka')}>
+        <FontAwesomeIcon
+          icon={faPlus}
+          size={50}
+          color={'white'}
+          style={styles.addButton}
+        />
+      </TouchableOpacity>
+    </>
   );
 }
 
@@ -69,6 +73,18 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     color: '#5d71c9',
     textAlign: 'center',
+  },
+  addButton: {
+    position: 'absolute',
+    margin: 5,
+    right: 20,
+    bottom: 20,
+    backgroundColor: '#004aad',
+    borderRadius: 50,
+    width: 60,
+    height: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   date: {
     fontSize: 14,

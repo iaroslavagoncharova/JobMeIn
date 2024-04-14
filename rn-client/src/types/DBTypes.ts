@@ -1,3 +1,5 @@
+import {Key} from "react";
+
 type UserLevel = {
   level_id: number;
   level_name: 'User' | 'Admin';
@@ -33,6 +35,7 @@ type Experience = {
 };
 
 type SkillName = {
+  [x: string]: Key | null | undefined;
   skill_name: string;
 };
 
