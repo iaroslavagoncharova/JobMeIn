@@ -1,4 +1,5 @@
-// TODO: add datepicker
+/* eslint-disable @typescript-eslint/no-unused-vars */
+// TODO: fix checkboxes
 import {
   View,
   Text,
@@ -8,21 +9,34 @@ import {
   Alert,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {Button, Card} from '@rneui/base';
+import {Button, Card, CheckBox} from '@rneui/base';
 import {
   NavigationProp,
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
 import {Controller, useForm} from 'react-hook-form';
-import {JobWithSkillsAndKeywords} from '../types/DBTypes';
-import {useJobs} from '../hooks/apiHooks';
+import RNDateTimePicker from '@react-native-community/datetimepicker';
+import {
+  JobWithSkillsAndKeywords,
+  KeyWord,
+  Skill,
+  UpdateJob,
+} from '../types/DBTypes';
+import {useJobs, useKeywords, useSkills} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
 
 export default function SingleJob({route}: {route: any}) {
   const {putJob, getJobById, deleteJob} = useJobs();
+  const {keywords} = useKeywords();
+  const {allSkills} = useSkills();
+  const [deadline_date, setDeadlineDate] = useState<Date | null>(null);
+  const [open, setOpen] = useState<boolean>(false);
+  const [selectedSkills, setSelectedSkills] = useState<Skill[] | []>([]);
+  const [selectedKeywords, setSelectedKeywords] = useState<KeyWord[] | []>([]);
   const [job, setJob] = useState<JobWithSkillsAndKeywords>(route.params);
   const {update, setUpdate} = useUpdateContext();
+  console.log(job.skills, 'job.skills');
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const values = {
@@ -35,7 +49,25 @@ export default function SingleJob({route}: {route: any}) {
     skills: '',
     keywords: '',
   };
-  console.log(job, 'job');
+
+  console.log(selectedKeywords, 'selectedKeywords', selectedSkills, 'skills');
+
+  useEffect(() => {
+    setSelectedSkills(
+      allSkills.filter((skill) =>
+        job.skills.includes(skill.skill_id.toString()),
+      ),
+    );
+    setSelectedKeywords(
+      keywords?.filter((keyword) =>
+        job.keywords.includes(keyword.keyword_id.toString()),
+      ) ?? [],
+    );
+  }, []);
+  const showMode = () => {
+    setOpen(true);
+  };
+
   const {
     control,
     handleSubmit,
@@ -55,13 +87,80 @@ export default function SingleJob({route}: {route: any}) {
     return unsubscribe;
   }, []);
 
-  const edit = async (inputs: any) => {
-    console.log(inputs, 'inputs');
-    await putJob(job.job_id, inputs);
+  const handleSkillSelection = (skill: Skill) => {
+    if (selectedSkills.find((s) => s.skill_id === skill.skill_id)) {
+      setSelectedSkills(
+        selectedSkills.filter((s) => s.skill_id !== skill.skill_id),
+      );
+    } else {
+      setSelectedSkills([...selectedSkills, skill]);
+    }
+  };
+
+  const handleKeywordSelection = (keyword: KeyWord) => {
+    if (selectedKeywords.find((kw) => kw.keyword_id === keyword.keyword_id)) {
+      setSelectedKeywords(
+        selectedKeywords.filter((kw) => kw.keyword_id !== keyword.keyword_id),
+      );
+    } else {
+      setSelectedKeywords([...selectedKeywords, keyword]);
+    }
+  };
+
+  const renderSkills = () => {
+    return allSkills.map((skill, index) => (
+      <CheckBox
+        key={index}
+        title={skill.skill_name}
+        checked={
+          selectedSkills.some((s) => s.skill_id === skill.skill_id) ||
+          job.skills.includes(skill.skill_name)
+        }
+        onPress={() => handleSkillSelection(skill)}
+      />
+    ));
+  };
+  const edit = async (inputs: UpdateJob) => {
+    if (!deadline_date) {
+      inputs.deadline_date = '';
+    } else {
+      // Change deadline date to be in format yyyy-mm-dd
+      inputs.deadline_date = deadline_date.toISOString().split('T')[0];
+    }
+    console.log(deadline_date, 'deadline_date');
+    deadline_date?.setDate(deadline_date.getDate() + 1);
+    const skillIds = selectedSkills.map((skill) => skill.skill_id);
+    const skillsString = skillIds.join(',');
+    const keywordIds = selectedKeywords.map((keyword) => keyword.keyword_id);
+    const keywordsString = keywordIds.join(',');
+
+    console.log(keywordsString, 'keywordsString', skillsString, 'skillsString');
+    console.log(deadline_date, 'deadline_date');
+    const data = {
+      job_title: inputs.job_title,
+      field: inputs.field,
+      job_description: inputs.job_description,
+      job_address: inputs.job_address,
+      salary: inputs.salary,
+      deadline_date: deadline_date
+        ? deadline_date.toISOString().split('T')[0]
+        : '',
+      skills: skillsString,
+      keywords: keywordsString,
+    };
+    console.log(data, 'data');
+    const result = await putJob(job.job_id, {
+      ...data,
+      deadline_date: data.deadline_date,
+    });
+    if (!result) {
+      Alert.alert('Muokkaaminen epäonnistui');
+      return;
+    }
     Alert.alert('Työilmoitus muokattu onnistuneesti');
-    const result = await getJobById(job.job_id);
-    setJob(result);
-    console.log(result, 'result');
+    const newJobResult = await getJobById(job.job_id);
+    setJob(newJobResult);
+    console.log(newJobResult, 'result');
     setIsEditing(false);
     setUpdate((prevState) => !prevState);
   };
@@ -159,6 +258,13 @@ export default function SingleJob({route}: {route: any}) {
       borderColor: '#5d71c9',
       borderRadius: 12,
       padding: 10,
+    },
+    calendarButton: {
+      margin: 5,
+      backgroundColor: '#ffffff',
+      borderColor: '#004AAD',
+      borderWidth: 3,
+      borderRadius: 12,
     },
   });
 
@@ -310,6 +416,64 @@ export default function SingleJob({route}: {route: any}) {
                   )}
                   name="salary"
                 />
+                <Button
+                  title="Valitse viimeinen hakupäivä"
+                  onPress={showMode}
+                  buttonStyle={styles.calendarButton}
+                  titleStyle={{color: '#004AAD'}}
+                />
+                <Text style={styles.text}>
+                  Valittu päivämäärä:{' '}
+                  {deadline_date
+                    ? deadline_date.toLocaleString('fi-FI').split(' ')[0]
+                    : job.deadline_date
+                      ? new Date(job.deadline_date)
+                          .toLocaleString('fi-FI')
+                          .split(' ')[0]
+                      : 'Ei määritelty'}
+                </Text>
+                {open && (
+                  <RNDateTimePicker
+                    mode="date"
+                    display="calendar"
+                    onChange={(event, selectedDate) => {
+                      const currentDate = selectedDate ? selectedDate : null;
+                      setOpen(false);
+                      setDeadlineDate(currentDate);
+                    }}
+                    value={
+                      job.deadline_date
+                        ? new Date(job.deadline_date)
+                        : new Date()
+                    }
+                    minimumDate={new Date()}
+                    positiveButton={{label: 'Valitse', textColor: '#5d71c9'}}
+                    negativeButton={{label: 'Peruuta', textColor: '#5d71c9'}}
+                  />
+                )}
+                <Text style={styles.boldText}>Valitse taidot:</Text>
+                {renderSkills()}
+                {selectedSkills.length !== 0 ? (
+                  <>
+                    <Text style={styles.text}>Valitut taidot:</Text>
+                    <View>
+                      {selectedSkills.map((skill, index) => (
+                        <Text style={styles.text} key={index}>
+                          {index + 1 + '. ' + skill.skill_name}
+                        </Text>
+                      ))}
+                    </View>
+                  </>
+                ) : null}
+                <Text style={styles.boldText}>Valitse avainsanat:</Text>
+                {keywords?.map((keyword, index) => (
+                  <CheckBox
+                    key={index}
+                    title={keyword.keyword_name}
+                    checked={selectedKeywords.includes(keyword as never)}
+                    onPress={() => handleKeywordSelection(keyword)}
+                  />
+                ))}
                 <Button
                   onPress={() => setIsEditing(false)}
                   buttonStyle={styles.cancelButton}

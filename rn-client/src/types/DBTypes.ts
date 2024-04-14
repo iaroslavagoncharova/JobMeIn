@@ -237,8 +237,19 @@ export type Job = {
   salary: string;
   user_id: number;
   job_description: string;
+  deadline_date: Date | string | null | undefined;
+  field: string;
+};
+
+export type UpdateJob = {
+  job_address: string;
+  job_title: string;
+  salary: string;
+  job_description: string;
   deadline_date: Date | string;
   field: string;
+  skills: string;
+  keywords: string;
 };
 
 export type JobWithUser = Job & {

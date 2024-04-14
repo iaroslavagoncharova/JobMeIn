@@ -25,6 +25,7 @@ import {
   CandidateProfile,
   Match,
   KeyWord,
+  UpdateJob,
 } from '../types/DBTypes';
 import {Values} from '../types/LocalTypes';
 import {
@@ -621,7 +622,7 @@ const useJobs = () => {
     }
   };
 
-  const putJob = async (job_id: number, job: JobWithSkillsAndKeywords) => {
+  const putJob = async (job_id: number, job: UpdateJob) => {
     const token = await AsyncStorage.getItem('token');
     try {
       const options = {
@@ -1177,11 +1178,17 @@ const useKeywords = () => {
   const [keywords, setKeywords] = useState<KeyWord[]>();
   const {update} = useUpdateContext();
   const getKeywords = async () => {
-    const result = await fetchData<KeyWord[]>(
-      process.env.EXPO_PUBLIC_AUTH_API + '/jobs/keywords',
-    );
-    if (result) {
-      setKeywords(result);
+    try {
+      const result = await fetchData<KeyWord[]>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/jobs/keywords',
+      );
+      if (result) {
+        setKeywords(result);
+      } else {
+        setKeywords([]);
+      }
+    } catch (e) {
+      console.error('Error fetching keywords', e);
     }
   };
   useEffect(() => {
