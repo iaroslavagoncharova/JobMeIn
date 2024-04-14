@@ -25,6 +25,7 @@ import {
   CandidateProfile,
   Match,
   KeyWord,
+  UpdateJob,
 } from '../types/DBTypes';
 import {Values} from '../types/LocalTypes';
 import {
@@ -621,7 +622,7 @@ const useJobs = () => {
     }
   };
 
-  const putJob = async (job_id: number, job: JobWithSkillsAndKeywords) => {
+  const putJob = async (job_id: number, job: UpdateJob) => {
     const token = await AsyncStorage.getItem('token');
     try {
       const options = {
