@@ -1159,6 +1159,20 @@ const useApplications = () => {
     );
   };
 
+  const acceptApplication = async (id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      method: 'PUT',
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    return await fetchData<MessageResponse>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/applications/accept/' + id,
+      options,
+    );
+  };
+
   return {
     getSavedApplications,
     getApplicationByJobId,
@@ -1171,6 +1185,7 @@ const useApplications = () => {
     getSentApplications,
     sentApplications,
     deleteApplication,
+    acceptApplication,
   };
 };
 
