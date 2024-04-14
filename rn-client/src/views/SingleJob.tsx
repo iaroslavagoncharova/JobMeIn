@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-// TODO: fix checkboxes
+// TODO: fix checkboxes and add keywords logic the same way as skills
 import {
   View,
   Text,
