@@ -1,5 +1,6 @@
 // TODO: add filtering by skill type
 // TODO: add fields
+// TODO: add datepicker
 import {
   View,
   Text,
@@ -7,6 +8,7 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {
@@ -17,6 +19,7 @@ import {
 import {Controller, useForm} from 'react-hook-form';
 import {Button, Card} from '@rneui/base';
 import {CheckBox} from 'react-native-elements';
+import RNDateTimePicker from '@react-native-community/datetimepicker';
 import {useJobs, useKeywords, useSkills} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
 import {JobWithSkillsAndKeywords, KeyWord, Skill} from '../types/DBTypes';
@@ -30,6 +33,8 @@ export default function NewJob() {
   const [selectedKeywords, setSelectedKeywords] = useState<KeyWord[] | []>([]);
   const [searchValue, setSearchValue] = useState('');
   const [showMore, setShowMore] = useState(false);
+  const [deadline_date, setDeadlineDate] = useState<Date | null>(null);
+  const [open, setOpen] = useState<boolean>(false);
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const values = {
     job_title: '',
@@ -62,14 +67,23 @@ export default function NewJob() {
     return unsubscribe;
   }, []);
 
+  const showMode = () => {
+    setOpen(true);
+  };
+
   const handlePost = async (
     inputs: Omit<JobWithSkillsAndKeywords, 'job_id' | 'user_id' | 'username'>,
   ) => {
     const skillIds = selectedSkills.map((skill) => skill.skill_id);
-    // turn skillIds into a string
     const skillString = skillIds.join(', ');
     const keywords = selectedKeywords.map((keyword) => keyword.keyword_id);
     const keywordsString = keywords.join(', ');
+    if (deadline_date) {
+      // minus one day to get the correct date
+      const deadline = new Date(deadline_date);
+      inputs.deadline_date = deadline.toISOString().split('T')[0];
+    }
+    console.log(inputs.deadline_date);
     const newJob = {
       ...inputs,
       skills: skillString,
@@ -82,6 +96,8 @@ export default function NewJob() {
       resetForm();
       setUpdate(!update);
       navigation.navigate('Minun työpaikat');
+    } else {
+      Alert.alert('Virhe', 'Työpaikan luonti epäonnistui');
     }
   };
 
@@ -190,6 +206,13 @@ export default function NewJob() {
       borderColor: '#5d71c9',
       borderRadius: 12,
       padding: 10,
+    },
+    calendarButton: {
+      margin: 5,
+      backgroundColor: '#ffffff',
+      borderColor: '#004AAD',
+      borderWidth: 3,
+      borderRadius: 12,
     },
   });
 
@@ -301,20 +324,35 @@ export default function NewJob() {
             {errors.salary && (
               <Text style={styles.text}>{errors.salary.message}</Text>
             )}
-            <Controller
-              control={control}
-              render={({field: {onChange, onBlur, value}}) => (
-                <TextInput
-                  style={styles.input}
-                  placeholder="Viimeinen hakupäivä"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
+            <>
+              <Button
+                title="Valitse viimeinen hakupäivä"
+                titleStyle={{color: '#5d71c9', fontSize: 15}}
+                onPress={showMode}
+                buttonStyle={styles.calendarButton}
+              />
+              {open && (
+                <RNDateTimePicker
+                  mode="date"
+                  display="calendar"
+                  onChange={(event, selectedDate) => {
+                    const currentDate = selectedDate ?? deadline_date;
+                    setOpen(false);
+                    setDeadlineDate(currentDate);
+                  }}
+                  value={deadline_date ? deadline_date : new Date()}
+                  minimumDate={new Date()}
+                  positiveButton={{label: 'Valitse', textColor: '#5d71c9'}}
+                  negativeButton={{label: 'Peruuta', textColor: '#5d71c9'}}
                 />
               )}
-              name="deadline_date"
-              rules={{required: 'Viimeinen hakupäivä on pakollinen'}}
-            />
+              <Text style={{color: '#5d71c9', margin: 5, textAlign: 'center'}}>
+                Valittu valmistumispäivä:{' '}
+                {deadline_date
+                  ? deadline_date.toLocaleString('fi-FI').split(' ')[0]
+                  : 'Ei valittu'}
+              </Text>
+            </>
             {errors.deadline_date && (
               <Text style={styles.text}>{errors.deadline_date.message}</Text>
             )}
