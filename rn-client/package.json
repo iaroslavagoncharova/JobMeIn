@@ -32,6 +32,7 @@
     "react-native": "^0.73.6",
     "react-native-async-storage": "^0.0.1",
     "react-native-datepicker": "^1.7.2",
+    "react-native-document-picker": "^9.1.1",
     "react-native-elements": "^3.4.3",
     "react-native-pager-view": "6.2.3",
     "react-native-picker-select": "^9.1.3",

@@ -1,3 +1,4 @@
+import { faAdd } from '@fortawesome/free-solid-svg-icons';
 import {Key} from "react";
 
 type UserLevel = {
@@ -107,7 +108,21 @@ type Attachment = {
   attachment_id: number;
   attachment_name: string;
   user_id: number;
-  link: string;
+  filename: string;
+  filesize: number;
+  media_type: string;
+};
+
+export type UploadAttachment = {
+  attachment_name: string;
+  file: File | null;
+};
+
+export type AttachmentInfo = {
+  attachment_name: string;
+  filename: string;
+  filesize: number;
+  media_type: string;
 };
 
 type Application = {

@@ -26,11 +26,14 @@ import {
   Match,
   KeyWord,
   UpdateJob,
+  AttachmentInfo,
 } from '../types/DBTypes';
 import {Values} from '../types/LocalTypes';
 import {
   LoginResponse,
+  MediaResponse,
   MessageResponse,
+  UploadResponse,
   UserResponse,
 } from '../types/MessageTypes';
 import useUpdateContext from './updateHooks';
@@ -971,7 +974,34 @@ const useAttachments = () => {
   useEffect(() => {
     getUserAttachments();
   }, [update]);
-  return {getUserAttachments, attachments};
+
+  const postAttachment = async (
+    file: UploadResponse,
+    attachmentName: string,
+  ) => {
+    const token = await AsyncStorage.getItem('token');
+
+    const attachment: AttachmentInfo = {
+      attachment_name: attachmentName,
+      filename: file.data.filename,
+      filesize: file.data.filesize,
+      media_type: file.data.media_type,
+    };
+
+    const options = {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify(attachment),
+    };
+
+    return await fetchData<MediaResponse>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/profile/attachments',
+      options,
+    );
+  };
+  return {getUserAttachments, attachments, postAttachment};
 };
 
 const useApplications = () => {
@@ -1197,6 +1227,27 @@ const useKeywords = () => {
   return {keywords, getKeywords};
 };
 
+const useFile = () => {
+  const postFile = async (file: File, token: string) => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const options = {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+      body: formData,
+    };
+    return await fetchData<UploadResponse>(
+      process.env.VITE_UPLOAD_SERVER + '/upload',
+      options,
+    );
+  };
+
+  return {postFile};
+};
+
 export {
   useUser,
   useAuth,
@@ -1210,4 +1261,5 @@ export {
   useApplications,
   useAttachments,
   useKeywords,
+  useFile,
 };

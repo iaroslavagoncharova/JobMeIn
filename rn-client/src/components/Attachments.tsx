@@ -1,13 +1,18 @@
-import {View, Text, StyleSheet} from 'react-native';
-import React from 'react';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import React, {useState} from 'react';
 import {Card} from '@rneui/base';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {faAdd} from '@fortawesome/free-solid-svg-icons';
 import {Attachment} from '../types/DBTypes';
+import AttachmentPost from './AttachmentPost';
 
 export default function Attachments({
   attachments,
 }: {
   attachments: Attachment[];
 }) {
+  const [attachmentPosting, setAttachmentPosting] = useState<boolean>(false);
+
   const styles = StyleSheet.create({
     card: {
       backgroundColor: '#ffffff',
@@ -35,19 +40,41 @@ export default function Attachments({
       fontWeight: 'bold',
       margin: 5,
     },
+    icon: {
+      margin: 10,
+      backgroundColor: '#5d71c9',
+      color: '#ffffff',
+      borderRadius: 50,
+      left: '70%',
+    },
   });
   return (
     <Card containerStyle={styles.card}>
       <Text style={styles.header}> Liitteet </Text>
+      {attachments && attachments.length === 0 && (
+        <Text style={{color: '#5d71c9', textAlign: 'center'}}>
+          Ei lisättyjä liitteitä
+        </Text>
+      )}
       {attachments.map((attachment) => (
         <Card
           key={attachment.attachment_id}
           containerStyle={{borderRadius: 10}}
         >
           <Text style={styles.boldText}>{attachment.attachment_name}</Text>
-          <Text style={styles.text}>{attachment.link}</Text>
+          <Text style={styles.text}>{attachment.filename}</Text>
         </Card>
       ))}
+      {!attachmentPosting ? (
+        <TouchableOpacity onPress={() => setAttachmentPosting(true)}>
+          <FontAwesomeIcon icon={faAdd} style={styles.icon} size={30} />
+        </TouchableOpacity>
+      ) : (
+        <AttachmentPost
+          attachmentPosting={attachmentPosting}
+          setAttachmentPosting={setAttachmentPosting}
+        />
+      )}
     </Card>
   );
 }

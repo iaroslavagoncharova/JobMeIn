@@ -132,7 +132,7 @@ const Profile = () => {
             <ScrollView showsVerticalScrollIndicator={false}>
               <Text style={styles.bigHeader}>Profiili</Text>
               <Button
-                title="Täältä profiilisi näkyy työnantajille"
+                title="Siirry työnantajan näkymään"
                 titleStyle={{color: '#5d71c9'}}
                 buttonStyle={styles.candidateProfileButton}
                 onPress={() => navigation.navigate('Työnhakijan profiili')}
