@@ -552,6 +552,9 @@ const useJobs = () => {
       );
       if (result) {
         setCompanyJobs(result);
+        return result;
+      } else {
+        setCompanyJobs([]);
       }
     } catch (e) {
       if ((e as Error).message === 'No jobs found') {
@@ -808,6 +811,7 @@ const useChats = () => {
           const chatWithMessages: ChatWithMessages = {
             ...thisChat,
             messages: [],
+            interview_status: chat.interview_status,
           };
           const msgs = await getMessagesFromChat(chat.chat_id);
           if (msgs) {
@@ -847,6 +851,8 @@ const useChats = () => {
       options,
     );
 
+    const interview = result.interview_status;
+
     if (result) {
       const chattingWith = await getOtherUserFromChat(chatId);
       if (!chattingWith) {
@@ -863,6 +869,7 @@ const useChats = () => {
       const chatWithMessages: ChatWithMessages = {
         ...thisChat,
         messages: [],
+        interview_status: interview,
       };
       const msgs = await getMessagesFromChat(chatId);
       if (msgs) {
@@ -946,6 +953,71 @@ const useChats = () => {
     getUserChats();
   }, [update]);
 
+  const sendInterviewInvitation = async (chat_id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        method: 'PUT',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = fetchData<MessageResponse>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/chats/interview_sent/' + chat_id,
+        options,
+      );
+      if (result) {
+        return result;
+      }
+    } catch (e) {
+      console.error('Error sending interview invitation', e);
+    }
+  };
+
+  const acceptInterviewInvitation = async (chat_id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        method: 'PUT',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = fetchData<MessageResponse>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/chats/interview_accept/' + chat_id,
+        options,
+      );
+      if (result) {
+        return result;
+      }
+    } catch (e) {
+      console.error('Error accepting interview invitation', e);
+    }
+  };
+
+  const declineInterviewInvitation = async (chat_id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        method: 'PUT',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = fetchData<MessageResponse>(
+        process.env.EXPO_PUBLIC_AUTH_API +
+          '/chats/interview_decline/' +
+          chat_id,
+        options,
+      );
+      if (result) {
+        return result;
+      }
+    } catch (e) {
+      console.error('Error declining interview invitation', e);
+    }
+  };
+
   return {
     getUserChats,
     getChatById,
@@ -954,6 +1026,9 @@ const useChats = () => {
     chats,
     thisChat,
     postMessageToChat,
+    sendInterviewInvitation,
+    acceptInterviewInvitation,
+    declineInterviewInvitation,
   };
 };
 
@@ -1212,7 +1287,6 @@ const useApplications = () => {
       }
     }
   };
-
 
   return {
     getSavedApplications,

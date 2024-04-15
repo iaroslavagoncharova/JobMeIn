@@ -1,4 +1,5 @@
 import {
+  Alert,
   ScrollView,
   StyleSheet,
   Text,
@@ -22,8 +23,8 @@ import {
   RouteProp,
 } from '@react-navigation/native';
 import {Button} from '@rneui/base';
-import {Application, PostMessageText} from '../types/DBTypes';
-import {useApplications, useChats} from '../hooks/apiHooks';
+import {Application, PostMessageText, UnauthorizedUser} from '../types/DBTypes';
+import {useApplications, useChats, useUser} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
 
 type RootStackParamList = {
@@ -46,8 +47,17 @@ const SingleChat = ({route}: any) => {
   const props: Props = route.params;
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const chatId: number = route.params.chat_id;
+  const {getUserById} = useUser();
+  const [me, setMe] = useState<UnauthorizedUser | null>(null);
   const {update, setUpdate} = useUpdateContext();
-  const {getChatById, thisChat, postMessageToChat} = useChats();
+  const {
+    getChatById,
+    thisChat,
+    postMessageToChat,
+    sendInterviewInvitation,
+    acceptInterviewInvitation,
+    declineInterviewInvitation,
+  } = useChats();
   const values: PostMessageText = {
     message_text: '',
   };
@@ -84,6 +94,48 @@ const SingleChat = ({route}: any) => {
     resetForm();
   };
 
+  const handleInterview = () => {
+    Alert.alert(
+      'Kutsu haastatteluun',
+      'Haluatko kutsua käyttäjän haastatteluun?',
+      [
+        {
+          text: 'Peruuta',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Kutsu',
+          onPress: () => {
+            sendInterviewInvitation(chatId);
+            setUpdate((prevState) => !prevState);
+          },
+        },
+      ],
+    );
+  };
+
+  console.log(thisChat);
+
+  const getMe = async () => {
+    if (thisChat && thisChat.messages) {
+      const user_id = thisChat.messages.find(
+        (message) => message.user_id !== thisChat.chatting_with.user_id,
+      )?.user_id;
+      if (user_id) {
+        const user = await getUserById(user_id);
+        if (user) {
+          setMe(user);
+          console.log(user);
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    getMe();
+  }, [thisChat]);
+
   // testi
   return (
     <View style={styles.container}>
@@ -108,15 +160,18 @@ const SingleChat = ({route}: any) => {
               <Text style={styles.chatParticipant}>
                 {thisChat.chatting_with.username}
               </Text>
-              <Button
-                onPress={() =>
-                  navigation.navigate('ChatHakemukset', {
-                    userId: thisChat?.chatting_with.user_id,
-                  })
-                }
-                title={'Hakemukset'}
-                buttonStyle={styles.saveButton}
-              />
+              {me?.user_type === 'employer' && (
+                <Button
+                  onPress={() =>
+                    navigation.navigate('ChatHakemukset', {
+                      userId: thisChat?.chatting_with.user_id,
+                      interview: thisChat?.interview_status,
+                    })
+                  }
+                  title={'Hakemukset'}
+                  buttonStyle={styles.saveButton}
+                />
+              )}
             </View>
             <ScrollView
               style={styles.msgContainer}
@@ -180,6 +235,117 @@ const SingleChat = ({route}: any) => {
             />
           </TouchableOpacity>
         </View>
+        {thisChat && me?.user_type === 'employer' ? (
+          <>
+            {thisChat.interview_status === 'Pending' && (
+              <Text style={{color: '#004aad', margin: 10}}>
+                Olet lähettänyt kutsun haastatteluun
+              </Text>
+            )}
+
+            {thisChat.interview_status === '' && (
+              <Button
+                title={'Kutsu haastatteluun'}
+                buttonStyle={styles.saveButton}
+                onPress={handleInterview}
+              />
+            )}
+
+            {thisChat.interview_status === 'Accepted' && (
+              <Text style={{color: '#004aad', margin: 10}}>
+                Haastattelukutsu hyväksytty. Voit nyt nähdä käyttäjän
+                henkilötiedot
+              </Text>
+            )}
+
+            {thisChat.interview_status === 'Declined' && (
+              <Text style={{color: '#004aad', margin: 10}}>
+                Haastattelukutsu hylätty
+              </Text>
+            )}
+          </>
+        ) : (
+          <>
+            {thisChat && thisChat.interview_status === 'Pending' && (
+              <>
+                <Text style={{color: '#004aad', margin: 10}}>
+                  Yritys {thisChat.chatting_with.username} on lähettänyt sinulle
+                  haastattelukutsun
+                </Text>
+                <Button
+                  title={'Hyväksy kutsu'}
+                  buttonStyle={styles.saveButton}
+                  onPress={() => {
+                    Alert.alert(
+                      'Hyväksy haastattelukutsu',
+                      'Haluatko hyväksyä haastattelukutsun?',
+                      [
+                        {
+                          text: 'Peruuta',
+                          onPress: () => console.log('Cancel Pressed'),
+                          style: 'cancel',
+                        },
+                        {
+                          text: 'Hyväksy',
+                          onPress: () => {
+                            acceptInterviewInvitation(chatId);
+                            Alert.alert(
+                              'Onneksi olkoon!',
+                              'Olet nyt hyväksynyt haastattelukutsun. Työnantaja näkee nyt henkilötietosi.',
+                            );
+                            setUpdate((prevState) => !prevState);
+                          },
+                        },
+                      ],
+                    );
+                  }}
+                />
+                <Button
+                  title={'Hylkää kutsu'}
+                  buttonStyle={styles.saveButton}
+                  onPress={() => {
+                    Alert.alert(
+                      'Hylkää haastattelukutsu',
+                      'Haluatko hylätä haastattelukutsun?',
+                      [
+                        {
+                          text: 'Peruuta',
+                          onPress: () => console.log('Cancel Pressed'),
+                          style: 'cancel',
+                        },
+                        {
+                          text: 'Hylkää',
+                          onPress: () => {
+                            declineInterviewInvitation(chatId);
+                            setUpdate((prevState) => !prevState);
+                          },
+                        },
+                      ],
+                    );
+                  }}
+                />
+              </>
+            )}
+
+            {thisChat && thisChat.interview_status === '' && (
+              <Text style={{color: '#004aad', margin: 10}}>
+                Odotat haastattelukutsua
+              </Text>
+            )}
+
+            {thisChat && thisChat.interview_status === 'Accepted' && (
+              <Text style={{color: '#004aad', margin: 10}}>
+                Haastattelukutsu hyväksytty
+              </Text>
+            )}
+
+            {thisChat && thisChat.interview_status === 'Declined' && (
+              <Text style={{color: '#004aad', margin: 10}}>
+                Haastattelukutsu hylätty
+              </Text>
+            )}
+          </>
+        )}
       </View>
     </View>
   );
