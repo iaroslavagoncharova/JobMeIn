@@ -21,8 +21,9 @@ import {
   useNavigation,
   RouteProp,
 } from '@react-navigation/native';
-import {ChatWithMessages, PostMessage, PostMessageText} from '../types/DBTypes';
-import {useChats} from '../hooks/apiHooks';
+import {Button} from '@rneui/base';
+import {Application, PostMessageText} from '../types/DBTypes';
+import {useApplications, useChats} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
 
 type RootStackParamList = {
@@ -107,6 +108,15 @@ const SingleChat = ({route}: any) => {
               <Text style={styles.chatParticipant}>
                 {thisChat.chatting_with.username}
               </Text>
+              <Button
+                onPress={() =>
+                  navigation.navigate('ChatHakemukset', {
+                    userId: thisChat?.chatting_with.user_id,
+                  })
+                }
+                title={'Hakemukset'}
+                buttonStyle={styles.saveButton}
+              />
             </View>
             <ScrollView
               style={styles.msgContainer}
@@ -117,20 +127,19 @@ const SingleChat = ({route}: any) => {
               onLayout={() => setIsLoaded(true)}
             >
               {thisChat.messages && thisChat.messages.length > 0 ? (
-                thisChat.messages.map((message) => (
-                  <View
-                    key={message.message_id}
-                    style={
-                      message.user_id === thisChat.chatting_with.user_id
-                        ? styles.theirMessage
-                        : styles.myMessage
-                    }
-                  >
-                    <Text style={{color: '#ffffff'}}>
-                      {message.message_text}
-                    </Text>
-                  </View>
-                ))
+                thisChat.messages.map((message) =>
+                  message.user_id === thisChat.chatting_with.user_id ? (
+                    <View key={message.message_id} style={styles.theirMessage}>
+                      <Text>{message.message_text}</Text>
+                    </View>
+                  ) : (
+                    <View key={message.message_id} style={styles.myMessage}>
+                      <Text style={{color: '#ffffff'}}>
+                        {message.message_text}
+                      </Text>
+                    </View>
+                  ),
+                )
               ) : (
                 <Text style={styles.startConvo}>
                   Aloita keskustelu käyttäjän {thisChat.chatting_with.username}{' '}
@@ -215,9 +224,9 @@ const styles = StyleSheet.create({
     color: '#004aad',
   },
   chatParticipant: {
-    fontSize: 30,
+    fontSize: 25,
     fontWeight: 'bold',
-    marginLeft: 20,
+    marginLeft: 5,
     color: '#004aad',
     textAlignVertical: 'center',
   },
@@ -275,6 +284,13 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     color: '#ffffff',
     textAlign: 'center',
+  },
+  saveButton: {
+    margin: 5,
+    top: 0,
+    backgroundColor: '#5d71c9',
+    borderRadius: 12,
+    marginLeft: 35,
   },
 });
 
