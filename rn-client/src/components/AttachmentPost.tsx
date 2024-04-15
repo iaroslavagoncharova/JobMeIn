@@ -2,7 +2,7 @@ import {Text, StyleSheet, TextInput, TouchableOpacity} from 'react-native';
 import React, {useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {Button} from '@rneui/base';
-import DocumentPicker from 'react-native-document-picker';
+import * as DocumentPicker from 'expo-document-picker';
 import {useAttachments, useEducation, useFile} from '../hooks/apiHooks';
 import {UploadAttachment} from '../types/DBTypes';
 import useUpdateContext from '../hooks/updateHooks';
@@ -141,21 +141,20 @@ export default function AttachmentPost({
             onBlur={onBlur}
             onPress={async () => {
               try {
-                const res = await DocumentPicker.pick({
+                // get pdf or doc files only
+                const res = await DocumentPicker.getDocumentAsync({
                   type: [
-                    DocumentPicker.types.pdf,
-                    DocumentPicker.types.docx,
-                    DocumentPicker.types.doc,
+                    'application/pdf',
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                   ],
                 });
-
-                onChange(res);
-              } catch (err) {
-                if (DocumentPicker.isCancel(err)) {
+                if (res.canceled) {
                   console.log('cancelled');
                 } else {
-                  throw err;
+                  onChange(res);
                 }
+              } catch (err) {
+                throw err;
               }
             }}
           >
