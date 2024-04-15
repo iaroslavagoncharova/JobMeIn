@@ -26,6 +26,7 @@ import {
   Match,
   KeyWord,
   UpdateJob,
+  UnauthorizedUser,
 } from '../types/DBTypes';
 import {Values} from '../types/LocalTypes';
 import {
@@ -38,7 +39,7 @@ import useUpdateContext from './updateHooks';
 const useUser = () => {
   const [candidates, setCandidates] = useState<CandidateProfile[]>();
   const getUserById = async (id: number) => {
-    return await fetchData<User>(
+    return await fetchData<UnauthorizedUser>(
       process.env.EXPO_PUBLIC_AUTH_API + '/users/' + id,
     );
   };
@@ -1188,9 +1189,35 @@ const useApplications = () => {
     );
   };
 
+  const getUserApplications = async (id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    try {
+      const result = await fetchData<Application[]>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/applications/user/' + id,
+        options,
+      );
+      if (result) {
+        return result;
+      }
+    } catch (e) {
+      if ((e as Error).message === 'No applications found') {
+        return [];
+      } else {
+        console.error('Error fetching applications', e);
+      }
+    }
+  };
+
+
   return {
     getSavedApplications,
     getApplicationByJobId,
+    getUserApplications,
     savedApplications,
     jobApplications,
     putApplication,
