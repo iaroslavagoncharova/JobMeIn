@@ -92,7 +92,7 @@ const CompanyRegister = () => {
           >
             <View>
               <Text style={{color: '#004aad'}}>
-                Teetkö tiliä työnhakijalle?
+                Teetkö tiliä työnhakijalle? Paina tästä
               </Text>
             </View>
           </TouchableOpacity>

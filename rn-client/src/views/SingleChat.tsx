@@ -126,7 +126,9 @@ const SingleChat = ({route}: any) => {
                         : styles.myMessage
                     }
                   >
-                    <Text>{message.message_text}</Text>
+                    <Text style={{color: '#ffffff'}}>
+                      {message.message_text}
+                    </Text>
                   </View>
                 ))
               ) : (
@@ -253,7 +255,6 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 5,
     padding: 10,
     backgroundColor: '#5d71c9',
-    color: '#ffffff',
   },
   inputContainer: {
     backgroundColor: '#ffffff',

@@ -17,7 +17,7 @@ const Applications = () => {
         tabBarStyle: {backgroundColor: 'white'},
       }}
     >
-      <Tab.Screen name="Tallennetut" component={Saved} />
+      <Tab.Screen name="Tykätyt" component={Saved} />
       <Tab.Screen name="Haetut" component={Applied} />
     </Tab.Navigator>
   );

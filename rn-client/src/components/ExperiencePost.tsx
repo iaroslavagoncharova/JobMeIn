@@ -180,7 +180,7 @@ export default function ExperiencePost({
       </Text>
       <CheckBox
         title="Nykyinen työpaikka"
-        checked={includeEndDate}
+        checked={!includeEndDate}
         onPress={() => {
           setIncludeEndDate(!includeEndDate);
         }}

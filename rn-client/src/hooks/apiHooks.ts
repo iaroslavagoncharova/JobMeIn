@@ -535,7 +535,6 @@ const useJobs = () => {
   useEffect(() => {
     getAllJobs();
     getFields();
-    getJobsByCompany();
   }, [update]);
 
   const getJobsByCompany = async () => {
@@ -778,52 +777,60 @@ const useChats = () => {
 
   const getUserChats = async () => {
     const token = await AsyncStorage.getItem('token');
-    const options = {
-      headers: {
-        Authorization: 'Bearer ' + token,
-      },
-    };
-    const result = await fetchData<Chat[]>(
-      process.env.EXPO_PUBLIC_AUTH_API + '/chats/user',
-      options,
-    );
+    try {
+      const options = {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = await fetchData<Chat[]>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/chats/user',
+        options,
+      );
 
-    const chatsWithMessages: ChatWithMessages[] = [];
+      const chatsWithMessages: ChatWithMessages[] = [];
 
-    if (result) {
-      for (const chat of result) {
-        const chattingWith = await getOtherUserFromChat(chat.chat_id);
-        if (!chattingWith) {
-          continue;
-        }
-        const thisChat = {
-          chat_id: chat.chat_id,
-          chatting_with: {
-            username: chattingWith.username.toString(),
-            user_id: chattingWith.user_id,
-          },
-        };
-
-        const chatWithMessages: ChatWithMessages = {
-          ...thisChat,
-          messages: [],
-        };
-        const msgs = await getMessagesFromChat(chat.chat_id);
-        if (msgs) {
-          const messages: Omit<MessageWithUser, 'chat_id'>[] = [];
-          for (const msg of msgs) {
-            const {chat_id, ...msgNoChatId} = msg;
-            messages.push(msgNoChatId);
+      if (result) {
+        for (const chat of result) {
+          const chattingWith = await getOtherUserFromChat(chat.chat_id);
+          if (!chattingWith) {
+            continue;
           }
-          chatWithMessages.messages = messages;
+          const thisChat = {
+            chat_id: chat.chat_id,
+            chatting_with: {
+              username: chattingWith.username.toString(),
+              user_id: chattingWith.user_id,
+            },
+          };
+
+          const chatWithMessages: ChatWithMessages = {
+            ...thisChat,
+            messages: [],
+          };
+          const msgs = await getMessagesFromChat(chat.chat_id);
+          if (msgs) {
+            const messages: Omit<MessageWithUser, 'chat_id'>[] = [];
+            for (const msg of msgs) {
+              const {chat_id, ...msgNoChatId} = msg;
+              messages.push(msgNoChatId);
+            }
+            chatWithMessages.messages = messages;
+          }
+          chatsWithMessages.push(chatWithMessages);
         }
-        chatsWithMessages.push(chatWithMessages);
+        setChats(chatsWithMessages);
+        return result;
+      } else {
+        setChats(null);
+        return 'No chats found';
       }
-      setChats(chatsWithMessages);
-      return result;
-    } else {
-      setChats(null);
-      return 'No chats found';
+    } catch (e) {
+      if ((e as Error).message === 'Chats not found') {
+        setChats(null);
+      } else {
+        console.error('Error fetching chats', e);
+      }
     }
   };
 
@@ -954,18 +961,26 @@ const useAttachments = () => {
   const {update} = useUpdateContext();
   const getUserAttachments = async () => {
     const token = await AsyncStorage.getItem('token');
-    const options = {
-      headers: {
-        Authorization: 'Bearer ' + token,
-      },
-    };
-    const result = await fetchData<Attachment[]>(
-      process.env.EXPO_PUBLIC_AUTH_API + '/profile/attachments',
-      options,
-    );
-    if (result) {
-      setAttachments(result);
-      return result;
+    try {
+      const options = {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = await fetchData<Attachment[]>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/profile/attachments',
+        options,
+      );
+      if (result) {
+        setAttachments(result);
+        return result;
+      }
+    } catch (e) {
+      if ((e as Error).message === 'No attachments found') {
+        setAttachments([]);
+      } else {
+        console.error('Error fetching attachments', e);
+      }
     }
   };
   useEffect(() => {

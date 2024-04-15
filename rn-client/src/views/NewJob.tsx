@@ -74,6 +74,14 @@ export default function NewJob() {
   const handlePost = async (
     inputs: Omit<JobWithSkillsAndKeywords, 'job_id' | 'user_id' | 'username'>,
   ) => {
+    if (!selectedSkills.length) {
+      Alert.alert('Virhe', 'Valitse vähintään yksi taito');
+      return;
+    }
+    if (!selectedKeywords.length) {
+      Alert.alert('Virhe', 'Valitse vähintään yksi avainsana');
+      return;
+    }
     const skillIds = selectedSkills.map((skill) => skill.skill_id);
     const skillString = skillIds.join(', ');
     const keywords = selectedKeywords.map((keyword) => keyword.keyword_id);
@@ -331,6 +339,11 @@ export default function NewJob() {
                 onPress={showMode}
                 buttonStyle={styles.calendarButton}
               />
+              {!deadline_date && (
+                <Text style={styles.text}>
+                  Viimeinen hakupäivä on pakollinen
+                </Text>
+              )}
               {open && (
                 <RNDateTimePicker
                   mode="date"
@@ -357,6 +370,9 @@ export default function NewJob() {
               <Text style={styles.text}>{errors.deadline_date.message}</Text>
             )}
             <Text style={styles.boldText}>Valitse taidot:</Text>
+            {selectedSkills.length === 0 ? (
+              <Text style={styles.text}>Taidot ovat pakollisia</Text>
+            ) : null}
             <View>
               <TextInput
                 style={styles.input}
@@ -384,6 +400,9 @@ export default function NewJob() {
               </>
             ) : null}
             <Text style={styles.boldText}>Valitse avainsanat:</Text>
+            {selectedKeywords.length === 0 ? (
+              <Text style={styles.text}>Avainsanat ovat pakollisia</Text>
+            ) : null}
             {keywords?.map((keyword, index) => (
               <CheckBox
                 key={index}

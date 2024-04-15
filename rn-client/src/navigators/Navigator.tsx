@@ -41,7 +41,7 @@ const TabNavigator = () => {
         tabBarInactiveTintColor: 'grey',
         tabBarIcon: ({color, size, focused}) => {
           let iconName;
-          color = focused ? '#004aad' : '#5D71C9';
+          color = focused ? '#022c63' : '#5D71C9';
           size = focused ? 30 : 25;
           if (route.name === 'Työhakemukset') {
             iconName = faHandshake as any;

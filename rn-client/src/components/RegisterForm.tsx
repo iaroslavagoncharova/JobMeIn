@@ -1,3 +1,4 @@
+// TODO: fix checks that go on top of the input labels
 import {
   StyleSheet,
   View,
@@ -81,7 +82,10 @@ const RegisterForm = ({handleToggle}: {handleToggle: () => void}) => {
         control={control}
         rules={{
           maxLength: 100,
-          required: {value: true, message: 'is required'},
+          required: {
+            value: true,
+            message: 'Ole hyvä ja syötä sähköpostiosoitteesi',
+          },
           pattern: {
             value: /^\S+@\S+\.\S+$/,
             message: 'Sähköpostiosoite ei ole validi',
@@ -111,11 +115,15 @@ const RegisterForm = ({handleToggle}: {handleToggle: () => void}) => {
         control={control}
         rules={{
           maxLength: 100,
-          required: {value: true, message: 'is required'},
+          required: {value: true, message: 'Ole hyvä ja syötä salasana'},
+          minLength: {
+            value: 8,
+            message: 'Salasanan tulee olla vähintään 8 merkkiä',
+          },
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <View style={styles.inputWithLabel}>
-            <Text style={styles.labelText}>SALASANA</Text>
+            <Text style={styles.labelText}>SALASANA (vähintään 8 merkkiä)</Text>
             <Input
               style={styles.input}
               secureTextEntry
@@ -133,7 +141,7 @@ const RegisterForm = ({handleToggle}: {handleToggle: () => void}) => {
       <Controller
         control={control}
         rules={{
-          required: {value: true, message: 'is required'},
+          required: {value: true, message: 'Ole hyvä ja syötä puhelinnumerosi'},
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <View style={styles.inputWithLabel}>
@@ -193,10 +201,12 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginBottom: 30,
     height: 40,
+    marginTop: 10,
   },
   labelText: {
     fontSize: 10,
     marginLeft: 0,
+    marginTop: 2,
   },
   input: {
     height: 40,
