@@ -103,11 +103,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     maxWidth: '90%',
+    width: 300,
   },
   captionText: {
     fontSize: 15,
     fontWeight: '400',
     color: '#8F9BB3',
+    marginLeft: 5,
   },
 });
 
@@ -132,9 +134,7 @@ const Login = () => {
           icon={faExclamationCircle}
           color="#D71313"
         ></FontAwesomeIcon>
-        <Text style={styles.captionText}>
-          Password must be at least 8 characters long.
-        </Text>
+        <Text style={styles.captionText}>Vähintään 8 merkkiä</Text>
       </View>
     );
   };
@@ -173,7 +173,7 @@ const Login = () => {
             render={({field: {onChange, onBlur, value}}) => (
               <Input
                 style={styles.input}
-                placeholder="sähköpostiosoite"
+                placeholder="matti@example.com"
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}

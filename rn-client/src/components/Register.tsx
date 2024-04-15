@@ -90,7 +90,9 @@ const Register = ({handleToggle}: {handleToggle: () => void}) => {
             }}
           >
             <View>
-              <Text style={{color: '#004aad'}}>Teetkö tiliä yritykselle?</Text>
+              <Text style={{color: '#004aad'}}>
+                Teetkö tiliä yritykselle? Paina tästä
+              </Text>
             </View>
           </TouchableOpacity>
         </View>

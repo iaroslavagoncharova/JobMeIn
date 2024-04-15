@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, ScrollView, Alert} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Button, Card} from '@rneui/base';
 import {
@@ -21,7 +21,7 @@ export default function ReceivedApplication({route}: {route: any}) {
   const {update, setUpdate} = useUpdateContext();
   const {postMatch} = useMatch();
   const {getCandidate} = useUser();
-  const {dismissApplication} = useApplications();
+  const {dismissApplication, acceptApplication} = useApplications();
   const [user, setUser] = useState<CandidateProfile>();
   const navigation: NavigationProp<ParamListBase> = useNavigation();
 
@@ -31,16 +31,51 @@ export default function ReceivedApplication({route}: {route: any}) {
   };
 
   const handleDismiss = async () => {
-    await dismissApplication(application.application_id);
+    Alert.alert(
+      'Hylkää hakemus',
+      'Haluatko varmasti hylätä hakemuksen?',
+      [
+        {
+          text: 'Peruuta',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Kyllä',
+          onPress: async () =>
+            await dismissApplication(application.application_id),
+        },
+      ],
+      {cancelable: false},
+    );
     setUpdate((prevState) => !prevState);
     navigation.goBack();
   };
 
-  // const handleAccept = async () => {
-  //   await postMatch(application.application_id);
-  //   setUpdate((prevState) => !prevState);
-  //   navigation.goBack();
-  // };
+  const handleAccept = async () => {
+    Alert.alert(
+      'Hyväksy hakemus',
+      'Haluatko varmasti hyväksyä hakemuksen?',
+      [
+        {
+          text: 'Peruuta',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Kyllä',
+          onPress: async () => {
+            const result = await acceptApplication(application.application_id);
+            if (result) {
+              setUpdate((prevState) => !prevState);
+              navigation.goBack();
+            }
+          },
+        },
+      ],
+      {cancelable: false},
+    );
+  };
 
   useEffect(() => {
     getUser();
@@ -239,7 +274,11 @@ export default function ReceivedApplication({route}: {route: any}) {
                 </Text>
               </Card>
             ))}
-            <Button title="Hyväksy" buttonStyle={styles.saveButton} />
+            <Button
+              title="Hyväksy"
+              buttonStyle={styles.saveButton}
+              onPress={handleAccept}
+            />
             <Button
               title="Hylkää"
               buttonStyle={styles.cancelButton}

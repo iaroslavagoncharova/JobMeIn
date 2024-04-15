@@ -21,7 +21,10 @@ export default function CompanyJobs() {
         <Text style={styles.position}>{item.job_title}</Text>
         <Text style={styles.date}>
           {' '}
-          Ennen {new Date(item.deadline_date).toLocaleDateString('fi-FI')}
+          Ennen{' '}
+          {item.deadline_date
+            ? new Date(item.deadline_date).toLocaleDateString('fi-FI')
+            : ''}
         </Text>
       </View>
     </TouchableOpacity>

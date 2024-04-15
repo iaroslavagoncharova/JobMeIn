@@ -112,7 +112,7 @@ const Profile = () => {
     },
     candidateProfileButton: {
       margin: 5,
-      backgroundColor: '#ffffff',
+      backgroundColor: '#5d71c9',
       borderColor: '#004AAD',
       borderWidth: 3,
       borderRadius: 12,
@@ -132,8 +132,8 @@ const Profile = () => {
             <ScrollView showsVerticalScrollIndicator={false}>
               <Text style={styles.bigHeader}>Profiili</Text>
               <Button
-                title="Täältä profiilisi näkyy työnantajille"
-                titleStyle={{color: '#5d71c9'}}
+                title="Täältä voit nähdä miltä profiilisi näyttää työnantajalle"
+                titleStyle={{color: '#ffffff'}}
                 buttonStyle={styles.candidateProfileButton}
                 onPress={() => navigation.navigate('Työnhakijan profiili')}
               ></Button>

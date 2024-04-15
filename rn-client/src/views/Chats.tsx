@@ -12,7 +12,7 @@ const Chats = ({navigation}: {navigation: NavigationProp<ParamListBase>}) => {
       <View style={styles.chatsContainer}>
         <View style={styles.msgIncCount}>
           <Text style={styles.pageHeader}>Keskustelut</Text>
-          <Text style={styles.unread}>{chats?.length}</Text>
+          <Text style={styles.unread}>{chats?.length ? chats.length : 0}</Text>
         </View>
         {chats ? (
           chats.map((chat) => (
@@ -23,7 +23,7 @@ const Chats = ({navigation}: {navigation: NavigationProp<ParamListBase>}) => {
             />
           ))
         ) : (
-          <Text>No chats found!</Text>
+          <Text style={{marginLeft: 20}}>Sinulla ei ole keskusteluja</Text>
         )}
       </View>
     </View>
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginTop: 5,
     paddingHorizontal: 10,
-    backgroundColor: '#ff3131',
+    backgroundColor: '#004aad',
     color: '#ffffff',
     borderRadius: 50,
     padding: 5,
