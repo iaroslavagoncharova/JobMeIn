@@ -266,7 +266,7 @@ export default function SingleTest({route}: {route: any}) {
               {selectedJob ? (
                 <>
                   <Button
-                    title={'Talenna'}
+                    title={'Tallenna'}
                     buttonStyle={styles.saveButton}
                     onPress={handleAddJob}
                   />
