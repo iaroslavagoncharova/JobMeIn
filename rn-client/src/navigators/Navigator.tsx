@@ -28,6 +28,7 @@ import SingleJob from '../views/SingleJob';
 import NewJob from '../views/NewJob';
 import ReceivedApplication from '../views/ReceivedApplication';
 import ChatApplications from '../views/ChatApplications';
+import SingleTest from '../views/SingleTest';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -128,6 +129,7 @@ const StackNavigator = () => {
             component={ReceivedApplication}
           />
           <Stack.Screen name="ChatHakemukset" component={ChatApplications} />
+          <Stack.Screen name="Testi" component={SingleTest} />
         </>
       ) : (
         <>

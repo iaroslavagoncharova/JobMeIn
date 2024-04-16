@@ -149,10 +149,11 @@ type Chat = {
   chat_id: number;
   user1_id: number;
   user2_id: number;
+  interview_status: string;
   created_at: Date | string;
 };
 
-type ChatWithMessages = Pick<Chat, 'chat_id'> & {
+type ChatWithMessages = Pick<Chat, 'chat_id' | 'interview_status'> & {
   chatting_with: {
     username: string;
     user_id: number;

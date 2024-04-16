@@ -12,13 +12,27 @@ import useUpdateContext from '../hooks/updateHooks';
 import {Application, JobWithSkillsAndKeywords} from '../types/DBTypes';
 
 export default function Received() {
-  const {companyJobs, getJobsByCompany} = useJobs();
+  const {getJobsByCompany} = useJobs();
+  const [companyJobs, setCompanyJobs] = useState<JobWithSkillsAndKeywords[]>(
+    [],
+  );
   const {getApplicationByJobId} = useApplications();
   const {update, setUpdate} = useUpdateContext();
   const [applications, setApplications] = useState<{
     [jobId: number]: Application[];
   }>({});
   const navigation: NavigationProp<ParamListBase> = useNavigation();
+
+  const handleFetchJobs = async () => {
+    const jobs = await getJobsByCompany();
+    if (jobs) {
+      setCompanyJobs(jobs);
+    }
+  };
+
+  useEffect(() => {
+    handleFetchJobs();
+  }, [update]);
 
   // Fetch applications for each job
   useEffect(() => {

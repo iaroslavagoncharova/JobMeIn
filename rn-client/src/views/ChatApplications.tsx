@@ -2,16 +2,18 @@ import {View, Text, ScrollView, StyleSheet} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Card} from '@rneui/base';
 import {useApplications, useUser} from '../hooks/apiHooks';
-import {Application, CandidateProfile} from '../types/DBTypes';
+import {Application, CandidateProfile, UnauthorizedUser} from '../types/DBTypes';
 import useUpdateContext from '../hooks/updateHooks';
 
 export default function ChatApplications({route}: any) {
   const user_id = route.params.userId;
+  const interview_status = route.params.interview;
   const {getUserApplications} = useApplications();
-  const {getCandidate} = useUser();
+  const {getCandidate, getUserById} = useUser();
   const {update} = useUpdateContext();
   const [applications, setApplications] = useState<Application[]>([]);
   const [user, setUser] = useState<CandidateProfile | null>(null);
+  const [privateUser, setPrivateUser] = useState<UnauthorizedUser | null>(null);
   const handleGetApplications = async (user_id: number) => {
     const response = await getUserApplications(user_id);
     if (response) {
@@ -28,10 +30,17 @@ export default function ChatApplications({route}: any) {
     } else {
       setUser(null);
     }
+    const privateResponse = await getUserById(user_id);
+    if (privateResponse) {
+      setPrivateUser(privateResponse);
+    } else {
+      setPrivateUser(null);
+    }
   };
 
   console.log(applications, 'applications');
   console.log(user, 'user');
+  console.log(privateUser, 'privateUser');
 
   useEffect(() => {
     handleGetApplications(user_id);
@@ -114,9 +123,19 @@ export default function ChatApplications({route}: any) {
     >
       <View style={styles.container}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          <Text style={styles.boldText}>
-            Kutsu käyttäjä haastatteluun nähdäksesi heidän henkilötietonsa
-          </Text>
+          {interview_status === 'Pending' && (
+            <Text style={styles.boldText}>
+              Olet lähettänyt kutsun haastatteluun, odota vastausta
+            </Text>
+          )}
+          {interview_status === 'Accepted' && (
+            <Text style={styles.boldText}>
+              Haastattelu hyväksytty, näet työhakijan henkilötiedot
+            </Text>
+          )}
+          {interview_status === 'Declined' && (
+            <Text style={styles.boldText}>Haastattelu hylätty</Text>
+          )}
           <Text style={styles.bigHeader}>Hakemukset</Text>
           {applications.map((application) => (
             <Card
@@ -150,7 +169,18 @@ export default function ChatApplications({route}: any) {
           ))}
           <Card containerStyle={{borderRadius: 10}}>
             <Text style={styles.header}>Käyttäjän tiedot</Text>
+            <Text style={styles.text}>Nimi: {privateUser?.fullname}</Text>
             <Text style={styles.text}>Käyttäjänimi: {user?.username}</Text>
+            {interview_status === 'Accepted' && (
+              <>
+                <Text style={styles.text}>
+                  Käyttäjän sähköposti: {privateUser?.email}
+                </Text>
+                <Text style={styles.text}>
+                  Käyttäjän puhelinnumero: {privateUser?.phone}
+                </Text>
+              </>
+            )}
             <Text style={styles.text}>Itsestä: {user?.about_me}</Text>
             <Text style={styles.text}>
               Käyttäjän taidot:{' '}
@@ -181,7 +211,7 @@ export default function ChatApplications({route}: any) {
                   {exp.job_place}, {exp.job_title}
                 </Text>
                 <Text style={styles.text}>
-                  {exp.description ? exp.description : ''}
+                  {exp.description ? exp.description : 'Ei kuvausta'}
                 </Text>
                 <Text style={styles.text}>{exp.job_city}</Text>
                 <Text style={styles.text}>

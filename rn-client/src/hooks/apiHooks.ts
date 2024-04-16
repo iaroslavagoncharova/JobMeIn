@@ -27,6 +27,7 @@ import {
   KeyWord,
   UpdateJob,
   UnauthorizedUser,
+  Test,
 } from '../types/DBTypes';
 import {Values} from '../types/LocalTypes';
 import {
@@ -552,6 +553,9 @@ const useJobs = () => {
       );
       if (result) {
         setCompanyJobs(result);
+        return result;
+      } else {
+        setCompanyJobs([]);
       }
     } catch (e) {
       if ((e as Error).message === 'No jobs found') {
@@ -808,6 +812,7 @@ const useChats = () => {
           const chatWithMessages: ChatWithMessages = {
             ...thisChat,
             messages: [],
+            interview_status: chat.interview_status,
           };
           const msgs = await getMessagesFromChat(chat.chat_id);
           if (msgs) {
@@ -847,6 +852,8 @@ const useChats = () => {
       options,
     );
 
+    const interview = result.interview_status;
+
     if (result) {
       const chattingWith = await getOtherUserFromChat(chatId);
       if (!chattingWith) {
@@ -863,6 +870,7 @@ const useChats = () => {
       const chatWithMessages: ChatWithMessages = {
         ...thisChat,
         messages: [],
+        interview_status: interview,
       };
       const msgs = await getMessagesFromChat(chatId);
       if (msgs) {
@@ -946,6 +954,71 @@ const useChats = () => {
     getUserChats();
   }, [update]);
 
+  const sendInterviewInvitation = async (chat_id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        method: 'PUT',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = fetchData<MessageResponse>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/chats/interview_sent/' + chat_id,
+        options,
+      );
+      if (result) {
+        return result;
+      }
+    } catch (e) {
+      console.error('Error sending interview invitation', e);
+    }
+  };
+
+  const acceptInterviewInvitation = async (chat_id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        method: 'PUT',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = fetchData<MessageResponse>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/chats/interview_accept/' + chat_id,
+        options,
+      );
+      if (result) {
+        return result;
+      }
+    } catch (e) {
+      console.error('Error accepting interview invitation', e);
+    }
+  };
+
+  const declineInterviewInvitation = async (chat_id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        method: 'PUT',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = fetchData<MessageResponse>(
+        process.env.EXPO_PUBLIC_AUTH_API +
+          '/chats/interview_decline/' +
+          chat_id,
+        options,
+      );
+      if (result) {
+        return result;
+      }
+    } catch (e) {
+      console.error('Error declining interview invitation', e);
+    }
+  };
+
   return {
     getUserChats,
     getChatById,
@@ -954,6 +1027,9 @@ const useChats = () => {
     chats,
     thisChat,
     postMessageToChat,
+    sendInterviewInvitation,
+    acceptInterviewInvitation,
+    declineInterviewInvitation,
   };
 };
 
@@ -1213,7 +1289,6 @@ const useApplications = () => {
     }
   };
 
-
   return {
     getSavedApplications,
     getApplicationByJobId,
@@ -1254,6 +1329,132 @@ const useKeywords = () => {
   return {keywords, getKeywords};
 };
 
+const useTests = () => {
+  const [tests, setTests] = useState<Test[]>();
+  const {update} = useUpdateContext();
+  const getTests = async () => {
+    try {
+      const result = await fetchData<Test[]>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/tests',
+      );
+      if (result) {
+        setTests(result);
+      }
+    } catch (e) {
+      if ((e as Error).message === 'No tests found') {
+        setTests([]);
+      } else {
+        console.error('Error fetching tests', e);
+      }
+    }
+  };
+  useEffect(() => {
+    getTests();
+  }, [update]);
+
+  const getTestsByUser = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const options = {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = await fetchData<Test[]>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/tests/byuser',
+        options,
+      );
+      if (result) {
+        return result;
+      }
+    } catch (e) {
+      if ((e as Error).message === 'No tests found') {
+        return [];
+      } else {
+        console.error('Error fetching tests', e);
+      }
+    }
+  };
+
+  const deleteTest = async (id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        method: 'DELETE',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = await fetchData<MessageResponse>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/tests/' + id,
+        options,
+      );
+      if (result.message === 'Test deleted') {
+        getTests();
+      }
+    } catch (e) {
+      if ((e as Error).message === 'No tests found') {
+        return [];
+      }
+    }
+  };
+
+  const getJobsByTest = async (test_id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    return await fetchData<JobWithSkillsAndKeywords[]>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/tests/test/' + test_id,
+      options,
+    );
+  };
+
+  const addJobToTest = async (test_id: number, job_id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify({test_id}),
+    };
+    console.log(options, 'options');
+    return await fetchData<MessageResponse>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/tests/job/' + job_id,
+      options,
+    );
+  };
+
+  const deleteJobFromTest = async (test_id: number, job_id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    // job_id goes to body
+    const options = {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify({job_id}),
+    };
+    return await fetchData<MessageResponse>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/tests/test/' + test_id,
+      options,
+    );
+  };
+  return {
+    tests,
+    getTests,
+    getTestsByUser,
+    deleteTest,
+    getJobsByTest,
+    addJobToTest,
+    deleteJobFromTest,
+  };
+};
 export {
   useUser,
   useAuth,
@@ -1267,4 +1468,5 @@ export {
   useApplications,
   useAttachments,
   useKeywords,
+  useTests,
 };

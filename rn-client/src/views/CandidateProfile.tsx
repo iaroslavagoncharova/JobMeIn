@@ -126,8 +126,8 @@ export default function CandidateProfile() {
                 }}
               >
                 <Text style={styles.header3}>Taidot</Text>
-                {skills.map((skill) => (
-                  <Text>{skill.skill_name}</Text>
+                {skills.map((skill, index) => (
+                  <Text key={index}>{skill.skill_name}</Text>
                 ))}
               </Card>
             ) : (
