@@ -44,8 +44,8 @@ const Saved = () => {
         )}
         <Text style={styles.date}>
           Hae ennen{' '}
-          {item.job.deadline_date
-            .toString()
+          {item?.job.deadline_date
+            ?.toString()
             .substring(0, 10)
             .split('-')
             .reverse()
