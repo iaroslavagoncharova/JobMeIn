@@ -65,12 +65,17 @@ const Saved = () => {
   );
 
   return (
-    <FlatList
-      data={savedApplications}
-      renderItem={renderItem}
-      keyExtractor={(item) => item.job_id.toString()}
-      contentContainerStyle={styles.listContainer}
-    />
+    <>
+      <Text style={styles.text}>
+        Tässä ovat hakemukset työpaikkoihin, jotka olet swippaillut oikealle
+      </Text>
+      <FlatList
+        data={savedApplications}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.job_id.toString()}
+        contentContainerStyle={styles.listContainer}
+      />
+    </>
   );
 };
 
@@ -114,6 +119,12 @@ const styles = StyleSheet.create({
   matchPercentage: {
     color: '#ffffff',
     fontWeight: 'bold',
+  },
+  text: {
+    fontSize: 16,
+    color: '#5d71c9',
+    textAlign: 'center',
+    margin: 10,
   },
 });
 
