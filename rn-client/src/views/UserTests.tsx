@@ -24,12 +24,13 @@ import {
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
-import {useJobs, useTests} from '../hooks/apiHooks';
+import {useJobs, useTests, useUser} from '../hooks/apiHooks';
 import {Job, Test} from '../types/DBTypes';
 import useUpdateContext from '../hooks/updateHooks';
 
 const Tests = () => {
   const {update, setUpdate} = useUpdateContext();
+  const {getUserById} = useUser();
   const [userTests, setUserTests] = useState<Test[] | null>(null);
   const [tests, setTests] = useState<Test[] | null>(null);
   const {getAllTests, getCandidateTests, takeTest} = useTests();
@@ -45,14 +46,27 @@ const Tests = () => {
     }
   };
 
-  console.log(tests, 'tests');
-  console.log(userTests, 'userTests');
+  const [usernames, setUsernames] = useState<Record<number, string>>({});
 
   useEffect(() => {
     handleGetTests();
+    fetchUsernames();
   }, [update]);
 
-  const navigation: NavigationProp<ParamListBase> = useNavigation();
+  const fetchUsernames = async () => {
+    const usernames: Record<number, string> = {};
+    await Promise.all(
+      tests?.map(async (test) => {
+        if (test.user_id !== null) {
+          const user = await getUserById(test.user_id);
+          if (user) {
+            usernames[test.test_id] = user.username;
+          }
+        }
+      }) ?? [],
+    );
+    setUsernames(usernames);
+  };
 
   const styles = StyleSheet.create({
     container: {
@@ -175,7 +189,7 @@ const Tests = () => {
                       );
                     }
                   }}
-                  onPress={() => {
+                  onPress={async () => {
                     const isTestTaken = userTests?.find(
                       (userTest) => userTest.test_id === test.test_id,
                     );
@@ -187,6 +201,13 @@ const Tests = () => {
                     }
                   }}
                 >
+                  {test.user_id !== null ? (
+                    <Text style={styles.boldText}>
+                      {usernames[test.test_id] || 'Lataa...'}
+                    </Text>
+                  ) : (
+                    <Text style={styles.boldText}>JobMe In</Text>
+                  )}
                   <Text style={styles.boldText}>{test.test_type}</Text>
                   {userTests?.find(
                     (userTest) => userTest.test_id === test.test_id,
