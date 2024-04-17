@@ -141,7 +141,6 @@ CREATE TABLE JobTests (
 CREATE TABLE UserTests (
   test_id int(11) NOT NULL,
   user_id int(11) NOT NULL,
-  percentage int(11) NOT NULL,
   completed_at date NOT NULL,
   FOREIGN KEY (test_id) REFERENCES Tests (test_id),
   FOREIGN KEY (user_id) REFERENCES Users (user_id)
@@ -229,7 +228,7 @@ INSERT INTO Applications (user_id, job_id, status) VALUES (1, 2, 'Pending'), (1,
 INSERT INTO ApplicationLinks (application_id, link) VALUES (1, 'https://example.com/application1'), (2, 'https://example.com/application2'), (3, 'https://example.com/application3');
 INSERT INTO Tests (test_type, user_id, test_link) VALUES ('Java-testi',  2, 'https://example.com/java_test'), ('Persoonallisuustesti', NULL, 'https://example.com/personality_test'), ('Empatiatesti', 2, 'https://example.com/empathy_test');
 INSERT INTO JobTests (job_id, test_id) VALUES (1, 1), (2, 2), (3, 3);
-INSERT INTO UserTests (test_id, user_id, percentage, completed_at) VALUES (1, 1, 85, '2024-03-24'), (3, 1, 70, '2024-03-23');
+INSERT INTO UserTests (test_id, user_id, completed_at) VALUES (1, 1, '2024-03-24'), (3, 1, '2024-03-23');
 INSERT INTO Chats (user1_id, user2_id) VALUES (1, 2), (2, 3);
 INSERT INTO Messages (user_id, chat_id, message_text) VALUES (1, 1, 'Hei, olen maailman paras ohjelmistokehittäjä'), (2, 1, 'Ok, kiva');
 INSERT INTO Swipes (swiper_id, swiped_id, swipe_direction, swipe_type) VALUES (1, 2, 'right', 'candidate'), (2, 1, 'right', 'job');
