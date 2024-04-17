@@ -141,7 +141,7 @@ CREATE TABLE JobTests (
 CREATE TABLE UserTests (
   test_id int(11) NOT NULL,
   user_id int(11) NOT NULL,
-  completed_at date NOT NULL,
+  completed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (test_id) REFERENCES Tests (test_id),
   FOREIGN KEY (user_id) REFERENCES Users (user_id)
 );
