@@ -1,13 +1,17 @@
-import {View, Text, StyleSheet} from 'react-native';
-import React from 'react';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import React, {useState} from 'react';
 import {Card} from '@rneui/base';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {faAdd} from '@fortawesome/free-solid-svg-icons';
 import {Attachment} from '../types/DBTypes';
+import AttachmentPost from './AttachmentPost';
 
 export default function Attachments({
   attachments,
 }: {
   attachments: Attachment[];
 }) {
+  const [attachmentPosting, setAttachmentPosting] = useState();
   const styles = StyleSheet.create({
     card: {
       backgroundColor: '#ffffff',
@@ -48,6 +52,16 @@ export default function Attachments({
           <Text style={styles.text}>{attachment.link}</Text>
         </Card>
       ))}
+      {!attachmentPosting ? (
+        <TouchableOpacity onPress={() => setAttachmentPosting(true)}>
+          <FontAwesomeIcon icon={faAdd} style={styles.icon} size={30} />
+        </TouchableOpacity>
+      ) : (
+        <AttachmentPost
+          attachmentPosting={attachmentPosting}
+          setAttachmentPosting={setAttachmentPosting}
+        />
+      )}
     </Card>
   );
 }
