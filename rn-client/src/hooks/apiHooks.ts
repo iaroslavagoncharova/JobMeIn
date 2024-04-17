@@ -675,6 +675,27 @@ const useJobs = () => {
       console.error('Error deleting job', e);
     }
   };
+
+  const calculatePercentage = async (job_id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = fetchData<number>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/jobs/calculate/' + job_id,
+        options,
+      );
+      if (result) {
+        return result;
+      }
+    } catch (e) {
+      console.error('Error calculating percentage', e);
+    }
+  };
+
   return {
     getAllJobs,
     jobs,
@@ -687,6 +708,7 @@ const useJobs = () => {
     postJob,
     putJob,
     deleteJob,
+    calculatePercentage,
   };
 };
 
@@ -1366,6 +1388,20 @@ const useKeywords = () => {
 const useTests = () => {
   const [tests, setTests] = useState<Test[]>();
   const {update} = useUpdateContext();
+  const getAllTests = async () => {
+    try {
+      const result = await fetchData<Test[]>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/tests/all',
+      );
+      if (result) {
+        return result;
+      } else {
+        return [];
+      }
+    } catch (e) {
+      console.error('Error fetching tests', e);
+    }
+  };
   const getTests = async () => {
     try {
       const result = await fetchData<Test[]>(
@@ -1526,6 +1562,7 @@ const useTests = () => {
       options,
     );
   };
+
   return {
     tests,
     getTests,
@@ -1536,6 +1573,7 @@ const useTests = () => {
     getJobsByTest,
     addJobToTest,
     deleteJobFromTest,
+    getAllTests,
   };
 };
 

@@ -6,15 +6,32 @@ import {
   faArrowAltCircleLeft,
   faArrowAltCircleRight,
 } from '@fortawesome/free-solid-svg-icons';
-import {JobWithSkillsAndKeywords, User} from '../types/DBTypes';
-import {useUser} from '../hooks/apiHooks';
+import {JobWithSkillsAndKeywords, UnauthorizedUser} from '../types/DBTypes';
+import {useJobs, useUser} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
 
 export default function JobAd({job}: {job: JobWithSkillsAndKeywords}) {
+  const {calculatePercentage} = useJobs();
   const [currentScreen, setCurrentScreen] = useState<number>(0);
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UnauthorizedUser | null>(null);
   const {update} = useUpdateContext();
   const {getUserById} = useUser();
+  const [percentage, setPercentage] = useState<number>(0);
+  const handleCalculatePercentage = async (job_id: number) => {
+    const result = await calculatePercentage(job_id);
+    console.log(result);
+    if (result) {
+      setPercentage(result);
+    }
+  };
+
+  console.log(job, 'job');
+  console.log(percentage, 'percentage');
+
+  useEffect(() => {
+    handleCalculatePercentage(job.job_id);
+  }, []);
+
   const styles = StyleSheet.create({
     card: {
       width: 350,
@@ -129,7 +146,7 @@ export default function JobAd({job}: {job: JobWithSkillsAndKeywords}) {
             <Text style={styles.header2}>Yritys: {job.username}</Text>
             <Text style={styles.header3}>Sijainti: {job.job_address}</Text>
             <Text style={styles.header3}>Palkka: {job.salary}€/kk</Text>
-            <Text style={styles.percent}>56%</Text>
+            <Text style={styles.percent}>{percentage ? percentage : 0}%</Text>
             <Text style={styles.skills}>{job.skills}</Text>
             <Text style={styles.keywords}>{job.keywords}</Text>
           </>

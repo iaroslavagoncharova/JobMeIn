@@ -15,7 +15,11 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import {useApplications, useJobs, useUser} from '../hooks/apiHooks';
-import {Application, JobWithSkillsAndKeywords, User} from '../types/DBTypes';
+import {
+  Application,
+  JobWithSkillsAndKeywords,
+  UnauthorizedUser
+} from '../types/DBTypes';
 import useUpdateContext from '../hooks/updateHooks';
 
 export default function SingleApplication({route}: {route: any}) {
@@ -35,7 +39,7 @@ export default function SingleApplication({route}: {route: any}) {
     getApplicationById,
     sendApplication,
   } = useApplications();
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UnauthorizedUser | null>(null);
   const [job, setJob] = useState<JobWithSkillsAndKeywords | null>(null);
 
   const getEmployerInfo = async () => {
