@@ -4,7 +4,7 @@ type MessageResponse = {
   message: string;
 };
 
-type AttachmentResponse = MessageResponse & {
+export type MediaResponse = MessageResponse & {
   media: Attachment | Attachment[];
 };
 
