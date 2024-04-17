@@ -187,7 +187,6 @@ export default function SingleJob({route}: {route: any}) {
     ]);
   };
 
-  console.log(job, 'job');
   const styles = StyleSheet.create({
     container: {
       backgroundColor: '#ffffff',

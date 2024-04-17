@@ -19,7 +19,7 @@ import {
 } from '@react-navigation/native';
 import {useJobs, useTests} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
-import {Job} from '../types/DBTypes';
+import {Job, Test} from '../types/DBTypes';
 
 export default function SingleTest({route}: {route: any}) {
   const test = route.params.test;
@@ -27,8 +27,15 @@ export default function SingleTest({route}: {route: any}) {
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const {update, setUpdate} = useUpdateContext();
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const {getJobsByTest, addJobToTest, deleteJobFromTest, deleteTest} =
-    useTests();
+  const [newTest, setNewTest] = useState<Test>(test);
+  const {
+    getJobsByTest,
+    addJobToTest,
+    deleteJobFromTest,
+    deleteTest,
+    postTest,
+    putTest,
+  } = useTests();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [allJobs, setAllJobs] = useState<Job[]>([]);
   const {getJobsByCompany} = useJobs();
@@ -68,13 +75,10 @@ export default function SingleTest({route}: {route: any}) {
   };
 
   const handleAddJob = async () => {
-    // Add job to test
-    console.log(selectedJob, 'selectedJob');
     if (!selectedJob) {
       return;
     }
     const result = await addJobToTest(test.test_id, selectedJob);
-    console.log(result, 'result');
     if (result) {
       setSelectedJob(null);
       setUpdate((prevState) => !prevState);
@@ -82,16 +86,12 @@ export default function SingleTest({route}: {route: any}) {
   };
 
   const handleRemoveJob = async (job: Job) => {
-    console.log(job, 'job');
     const result = await deleteJobFromTest(test.test_id, job.job_id);
-    console.log(result, 'result');
     if (result) {
       setUpdate((prevState) => !prevState);
       navigation.navigate('Testit');
     }
   };
-  console.log(jobs, 'jobs');
-  console.log(allJobs, 'allJobs');
 
   const handleDeleteTest = async () => {
     Alert.alert('Poistetaanko testi?', '', [
@@ -112,6 +112,22 @@ export default function SingleTest({route}: {route: any}) {
     ]);
   };
 
+  const handleEdit = async (data: any) => {
+    console.log(data, 'data');
+    const result = await putTest(test.test_id, data);
+    if (result) {
+      console.log(result, 'result');
+      setNewTest((prevTest) => ({
+        ...prevTest,
+        test_type: result.test.test_type,
+        test_link: result.test.test_link,
+      }));
+      setIsEditing(false);
+      resetForm();
+      setUpdate((prevState) => !prevState);
+    }
+  };
+
   const placeholder = {
     label: 'Valitse työpaikka',
     value: null,
@@ -122,15 +138,12 @@ export default function SingleTest({route}: {route: any}) {
     const testJobs = allJobs.filter(
       (job) => !jobs.some((usedJob) => usedJob.job_id === job.job_id),
     );
-    console.log(testJobs, 'testJobs');
 
     const items = testJobs.map((job) => ({
       label: job.job_title,
       value: job.job_id,
       color: '#5d71c9',
     }));
-
-    console.log(items, 'items');
     return items;
   };
 
@@ -228,8 +241,12 @@ export default function SingleTest({route}: {route: any}) {
         <Card containerStyle={{borderRadius: 10}}>
           {!isEditing ? (
             <>
-              <Text style={styles.bigHeader}>{test.test_type}</Text>
-              <Text style={styles.text}>{test.test_link}</Text>
+              <Text style={styles.bigHeader}>
+                {newTest.test_type ? newTest.test_type : test.test_type}
+              </Text>
+              <Text style={styles.text}>
+                {newTest.test_link ? newTest.test_link : test.test_link}
+              </Text>
               <Text style={styles.boldText}>
                 Käytössä seuraavissa työpaikoissa
               </Text>
@@ -289,12 +306,11 @@ export default function SingleTest({route}: {route: any}) {
                     onBlur={onBlur}
                     onChangeText={onChange}
                     value={value}
-                    placeholder="Testin nimi"
+                    placeholder={test.test_type}
                     multiline={true}
                   />
                 )}
                 name="test_type"
-                defaultValue={test.test_type}
               />
               <Controller
                 control={control}
@@ -304,12 +320,11 @@ export default function SingleTest({route}: {route: any}) {
                     onBlur={onBlur}
                     onChangeText={onChange}
                     value={value}
-                    placeholder="Testin linkki (Google Forms, Typeform, jne.)"
+                    placeholder={test.test_link}
                     multiline={true}
                   />
                 )}
                 name="test_link"
-                defaultValue={test.test_link}
               />
             </>
           )}
@@ -334,7 +349,9 @@ export default function SingleTest({route}: {route: any}) {
                 <Button
                   title={'Tallenna muutokset'}
                   buttonStyle={styles.saveButton}
-                  onPress={() => setIsEditing(false)}
+                  onPress={() => {
+                    handleSubmit(handleEdit)();
+                  }}
                 />
                 <Button
                   title={'Peruuta'}
