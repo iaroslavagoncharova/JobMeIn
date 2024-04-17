@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useEffect, useState} from 'react';
 import {Alert} from 'react-native';
+import * as FileSystem from 'expo-file-system';
 import {fetchData} from '../lib/functions';
 import {
   Chat,
@@ -1485,6 +1486,32 @@ const useTests = () => {
     deleteJobFromTest,
   };
 };
+
+const useFile = () => {
+  const postFile = async (
+    uri: string,
+    token: string,
+  ): Promise<UploadResponse> => {
+    console.log('loading....');
+    const fileResult = await FileSystem.uploadAsync(
+      process.env.EXPO_PUBLIC_UPLOAD_SERVER + '/upload',
+      uri,
+      {
+        httpMethod: 'POST',
+        uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+        fieldName: 'file',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      },
+    );
+    console.log('loading finished');
+    return fileResult.body ? JSON.parse(fileResult.body) : null;
+  };
+
+  return {postFile};
+};
+
 export {
   useUser,
   useAuth,
@@ -1499,4 +1526,5 @@ export {
   useAttachments,
   useKeywords,
   useTests,
+  useFile,
 };
