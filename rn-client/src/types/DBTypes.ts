@@ -126,6 +126,11 @@ type ApplicationLink = {
   link: string;
 };
 
+export type UploadAttachment = {
+  attachment_name: string;
+  file: File | null;
+};
+
 export type AttachmentInfo = {
   attachment_name: string;
   filename: string;

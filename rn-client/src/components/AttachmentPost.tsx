@@ -1,5 +1,5 @@
 import {Text, StyleSheet, TextInput, TouchableOpacity} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {Button} from '@rneui/base';
 import * as DocumentPicker from 'expo-document-picker';
@@ -16,8 +16,10 @@ export default function AttachmentPost({
   setAttachmentPosting: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [file, setFile] = useState<File | null>(null);
+  const [fileUri, setFileUri] = useState<string>('');
+  const [fileName, setFileName] = useState<string>('');
   const {postFile} = useFile();
-  const {postAttachment} = useAttachments();
+  const {attachments, getUserAttachments, postAttachment} = useAttachments();
   const {update, setUpdate} = useUpdateContext();
   const [open, setOpen] = useState<boolean>(false);
   const {postEducation} = useEducation();
@@ -36,6 +38,10 @@ export default function AttachmentPost({
     reset(values);
   };
 
+  useEffect(() => {
+    getUserAttachments();
+  });
+
   const showMode = () => {
     setOpen(true);
   };
@@ -53,7 +59,7 @@ export default function AttachmentPost({
       if (!token || !file) {
         return;
       }
-      const fileResult = await postFile(file, token);
+      const fileResult = await postFile(fileUri, token);
       if (fileResult) {
         await postAttachment(fileResult, attachment_name);
         setUpdate((prevState) => !prevState);
@@ -156,8 +162,11 @@ export default function AttachmentPost({
                     'application/pdf',
                     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                   ],
+                  copyToCacheDirectory: true,
                 });
                 if (!res.canceled) {
+                  setFileUri(res.assets[0].uri);
+                  setFileName(res.assets[0].name);
                   onChange(res);
                 } else {
                   console.log('cancelled');
@@ -167,11 +176,7 @@ export default function AttachmentPost({
               }
             }}
           >
-            {value?.name ? (
-              <Text>{value.name}</Text>
-            ) : (
-              <Text>Valitse tiedosto</Text>
-            )}
+            {fileUri ? <Text>{fileName}</Text> : <Text>Valitse tiedosto</Text>}
           </TouchableOpacity>
         )}
         name="file"
