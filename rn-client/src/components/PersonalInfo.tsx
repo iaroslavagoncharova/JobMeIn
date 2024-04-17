@@ -15,12 +15,14 @@ import {
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
+import RNPickerSelect from 'react-native-picker-select';
 import {useUserContext} from '../hooks/ContextHooks';
 import {UpdateUser, User} from '../types/DBTypes';
 
 export default function PersonalInfo({user}: {user: User}) {
   const [personalEditing, setPersonalEditing] = useState<boolean>(false);
   const {handleEdit} = useUserContext();
+  const [status, setStatus] = useState<string | null>(null);
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const values: UpdateUser = {
     email: user.email,
@@ -46,6 +48,9 @@ export default function PersonalInfo({user}: {user: User}) {
 
   const edit = async (inputs: UpdateUser) => {
     console.log(inputs, 'inputs');
+    if (status) {
+      inputs.status = status;
+    }
     handleEdit(inputs);
     setPersonalEditing(!personalEditing);
   };
@@ -58,6 +63,16 @@ export default function PersonalInfo({user}: {user: User}) {
     return unsubscribe;
   }, []);
 
+  const placeholder = {
+    label: 'Valitse status',
+    value: null,
+    color: '#5d71c9',
+  };
+
+  const items = [
+    {label: 'Aktiivinen', value: 'Active', color: '#5d71c9'},
+    {label: 'Ei aktiivinen', value: 'Paused', color: '#5d71c9'},
+  ];
   const styles = StyleSheet.create({
     card: {
       backgroundColor: '#ffffff',
@@ -139,6 +154,14 @@ export default function PersonalInfo({user}: {user: User}) {
                 <Text style={styles.text}>{user?.username}</Text>
                 <Text style={styles.boldText}>Puhelinnumero:</Text>
                 <Text style={styles.text}>{user?.phone}</Text>
+                <Text style={styles.boldText}>Status:</Text>
+                <Text style={styles.text}>
+                  {user?.status
+                    ? user?.status === 'Active'
+                      ? 'Aktiivinen'
+                      : 'Ei aktiivinen'
+                    : 'Et ole määritellyt statusta, työnhakusi ei ole aktiivinen'}
+                </Text>
                 <Text style={styles.boldText}>Kerro itsestäsi:</Text>
                 <Text style={styles.text}>
                   {user?.about_me ? user?.about_me : 'Ei kuvailua'}
@@ -184,6 +207,21 @@ export default function PersonalInfo({user}: {user: User}) {
                     />
                   )}
                   name="phone"
+                />
+                <RNPickerSelect
+                  placeholder={placeholder}
+                  items={items}
+                  value={user.status}
+                  onValueChange={(value) => {
+                    setStatus(value);
+                  }}
+                  style={{
+                    inputIOS: styles.input,
+                    inputAndroid: styles.input,
+                    placeholder: {
+                      color: '#5d71c9',
+                    },
+                  }}
                 />
                 <Controller
                   control={control}

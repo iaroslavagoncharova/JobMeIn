@@ -36,6 +36,7 @@ import {
   LoginResponse,
   MediaResponse,
   MessageResponse,
+  TestResponse,
   UploadResponse,
   UserResponse,
 } from '../types/MessageTypes';
@@ -1462,6 +1463,53 @@ const useTests = () => {
     );
   };
 
+  const postTest = async (test: Test) => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        },
+        body: JSON.stringify(test),
+      };
+      const result = await fetchData<MessageResponse>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/tests',
+        options,
+      );
+      if (result) {
+        getTests();
+      }
+    } catch (e) {
+      console.error('Error posting test', e);
+    }
+  };
+
+  const putTest = async (test_id: number, test: Test) => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        },
+        body: JSON.stringify(test),
+      };
+      const result = await fetchData<TestResponse>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/tests/' + test_id,
+        options,
+      );
+      if (result) {
+        getTests();
+        return result;
+      }
+    } catch (e) {
+      console.error('Error updating test', e);
+    }
+  };
+
   const deleteJobFromTest = async (test_id: number, job_id: number) => {
     const token = await AsyncStorage.getItem('token');
     // job_id goes to body
@@ -1482,6 +1530,8 @@ const useTests = () => {
     tests,
     getTests,
     getTestsByUser,
+    postTest,
+    putTest,
     deleteTest,
     getJobsByTest,
     addJobToTest,
