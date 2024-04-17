@@ -1063,7 +1063,34 @@ const useAttachments = () => {
   useEffect(() => {
     getUserAttachments();
   }, [update]);
-  return {getUserAttachments, attachments};
+
+  const postAttachment = async (
+    file: UploadResponse,
+    attachmentName: string,
+  ) => {
+    const token = await AsyncStorage.getItem('token');
+
+    const attachment: AttachmentInfo = {
+      attachment_name: attachmentName,
+      filename: file.data.filename,
+      filesize: file.data.filesize,
+      media_type: file.data.media_type,
+    };
+
+    const options = {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify(attachment),
+    };
+
+    return await fetchData<MediaResponse>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/profile/attachments',
+      options,
+    );
+  };
+  return {getUserAttachments, attachments, postAttachment};
 };
 
 const useApplications = () => {

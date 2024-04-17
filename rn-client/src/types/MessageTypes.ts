@@ -1,7 +1,11 @@
-import {Swipe, User} from './DBTypes';
+import {Attachment, Swipe, User} from './DBTypes';
 
 type MessageResponse = {
   message: string;
+};
+
+type AttachmentResponse = MessageResponse & {
+  media: Attachment | Attachment[];
 };
 
 type ErrorResponse = MessageResponse & {
