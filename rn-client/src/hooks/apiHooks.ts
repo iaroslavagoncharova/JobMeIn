@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useEffect, useState} from 'react';
 import {Alert} from 'react-native';
+import * as FileSystem from 'expo-file-system';
 import {fetchData} from '../lib/functions';
 import {
   Chat,
@@ -28,12 +29,15 @@ import {
   UpdateJob,
   UnauthorizedUser,
   Test,
+  AttachmentInfo,
 } from '../types/DBTypes';
 import {Values} from '../types/LocalTypes';
 import {
   LoginResponse,
+  MediaResponse,
   MessageResponse,
   TestResponse,
+  UploadResponse,
   UserResponse,
 } from '../types/MessageTypes';
 import useUpdateContext from './updateHooks';
@@ -1064,7 +1068,36 @@ const useAttachments = () => {
   useEffect(() => {
     getUserAttachments();
   }, [update]);
-  return {getUserAttachments, attachments};
+
+  const postAttachment = async (
+    file: UploadResponse,
+    attachmentName: string,
+  ) => {
+    const token = await AsyncStorage.getItem('token');
+
+    const attachment: AttachmentInfo = {
+      attachment_name: attachmentName,
+      filename: file.data.filename,
+      filesize: file.data.filesize,
+      media_type: file.data.media_type,
+    };
+
+    const options = {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(attachment),
+    };
+
+    console.log('starting fetch');
+    return await fetchData<MediaResponse>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/profile/attachments',
+      options,
+    );
+  };
+  return {getUserAttachments, attachments, postAttachment};
 };
 
 const useApplications = () => {
@@ -1505,6 +1538,32 @@ const useTests = () => {
     deleteJobFromTest,
   };
 };
+
+const useFile = () => {
+  const postFile = async (
+    uri: string,
+    token: string,
+  ): Promise<UploadResponse> => {
+    console.log('loading....');
+    const fileResult = await FileSystem.uploadAsync(
+      process.env.EXPO_PUBLIC_UPLOAD_SERVER + '/upload',
+      uri,
+      {
+        httpMethod: 'POST',
+        uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+        fieldName: 'file',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      },
+    );
+    console.log('file posted');
+    return fileResult.body ? JSON.parse(fileResult.body) : null;
+  };
+
+  return {postFile};
+};
+
 export {
   useUser,
   useAuth,
@@ -1519,4 +1578,5 @@ export {
   useAttachments,
   useKeywords,
   useTests,
+  useFile,
 };
