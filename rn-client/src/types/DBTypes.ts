@@ -126,6 +126,13 @@ type ApplicationLink = {
   link: string;
 };
 
+export type AttachmentInfo = {
+  attachment_name: string;
+  filename: string;
+  filesize: number;
+  media_type: string;
+};
+
 type Test = {
   test_id: number;
   test_type: string;
