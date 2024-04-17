@@ -140,9 +140,6 @@ const Profile = () => {
               <Edu education={education} />
               <ExperiencePage experience={experience} />
               <Skills skills={skills} allSkills={allSkills} />
-              <Card containerStyle={styles.card}>
-                <Text style={styles.header}>Testit</Text>
-              </Card>
               <Attachments attachments={attachments} />
               <Button
                 title="Poista profiili"

@@ -1,5 +1,6 @@
 import {Card} from '@rneui/base';
 import {
+  Alert,
   Linking,
   ScrollView,
   StyleSheet,
@@ -9,7 +10,14 @@ import {
 } from 'react-native';
 import {useEffect, useState} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faEdit, faPlusCircle, faTrash} from '@fortawesome/free-solid-svg-icons';
+import {
+  faCircle,
+  faCircleCheck,
+  faCirclePlus,
+  faEdit,
+  faPlusCircle,
+  faTrash,
+} from '@fortawesome/free-solid-svg-icons';
 import {
   Link,
   NavigationProp,
@@ -24,16 +32,21 @@ const Tests = () => {
   const {update, setUpdate} = useUpdateContext();
   const [userTests, setUserTests] = useState<Test[] | null>(null);
   const [tests, setTests] = useState<Test[] | null>(null);
-  const {getAllTests} = useTests();
+  const {getAllTests, getCandidateTests, takeTest} = useTests();
 
   const handleGetTests = async () => {
     const tests = await getAllTests();
     if (tests) {
       setTests(tests);
     }
+    const userTests = await getCandidateTests();
+    if (userTests) {
+      setUserTests(userTests);
+    }
   };
 
   console.log(tests, 'tests');
+  console.log(userTests, 'userTests');
 
   useEffect(() => {
     handleGetTests();
@@ -83,6 +96,7 @@ const Tests = () => {
       alignItems: 'center',
       borderRadius: 10,
       borderColor: '#5d71c9',
+      width: 300,
     },
     cancelButton: {
       margin: 5,
@@ -117,32 +131,73 @@ const Tests = () => {
     >
       <View style={styles.container}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          <Text style={styles.header}>Tässä näet kaikki testit</Text>
+          <Text style={styles.bigHeader}>Testit</Text>
+          <Text style={styles.text}>
+            Klikkaamalla testiä pääset suorittamaan sen KERRAN, sen jälkeen
+            paina pitkään testiä ja valitse 'Kyllä' merkitäksesi testin
+            suoritetuksi.
+          </Text>
           {tests ? (
             tests.map((test) => (
-              <Card containerStyle={{borderRadius: 10}} key={test.test_id}>
+              <Card
+                containerStyle={{
+                  borderRadius: 10,
+                  alignItems: 'center',
+                }}
+                key={test.test_id}
+              >
                 <TouchableOpacity
-                  onPress={() => Linking.openURL(test.test_link!)}
+                  onLongPress={() => {
+                    const isTestTaken = userTests?.find(
+                      (userTest) => userTest.test_id === test.test_id,
+                    );
+
+                    if (isTestTaken) {
+                      Alert.alert('Huomio!', 'Testi on jo suoritettu.');
+                    } else {
+                      Alert.alert(
+                        'Oletko suorittanut testin?',
+                        '',
+                        [
+                          {
+                            text: 'Kyllä',
+                            onPress: () => {
+                              takeTest(test.test_id);
+                              setUpdate((prevState) => !prevState);
+                            },
+                          },
+                          {
+                            text: 'Peruuta',
+                            onPress: () => console.log('Peruuta'),
+                          },
+                        ],
+                        {cancelable: true},
+                      );
+                    }
+                  }}
+                  onPress={() => {
+                    const isTestTaken = userTests?.find(
+                      (userTest) => userTest.test_id === test.test_id,
+                    );
+
+                    if (isTestTaken) {
+                      Alert.alert('Huomio!', 'Testi on jo suoritettu.');
+                    } else {
+                      Linking.openURL(test.test_link!);
+                    }
+                  }}
                 >
                   <Text style={styles.boldText}>{test.test_type}</Text>
-                  <Text style={styles.text}>{test.test_link}</Text>
-                </TouchableOpacity>
-              </Card>
-            ))
-          ) : (
-            <Card containerStyle={{borderRadius: 10}}>
-              <Text style={styles.text}>Ei testejä</Text>
-            </Card>
-          )}
-          <Text style={styles.bigHeader}>Minun testit</Text>
-          {userTests ? (
-            userTests.map((test) => (
-              <Card containerStyle={{borderRadius: 10}} key={test.test_id}>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('Testi', {test})}
-                >
-                  <Text style={styles.boldText}>{test.test_type}</Text>
-                  <Text style={styles.text}>{test.test_link}</Text>
+                  {userTests?.find(
+                    (userTest) => userTest.test_id === test.test_id,
+                  ) ? (
+                    <FontAwesomeIcon
+                      icon={faCircleCheck}
+                      color={'#5d71c9'}
+                      size={25}
+                      style={{left: 90}}
+                    />
+                  ) : null}
                 </TouchableOpacity>
               </Card>
             ))

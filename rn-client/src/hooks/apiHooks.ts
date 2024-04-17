@@ -1563,6 +1563,45 @@ const useTests = () => {
     );
   };
 
+  const getCandidateTests = async () => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      return await fetchData<Test[]>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/tests/candidate',
+        options,
+      );
+    } catch (e) {
+      if ((e as Error).message === 'No tests found') {
+        return [];
+      } else {
+        console.error('Error fetching tests', e);
+      }
+    }
+  };
+
+  const takeTest = async (test_id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      return await fetchData<TestResponse>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/tests/take/test/' + test_id,
+        options,
+      );
+    } catch (e) {
+      console.error('Error taking test', e);
+    }
+  };
+
   return {
     tests,
     getTests,
@@ -1574,6 +1613,8 @@ const useTests = () => {
     addJobToTest,
     deleteJobFromTest,
     getAllTests,
+    getCandidateTests,
+    takeTest,
   };
 };
 
