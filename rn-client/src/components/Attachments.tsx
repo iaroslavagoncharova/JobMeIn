@@ -11,7 +11,7 @@ export default function Attachments({
 }: {
   attachments: Attachment[];
 }) {
-  const [attachmentPosting, setAttachmentPosting] = useState();
+  const [attachmentPosting, setAttachmentPosting] = useState<boolean>(false);
   const styles = StyleSheet.create({
     card: {
       backgroundColor: '#ffffff',
@@ -27,6 +27,13 @@ export default function Attachments({
       fontSize: 20,
       fontWeight: 'bold',
       textAlign: 'center',
+    },
+    icon: {
+      margin: 10,
+      backgroundColor: '#5d71c9',
+      color: '#ffffff',
+      borderRadius: 50,
+      left: '70%',
     },
     text: {
       color: '#5d71c9',
@@ -49,7 +56,7 @@ export default function Attachments({
           containerStyle={{borderRadius: 10}}
         >
           <Text style={styles.boldText}>{attachment.attachment_name}</Text>
-          <Text style={styles.text}>{attachment.link}</Text>
+          <Text style={styles.text}>{attachment.filename}</Text>
         </Card>
       ))}
       {!attachmentPosting ? (

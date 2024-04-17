@@ -38,10 +38,6 @@ export default function AttachmentPost({
     reset(values);
   };
 
-  useEffect(() => {
-    getUserAttachments();
-  });
-
   const showMode = () => {
     setOpen(true);
   };
@@ -56,15 +52,19 @@ export default function AttachmentPost({
     try {
       const token = await AsyncStorage.getItem('token');
       const {attachment_name, file} = inputs;
+      console.log('fileUri', fileUri);
+      console.log(inputs);
       if (!token || !file) {
         return;
       }
       const fileResult = await postFile(fileUri, token);
       if (fileResult) {
-        await postAttachment(fileResult, attachment_name);
-        setUpdate((prevState) => !prevState);
-        resetForm();
-        setAttachmentPosting(false);
+        const postResult = await postAttachment(fileResult, attachment_name);
+        if (postResult) {
+          setUpdate((prevState) => !prevState);
+          resetForm();
+          setAttachmentPosting(false);
+        }
       }
     } catch (e) {
       console.log((e as Error).message);

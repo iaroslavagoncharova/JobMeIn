@@ -106,8 +106,10 @@ type KeywordsJob = {
 type Attachment = {
   attachment_id: number;
   attachment_name: string;
+  filename: string;
+  filesize: number;
+  media_type: string;
   user_id: number;
-  link: string;
 };
 
 type Application = {

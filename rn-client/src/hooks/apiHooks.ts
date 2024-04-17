@@ -1085,10 +1085,12 @@ const useAttachments = () => {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(attachment),
     };
 
+    console.log('starting fetch');
     return await fetchData<MediaResponse>(
       process.env.EXPO_PUBLIC_AUTH_API + '/profile/attachments',
       options,
@@ -1505,7 +1507,7 @@ const useFile = () => {
         },
       },
     );
-    console.log('loading finished');
+    console.log('file posted');
     return fileResult.body ? JSON.parse(fileResult.body) : null;
   };
 
