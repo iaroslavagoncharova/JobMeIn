@@ -2,6 +2,10 @@ DROP DATABASE IF EXISTS JobMeIn;
 CREATE DATABASE JobMeIn;
 USE JobMeIn;
 
+CREATE user 'jobuser'@'localhost' identified by 'MeOllaanRyhma3!';  
+GRANT ALL PRIVILEGES on JobMeIn.* to 'jobuser'@'localhost'; 
+FLUSH PRIVILEGES; 
+
 CREATE TABLE UserLevels (
   level_id int(11) AUTO_INCREMENT PRIMARY KEY,
   level_name varchar(255) NOT NULL
@@ -147,6 +151,7 @@ CREATE TABLE Chats (
   chat_id int(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
   user1_id int(11) NOT NULL,
   user2_id int(11) NOT NULL,
+  interview_status varchar(255),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -213,7 +218,7 @@ INSERT INTO Users (username, password, email, user_level_id, fullname, phone, us
 INSERT INTO Users (username, password, email, user_level_id, fullname, phone, user_type) VALUES ('Jane', '67890', 'jane@example.com', 1, 'Jane Smith', '+358110000000', 'candidate');
 INSERT INTO Education (user_id, school, degree, field, graduation) VALUES (1, 'ammattikoulu', 'ammattitutkinto', 'matkailu', '2022-06-01'), (2, 'amk', 'alempi korkeakoulututkinto', 'it', '2023-08-20'), (3, 'amk', 'ylempi korkeakoulututkinto', 'tietoturva', '2024-03-24');
 INSERT INTO JobExperience (user_id, job_title, job_place, job_city, start_date) VALUES (1, 'barista', 'cafe', 'Helsinki', '2022-10-10'), (2, 'hr-manager', 'Kamilla Oy', 'Espoo', '2023-11-11'), (3, 'admin', 'JobMeIn Oy', 'Helsinki', '2024-03-24');
-INSERT INTO Attachments (attachment_name, user_id, filename, filesize, media_type) VALUES ('Resume', 1, 'https://example.com/resume.pdf', 356, 'pdf'), ('Cover Letter', 2, 'https://example.com/cover_letter.docx', 1000, 'docx'), ('Portfolio', 3, 'https://example.com/portfolio.pdf', 666, 'pdf');
+INSERT INTO Attachments (attachment_name, user_id, filename, filesize, media_type) VALUES ('Resume', 1, 'https://example.com/resume.pdf', 256, 'pdf'), ('Cover Letter', 2, 'https://example.com/cover_letter.docx', 24626, 'docx'), ('Portfolio', 3, 'https://example.com/portfolio.pdf', 500, 'pdf');
 INSERT INTO JobAds (job_address, job_title, salary, user_id, job_description, deadline_date, field) VALUES ('Helsinki', 'Software Engineer', '7000', 2, 'Etsitään senior software engineerin', '2024-04-30', 'IT'), ('Vantaa', 'Tarjoilija', '1200', 2, 'Kesätöitä opiskelijoille', '2024-04-15', 'Ravintola- ja catering'), ('Joensuu', 'Marjamyyjä', '800', 2, 'Kesätöitä Joensuun torille toukokuusta elokuuhun', '2024-05-15', 'Kauppa');
 INSERT INTO Skills (skill_name, type) VALUES ('Java', 'Kova'), ('Asiakaspalvelu', 'Pehmeä'), ('Suomen kieli', 'Kova');
 INSERT INTO JobSkills (skill_id, job_id) VALUES (1, 1), (2, 2), (3, 3);
