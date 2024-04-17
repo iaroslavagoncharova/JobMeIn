@@ -4,8 +4,16 @@ type MessageResponse = {
   message: string;
 };
 
-export type MediaResponse = MessageResponse & {
+type MediaResponse = MessageResponse & {
   media: Attachment | Attachment[];
+};
+
+type UploadResponse = MessageResponse & {
+  data: {
+    filename: string;
+    media_type: string;
+    filesize: number;
+  };
 };
 
 type ErrorResponse = MessageResponse & {
@@ -28,6 +36,8 @@ type SwipeResponse = MessageResponse & {
 
 export type {
   MessageResponse,
+  MediaResponse,
+  UploadResponse,
   ErrorResponse,
   UserResponse,
   LoginResponse,

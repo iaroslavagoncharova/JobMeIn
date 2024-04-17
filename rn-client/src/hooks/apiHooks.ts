@@ -1,4 +1,3 @@
-import { AttachmentInfo } from './../types/DBTypes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useEffect, useState} from 'react';
 import {Alert} from 'react-native';
@@ -29,12 +28,14 @@ import {
   UpdateJob,
   UnauthorizedUser,
   Test,
+  AttachmentInfo,
 } from '../types/DBTypes';
 import {Values} from '../types/LocalTypes';
 import {
   LoginResponse,
   MediaResponse,
   MessageResponse,
+  UploadResponse,
   UserResponse,
 } from '../types/MessageTypes';
 import useUpdateContext from './updateHooks';
