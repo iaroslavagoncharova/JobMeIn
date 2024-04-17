@@ -270,7 +270,7 @@ export default function ReceivedApplication({route}: {route: any}) {
               >
                 <Text style={styles.text}>{attachment.attachment_name}</Text>
                 <Text style={styles.text}>
-                  {attachment.link ? attachment.link : 'Ei linkkiä'}
+                  {attachment.filename ? attachment.filename : 'Ei linkkiä'}
                 </Text>
               </Card>
             ))}
