@@ -1,6 +1,5 @@
 import {Text, View, StyleSheet, ScrollView, Alert} from 'react-native';
 import {Button, Card} from '@rneui/base';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   NavigationProp,
   ParamListBase,
