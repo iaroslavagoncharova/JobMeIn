@@ -106,8 +106,10 @@ type KeywordsJob = {
 type Attachment = {
   attachment_id: number;
   attachment_name: string;
+  filename: string;
+  filesize: number;
+  media_type: string;
   user_id: number;
-  link: string;
 };
 
 type Application = {
@@ -124,6 +126,18 @@ type ApplicationLink = {
   link_id: number;
   application_id: number;
   link: string;
+};
+
+export type UploadAttachment = {
+  attachment_name: string;
+  file: File | null;
+};
+
+export type AttachmentInfo = {
+  attachment_name: string;
+  filename: string;
+  filesize: number;
+  media_type: string;
 };
 
 type Test = {

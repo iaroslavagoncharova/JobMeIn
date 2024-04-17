@@ -1,7 +1,19 @@
-import {Swipe, User} from './DBTypes';
+import {Attachment, Swipe, User} from './DBTypes';
 
 type MessageResponse = {
   message: string;
+};
+
+type MediaResponse = MessageResponse & {
+  media: Attachment | Attachment[];
+};
+
+type UploadResponse = MessageResponse & {
+  data: {
+    filename: string;
+    media_type: string;
+    filesize: number;
+  };
 };
 
 type ErrorResponse = MessageResponse & {
@@ -24,6 +36,8 @@ type SwipeResponse = MessageResponse & {
 
 export type {
   MessageResponse,
+  MediaResponse,
+  UploadResponse,
   ErrorResponse,
   UserResponse,
   LoginResponse,
