@@ -1,16 +1,30 @@
-import {View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {
   NavigationProp,
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
-import {useReports} from '../hooks/apiHooks';
+import {
+  faCheck,
+  faRotateRight,
+  faTrash,
+} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {useJobs, useReports} from '../hooks/apiHooks';
 import {ReportedJob, ReportedUser, User} from '../types/DBTypes';
 import useUpdateContext from '../hooks/updateHooks';
 
 export default function ReportedJobs() {
-  const {getReportedJobs} = useReports();
+  const {getReportedJobs, resolveReport} = useReports();
+  const {deleteJobAsAdmin} = useJobs();
   const {update, setUpdate} = useUpdateContext();
   const [jobs, setJobs] = useState<ReportedJob[] | null>(null);
   const navigation: NavigationProp<ParamListBase> = useNavigation();
@@ -20,6 +34,56 @@ export default function ReportedJobs() {
     if (reportedJobs) {
       setJobs(reportedJobs);
     }
+  };
+
+  const handleDeleteJob = async (jobId: number) => {
+    Alert.alert(
+      'Poista työpaikka',
+      'Haluatko varmasti poistaa työpaikan?',
+      [
+        {
+          text: 'Peruuta',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Poista',
+          onPress: async () => {
+            const deleted = await deleteJobAsAdmin(jobId);
+            if (deleted) {
+              setUpdate((prevState) => !prevState);
+              Alert.alert('Työpaikka poistettu');
+            }
+          },
+        },
+      ],
+      {cancelable: false},
+    );
+  };
+
+  const handleIgnoreReport = async (jobId: number) => {
+    Alert.alert(
+      'Hylkää raportti',
+      'Haluatko varmasti hylätä raportin?',
+      [
+        {
+          text: 'Peruuta',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Hylkää',
+          onPress: async () => {
+            const resolved = await resolveReport(jobId);
+            if (resolved) {
+              setUpdate((prevState) => !prevState);
+              Alert.alert('Raportti hylätty');
+            }
+          },
+        },
+      ],
+      {cancelable: false},
+    );
   };
 
   console.log(jobs);
@@ -53,6 +117,12 @@ export default function ReportedJobs() {
         {item.field ? item.field : 'Ei alaa'}
       </Text>
       <Text style={styles.text}>Yrityksen id: {item.user_id}</Text>
+      <TouchableOpacity onPress={() => handleDeleteJob(item.job_id)}>
+        <FontAwesomeIcon icon={faTrash} size={30} color="#5d71c9" />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => handleIgnoreReport(item.user_id)}>
+        <FontAwesomeIcon icon={faCheck} size={30} color="#5d71c9" />
+      </TouchableOpacity>
     </View>
   );
 
@@ -61,6 +131,9 @@ export default function ReportedJobs() {
       <Text style={styles.text}>
         Tässä ovat työpaikat, jotka on raportoitu sivuston ylläpidolle.
       </Text>
+      <TouchableOpacity onPress={handleGetReportedJobs}>
+        <FontAwesomeIcon icon={faRotateRight} size={30} color="#5d71c9" />
+      </TouchableOpacity>
       <FlatList
         data={jobs}
         renderItem={renderItem}

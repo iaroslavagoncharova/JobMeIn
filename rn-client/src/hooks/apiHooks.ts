@@ -158,6 +158,27 @@ const useUser = () => {
       },
     );
   };
+
+  const deleteUserAsAdmin = async (id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        method: 'DELETE',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = await fetchData<MessageResponse>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/users/admin/' + id,
+        options,
+      );
+      if (result) {
+        return result;
+      }
+    } catch (e) {
+      console.error('Error deleting user', e);
+    }
+  };
   return {
     getUserById,
     getUserByToken,
@@ -169,6 +190,7 @@ const useUser = () => {
     getEmailAvailability,
     putUser,
     deleteUser,
+    deleteUserAsAdmin,
   };
 };
 
@@ -680,6 +702,27 @@ const useJobs = () => {
     }
   };
 
+  const deleteJobAsAdmin = async (job_id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        method: 'DELETE',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = await fetchData<MessageResponse>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/jobs/admin/' + job_id,
+        options,
+      );
+      if (result) {
+        return result;
+      }
+    } catch (e) {
+      console.error('Error deleting job', e);
+    }
+  };
+
   const calculatePercentage = async (job_id: number) => {
     const token = await AsyncStorage.getItem('token');
     try {
@@ -712,6 +755,7 @@ const useJobs = () => {
     postJob,
     putJob,
     deleteJob,
+    deleteJobAsAdmin,
     calculatePercentage,
   };
 };
@@ -1800,7 +1844,59 @@ const useReports = () => {
       }
     }
   };
-  return {sendReport, getUnresolvedReports, getReportedJobs, getReportedUsers};
+  const resolveReport = async (report_id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        method: 'PUT',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = await fetchData<MessageResponse>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/reports/resolve/' + report_id,
+        options,
+      );
+      if (result.message === 'Report resolved') {
+        return result;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      console.error('Error resolving report', e);
+    }
+  };
+
+  const deleteReport = async (report_id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        method: 'DELETE',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = await fetchData<MessageResponse>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/reports/' + report_id,
+        options,
+      );
+      if (result.message === 'Report deleted') {
+        return result;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      console.error('Error deleting report', e);
+    }
+  };
+  return {
+    sendReport,
+    getUnresolvedReports,
+    getReportedJobs,
+    getReportedUsers,
+    resolveReport,
+    deleteReport,
+  };
 };
 
 export {

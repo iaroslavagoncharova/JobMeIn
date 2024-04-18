@@ -1,16 +1,31 @@
-import {View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {
   NavigationProp,
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
-import {useReports} from '../hooks/apiHooks';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {
+  faCheck,
+  faClose,
+  faRotateRight,
+  faTrash,
+} from '@fortawesome/free-solid-svg-icons';
+import {useReports, useUser} from '../hooks/apiHooks';
 import {ReportedUser, User} from '../types/DBTypes';
 import useUpdateContext from '../hooks/updateHooks';
 
 export default function ReportedUsers() {
-  const {getReportedUsers} = useReports();
+  const {getReportedUsers, resolveReport, deleteReport} = useReports();
+  const {deleteUserAsAdmin} = useUser();
   const {update, setUpdate} = useUpdateContext();
   const [users, setUsers] = useState<ReportedUser[] | null>(null);
   const navigation: NavigationProp<ParamListBase> = useNavigation();
@@ -20,6 +35,56 @@ export default function ReportedUsers() {
     if (reportedUsers) {
       setUsers(reportedUsers);
     }
+  };
+
+  const handleDeleteUser = async (userId: number) => {
+    Alert.alert(
+      'Poista käyttäjä',
+      'Haluatko varmasti poistaa käyttäjän?',
+      [
+        {
+          text: 'Peruuta',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Poista',
+          onPress: async () => {
+            const deleted = await deleteUserAsAdmin(userId);
+            if (deleted) {
+              setUpdate((prevState) => !prevState);
+              Alert.alert('Käyttäjä poistettu');
+            }
+          },
+        },
+      ],
+      {cancelable: false},
+    );
+  };
+
+  const handleIgnoreReport = async (userId: number) => {
+    Alert.alert(
+      'Hylkää raportti',
+      'Haluatko varmasti hylätä raportin?',
+      [
+        {
+          text: 'Peruuta',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Hylkää',
+          onPress: async () => {
+            const resolved = await resolveReport(userId);
+            if (resolved) {
+              setUpdate((prevState) => !prevState);
+              Alert.alert('Raportti hylätty');
+            }
+          },
+        },
+      ],
+      {cancelable: false},
+    );
   };
 
   console.log(users);
@@ -55,6 +120,12 @@ export default function ReportedUsers() {
         Käyttäjätyyppi: {item.user_type === 'candidate' && 'Työnhakija'}
       </Text>
       <Text style={styles.text}>Käyttäjän id: {item.user_id}</Text>
+      <TouchableOpacity onPress={() => handleDeleteUser(item.user_id)}>
+        <FontAwesomeIcon icon={faTrash} size={30} color="#5d71c9" />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => handleIgnoreReport(item.user_id)}>
+        <FontAwesomeIcon icon={faCheck} size={30} color="#5d71c9" />
+      </TouchableOpacity>
     </View>
   );
 
@@ -63,6 +134,9 @@ export default function ReportedUsers() {
       <Text style={styles.text}>
         Tässä ovat käyttäjät, jotka on raportoitu sivuston ylläpidolle.
       </Text>
+      <TouchableOpacity onPress={handleGetReportedUsers}>
+        <FontAwesomeIcon icon={faRotateRight} size={30} color="#5d71c9" />
+      </TouchableOpacity>
       <FlatList
         data={users}
         renderItem={renderItem}
