@@ -1146,6 +1146,7 @@ const useAttachments = () => {
   };
 
   const putAttachment = async (attId: number, attachment: UpdateAttachment) => {
+    console.log('putting attachment');
     const token = await AsyncStorage.getItem('token');
     const options = {
       method: 'PUT',
@@ -1155,7 +1156,8 @@ const useAttachments = () => {
       },
       body: JSON.stringify(attachment),
     };
-    return await fetchData<Attachment>(
+    console.log(JSON.stringify(attachment));
+    return await fetchData<MessageResponse>(
       process.env.EXPO_PUBLIC_AUTH_API + '/profile/attachments/' + attId,
       options,
     );

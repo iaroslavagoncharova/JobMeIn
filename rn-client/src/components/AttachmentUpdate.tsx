@@ -25,6 +25,12 @@ export default function AttachmentUpdate({
   const [open, setOpen] = useState<boolean>(false);
   const [fileUri, setFileUri] = useState<string>('');
   const [fileName, setFileName] = useState<string>('');
+  const [fileValues, setFileValues] = useState({
+    filename: '',
+    filesize: 0,
+    media_type: '',
+    uri: '',
+  });
   const {putAttachment, getAttachmentById, thisAttachment} = useAttachments();
   const {postFile} = useFile();
   const {update, setUpdate} = useUpdateContext();
@@ -32,8 +38,6 @@ export default function AttachmentUpdate({
     attachment_name: '',
     file: null,
   };
-
-  const fileValues: FileValues = {};
 
   const {
     control,
@@ -55,27 +59,37 @@ export default function AttachmentUpdate({
   }, [update]);
 
   const edit = async (inputs: UploadAttachment) => {
+    console.log('edit entered, inputs: ', inputs);
     const token = await AsyncStorage.getItem('token');
     if (!token) {
       return;
     }
     console.log('file', inputs.file);
-    if (attachmentEditing) {
-      const updatedData: UpdateAttachment = {
-        attachment_name: inputs.attachment_name
-          ? inputs.attachment_name
-          : thisAttachment?.attachment_name,
-      };
+    console.log('file uri', fileValues.uri);
 
-      if (inputs.file) {
-        const fileResult = await postFile(fileUri, token);
+    if (attachmentEditing) {
+      const updatedData: UpdateAttachment = {};
+      if (!inputs.attachment_name && !inputs.file) {
+        throw new Error('Nothing to update');
+      }
+      if (inputs.attachment_name && inputs.attachment_name !== '') {
+        updatedData.attachment_name = inputs.attachment_name;
+      }
+
+      if (inputs.file && fileValues.uri !== '') {
+        console.log(inputs.file);
+        console.log('fileValues uri', fileValues.uri);
+        const fileResult = await postFile(fileValues.uri, token);
         if (fileResult) {
-          updatedData.filename = fileValues.filename;
-          updatedData.filesize = fileValues.filesize;
-          updatedData.media_type = fileValues.media_type;
+          updatedData.filename = fileResult.data.filename;
+          updatedData.preferred_filename = fileValues.filename;
+          updatedData.filesize = fileResult.data.filesize;
+          updatedData.media_type = fileResult.data.media_type;
         }
       }
 
+      console.log('updatedData', updatedData);
+      console.log('attachmentEditing', attachmentEditing);
       await putAttachment(attachmentEditing, updatedData);
       setAttachmentEditing(null);
       setUpdate((prev) => !prev);
@@ -180,17 +194,26 @@ export default function AttachmentUpdate({
                   ],
                   copyToCacheDirectory: true,
                 });
+                console.log(res);
                 if (!res.canceled) {
+                  console.log('!res.canceled');
+                  setFileValues({
+                    filename: res.assets[0].name,
+                    filesize: res.assets[0].size ?? 0,
+                    media_type: res.assets[0].mimeType ?? '',
+                    uri: res.assets[0].uri,
+                  });
+                  console.log('file values', fileValues);
+                  setFileName(fileValues.filename);
+                  setFileUri(fileValues.uri);
+                  console.log(
+                    'file uri and name',
+                    fileValues.uri,
+                    fileValues.filename,
+                  );
+                  console.log(res);
                   onChange(res);
-                  setFileUri(res.assets[0].uri);
-                  console.log('file uri', fileUri);
-                  setFileName(res.assets[0].name);
-                  console.log('file name', fileName);
-                  fileValues.filename = res.assets[0].name;
-                  fileValues.filesize = res.assets[0].size;
-                  fileValues.media_type = res.assets[0].mimeType;
-                  console.log('file uri and name', fileUri, fileName);
-                } else {
+                } else if (res.canceled) {
                   console.log('cancelled');
                   setFileName('');
                   setFileUri('');
@@ -200,7 +223,9 @@ export default function AttachmentUpdate({
               }
             }}
           >
-            <Text>{fileUri ? fileName : thisAttachment?.filename}</Text>
+            <Text>
+              {fileUri && fileUri !== '' ? fileName : thisAttachment?.filename}
+            </Text>
           </TouchableOpacity>
         )}
         name="file"
