@@ -185,9 +185,9 @@ CREATE TABLE Reports (
   user_id int(11) NOT NULL,
   reported_item_type varchar(255) NOT NULL,
   reported_item_id int(11) NOT NULL,
-  report_reason text NOT NULL,
+  report_reason varchar(255) NOT NULL,
   reported_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  is_resolved TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  is_resolved varchar(255) NOT NULL,
   FOREIGN KEY (user_id) REFERENCES Users (user_id)
 );
 
@@ -233,7 +233,7 @@ INSERT INTO Chats (user1_id, user2_id) VALUES (1, 2), (2, 3);
 INSERT INTO Messages (user_id, chat_id, message_text) VALUES (1, 1, 'Hei, olen maailman paras ohjelmistokehittäjä'), (2, 1, 'Ok, kiva');
 INSERT INTO Swipes (swiper_id, swiped_id, swipe_direction, swipe_type) VALUES (1, 2, 'right', 'candidate'), (2, 1, 'right', 'job');
 INSERT INTO Matches (user1_id, user2_id) VALUES (1, 2);
-INSERT INTO Reports (user_id, reported_item_type, reported_item_id, report_reason) VALUES (2, 'User', 1, 'Kysyi henkilökohtaisia kysymyksiä'), (1, 'Job', 3, 'Marjamyyjä ei voi saada 800 euroa');
+INSERT INTO Reports (user_id, reported_item_type, reported_item_id, report_reason, is_resolved) VALUES (2, 'User', 1, 'Kysyi henkilökohtaisia kysymyksiä', 'not_resolved'), (1, 'Job', 3, 'Marjamyyjä ei voi saada 800 euroa', 'resolved');
 INSERT INTO Animals (animal_name) VALUES ('Leijona'), ('Kissa'), ('Delfiini');
 INSERT INTO Adjectives (adj_name) VALUES ('Ystävällinen'), ('Ahkera'), ('Luova');
 INSERT INTO Notifications (match_id) VALUES (1);
