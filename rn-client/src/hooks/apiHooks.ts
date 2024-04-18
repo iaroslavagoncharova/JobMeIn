@@ -32,6 +32,8 @@ import {
   AttachmentInfo,
   UpdateAttachment,
   Report,
+  ReportedUser,
+  ReportedJob,
 } from '../types/DBTypes';
 import {Values} from '../types/LocalTypes';
 import {
@@ -1695,6 +1697,76 @@ const useFile = () => {
 };
 
 const useReports = () => {
+  const getReportedUsers = async () => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = await fetchData<ReportedUser[]>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/reports/reported/users',
+        options,
+      );
+      if (result) {
+        return result;
+      }
+    } catch (e) {
+      if ((e as Error).message === 'Reports not found') {
+        return [];
+      } else {
+        console.error('Error fetching reported users', e);
+      }
+    }
+  };
+
+  const getReportedJobs = async () => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = await fetchData<ReportedJob[]>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/reports/reported/jobs',
+        options,
+      );
+      if (result) {
+        return result;
+      }
+    } catch (e) {
+      if ((e as Error).message === 'Reports not found') {
+        return [];
+      } else {
+        console.error('Error fetching reported jobs', e);
+      }
+    }
+  };
+  const getUnresolvedReports = async () => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = await fetchData<Report[]>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/reports/unresolved',
+        options,
+      );
+      if (result) {
+        return result;
+      }
+    } catch (e) {
+      if ((e as Error).message === 'No reports found') {
+        return [];
+      } else {
+        console.error('Error fetching reports', e);
+      }
+    }
+  };
   const sendReport = async (report: {
     reported_item_type: string;
     reported_item_id: number;
@@ -1728,7 +1800,7 @@ const useReports = () => {
       }
     }
   };
-  return {sendReport};
+  return {sendReport, getUnresolvedReports, getReportedJobs, getReportedUsers};
 };
 
 export {
