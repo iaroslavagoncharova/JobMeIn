@@ -20,10 +20,8 @@ import {
 import RNPickerSelect from 'react-native-picker-select';
 import {Button} from '@rneui/base';
 import {useUserContext} from '../hooks/ContextHooks';
-import {useJobs, useMatch, useSwipe} from '../hooks/apiHooks';
 import {JobWithSkillsAndKeywords} from '../types/DBTypes';
-import JobAd from '../components/JobAd';
-import useUpdateContext from '../hooks/updateHooks';
+import ExampleJobAd from '../components/ExampleJobAd';
 const ExampleFeed = () => {
   const {handleAutoLogin} = useUserContext();
   const navigation: NavigationProp<ParamListBase> = useNavigation();
@@ -76,7 +74,6 @@ const ExampleFeed = () => {
     keywords: 'esimerkki',
     skills: 'esimerkki',
   };
-  // display the match alerts and after a user clicks ok, delete the match and navigate to the chat
   useEffect(() => {
     handleAutoLogin();
   }, []);
@@ -146,7 +143,7 @@ const ExampleFeed = () => {
         key={1}
         cards={[exampleCard]}
         renderCard={(exampleCard: JobWithSkillsAndKeywords) => (
-          <JobAd job={exampleCard} />
+          <ExampleJobAd job={exampleCard} />
         )}
         renderNoMoreCards={() => (
           <View>
