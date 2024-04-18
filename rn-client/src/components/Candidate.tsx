@@ -1,15 +1,62 @@
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import React, {useState} from 'react';
 import {Card} from '@rneui/base';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
   faArrowAltCircleLeft,
   faArrowAltCircleRight,
+  faExclamationCircle,
 } from '@fortawesome/free-solid-svg-icons';
+import {useForm} from 'react-hook-form';
 import {CandidateProfile} from '../types/DBTypes';
+import {useReports} from '../hooks/apiHooks';
 
 export default function Candidate({candidate}: {candidate: CandidateProfile}) {
   const [currentScreen, setCurrentScreen] = useState<number>(0);
+  const {sendReport} = useReports();
+  const values = {
+    reported_item_type: 'User',
+    reported_item_id: candidate.user_id,
+    report_reason: '',
+  };
+
+  const {
+    control,
+    handleSubmit,
+    formState: {errors},
+    reset,
+  } = useForm({defaultValues: values});
+
+  const handleSendReport = async () => {
+    const onSubmit = async (data: any) => {
+      const report = {
+        reported_item_type: 'User',
+        reported_item_id: candidate.user_id,
+        report_reason: data.report_reason,
+      };
+      console.log(report);
+      const result = await sendReport(report);
+      if (result) {
+        Alert.alert('Ilmoitus lähetetty', 'Kiitos ilmoituksesta!');
+      } else {
+        Alert.alert('Ilmoituksen lähettäminen epäonnistui', 'Yritä uudelleen');
+      }
+    };
+    Alert.alert('Miksi ilmoitat työnhakijan?', '', [
+      {
+        text: 'Väärä kategoria',
+        onPress: () => onSubmit({report_reason: 'Väärä kategoria'}),
+      },
+      {
+        text: 'Feikki profiili',
+        onPress: () => onSubmit({report_reason: 'Sopimaton sisältö'}),
+      },
+      {
+        text: 'Muuta',
+        onPress: () => onSubmit({report_reason: 'Muuta'}),
+      },
+    ]);
+  };
 
   const styles = StyleSheet.create({
     card: {
@@ -246,7 +293,38 @@ export default function Candidate({candidate}: {candidate: CandidateProfile}) {
         justifyContent: 'center',
       }}
     >
-      <Card containerStyle={styles.card}>{renderContent()}</Card>
+      <Card containerStyle={styles.card}>
+        <>
+          <TouchableOpacity
+            style={{
+              margin: 0,
+              padding: 0,
+              left: 250,
+            }}
+            onPress={() => {
+              Alert.alert(
+                'Ilmoita',
+                'Haluatko ilmoittaa epäilyttävästä työnhakijasta?',
+                [
+                  {
+                    text: 'Peruuta',
+                    onPress: () => console.log('Cancel Pressed'),
+                    style: 'cancel',
+                  },
+                  {text: 'Ilmoita', onPress: handleSendReport},
+                ],
+              );
+            }}
+          >
+            <FontAwesomeIcon
+              icon={faExclamationCircle}
+              size={25}
+              color="#D71313"
+            />
+          </TouchableOpacity>
+          {renderContent()}
+        </>
+      </Card>
       <TouchableOpacity onPress={navigateToPreviousScreen}>
         <FontAwesomeIcon
           icon={faArrowAltCircleLeft}
