@@ -16,9 +16,24 @@ type User = {
   phone: string;
   about_me: string;
   status: string;
-  user_type: 'candidate' | 'employer';
+  user_type: 'candidate' | 'employer' | 'admin';
   link: string;
   field: string;
+};
+
+export type ReportedUser = {
+  user_id: number;
+  username: string;
+  fullname: string;
+  email: string;
+  phone: string;
+  about_me: string;
+  status: string;
+  link: string;
+  field: string;
+  address: string;
+  user_type: string;
+  report_reason: string;
 };
 
 type UnauthorizedUser = Omit<User, 'password'>;
@@ -270,6 +285,19 @@ export type Job = {
   deadline_date: Date | string | null | undefined;
   field: string;
 };
+
+export type ReportedJob = {
+  job_id: number;
+  job_address: string;
+  job_title: string;
+  salary: string;
+  user_id: number;
+  job_description: string;
+  deadline_date: Date | string;
+  field: string;
+  report_reason: string;
+};
+
 
 export type UpdateJob = {
   job_address: string;

@@ -3,6 +3,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {
   faBriefcase,
   faComments,
+  faExclamationCircle,
   faHandshake,
   faPenToSquare,
   faRightToBracket,
@@ -30,6 +31,7 @@ import ReceivedApplication from '../views/ReceivedApplication';
 import ChatApplications from '../views/ChatApplications';
 import SingleTest from '../views/SingleTest';
 import UserTests from '../views/UserTests';
+import Reports from '../views/Reports';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -70,32 +72,38 @@ const TabNavigator = () => {
           if (route.name === 'Ilmoitukset/ hakemukset') {
             iconName = faBriefcase as any;
           }
+          if (route.name === 'Ilmiannot') {
+            iconName = faExclamationCircle as any;
+          }
           return <FontAwesomeIcon icon={iconName} color={color} size={size} />;
         },
       })}
     >
-      {user ? (
-        user.user_type === 'candidate' ? (
-          <>
-            <Tab.Screen name="Työhakemukset" component={Applications} />
-            <Tab.Screen name="Testit" component={UserTests} />
-            <Tab.Screen name="Feed" component={Feed} />
-            <Tab.Screen name="Keskustelut" component={Chats} />
-            <Tab.Screen name="Profiili" component={Profile} />
-          </>
-        ) : (
-          <>
-            <Tab.Screen
-              name="Ilmoitukset/ hakemukset"
-              component={JobsApplications}
-            />
-            <Tab.Screen name="Testit" component={Tests} />
-            <Tab.Screen name="Feed" component={EmployerFeed} />
-            <Tab.Screen name="Keskustelut" component={Chats} />
-            <Tab.Screen name="Profiili" component={Profile} />
-          </>
-        )
-      ) : (
+      {user && user.user_type === 'candidate' && (
+        <>
+          <Tab.Screen name="Työhakemukset" component={Applications} />
+          <Tab.Screen name="Testit" component={UserTests} />
+          <Tab.Screen name="Feed" component={Feed} />
+          <Tab.Screen name="Keskustelut" component={Chats} />
+          <Tab.Screen name="Profiili" component={Profile} />
+        </>
+      )}
+      {user && user.user_type === 'employer' && (
+        <>
+          <Tab.Screen
+            name="Ilmoitukset/ hakemukset"
+            component={JobsApplications}
+          />
+          <Tab.Screen name="Testit" component={Tests} />
+          <Tab.Screen name="Feed" component={EmployerFeed} />
+          <Tab.Screen name="Keskustelut" component={Chats} />
+          <Tab.Screen name="Profiili" component={Profile} />
+        </>
+      )}
+      {user && user.user_type === 'admin' && (
+        <Tab.Screen name="Ilmiannot" component={Reports} />
+      )}
+      {!user && (
         <>
           <Tab.Screen name="ExampleFeed" component={ExampleFeed} />
           <Tab.Screen name="Kirjaudu/luo profiili" component={Auth} />
