@@ -185,7 +185,7 @@ CREATE TABLE Reports (
   user_id int(11) NOT NULL,
   reported_item_type varchar(255) NOT NULL,
   reported_item_id int(11) NOT NULL,
-  report_reason text NOT NULL,
+  report_reason varchar(255) NOT NULL,
   reported_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   is_resolved varchar(255) NOT NULL,
   FOREIGN KEY (user_id) REFERENCES Users (user_id)
