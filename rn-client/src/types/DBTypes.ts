@@ -298,6 +298,16 @@ export type JobWithSkillsAndKeywords = Job & {
   username: string;
 };
 
+export type Report = {
+  report_id: number;
+  user_id: number;
+  reported_item_type: string;
+  reported_item_id: number;
+  report_reason: string;
+  reported_at: Date | string;
+  is_resolved: string;
+};
+
 export type {
   UserLevel,
   User,

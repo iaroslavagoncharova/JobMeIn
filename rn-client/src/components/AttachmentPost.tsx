@@ -59,7 +59,10 @@ export default function AttachmentPost({
       }
       const fileResult = await postFile(fileUri, token);
       if (fileResult) {
-        const postResult = await postAttachment(fileResult, attachment_name);
+        const postResult = await postAttachment(
+          fileResult,
+          attachment_name ?? '',
+        );
         if (postResult) {
           setUpdate((prevState) => !prevState);
           resetForm();

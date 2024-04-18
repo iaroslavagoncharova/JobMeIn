@@ -31,6 +31,7 @@ import {
   Test,
   AttachmentInfo,
   UpdateAttachment,
+  Report,
 } from '../types/DBTypes';
 import {Values} from '../types/LocalTypes';
 import {
@@ -1693,6 +1694,43 @@ const useFile = () => {
   return {postFile};
 };
 
+const useReports = () => {
+  const sendReport = async (report: {
+    reported_item_type: string;
+    reported_item_id: number;
+    report_reason: string;
+  }) => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        },
+        body: JSON.stringify(report),
+      };
+      const result = await fetchData<MessageResponse>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/reports',
+        options,
+      );
+      if (result.message === 'Report sent') {
+        return result;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      if ((e as Error).message === 'You have already reported this item') {
+        Alert.alert('Reportti on jo tehty');
+      } else {
+        console.error('Error sending report', e);
+        Alert.alert('Error sending report');
+      }
+    }
+  };
+  return {sendReport};
+};
+
 export {
   useUser,
   useAuth,
@@ -1708,4 +1746,5 @@ export {
   useKeywords,
   useTests,
   useFile,
+  useReports,
 };

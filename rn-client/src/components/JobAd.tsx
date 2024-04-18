@@ -1,22 +1,37 @@
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Card} from '@rneui/base';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
   faArrowAltCircleLeft,
   faArrowAltCircleRight,
+  faExclamationCircle,
 } from '@fortawesome/free-solid-svg-icons';
+import {useForm} from 'react-hook-form';
 import {JobWithSkillsAndKeywords, UnauthorizedUser} from '../types/DBTypes';
-import {useJobs, useUser} from '../hooks/apiHooks';
+import {useJobs, useReports, useUser} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
 
 export default function JobAd({job}: {job: JobWithSkillsAndKeywords}) {
   const {calculatePercentage} = useJobs();
+  const {sendReport} = useReports();
   const [currentScreen, setCurrentScreen] = useState<number>(0);
   const [user, setUser] = useState<UnauthorizedUser | null>(null);
   const {update} = useUpdateContext();
   const {getUserById} = useUser();
   const [percentage, setPercentage] = useState<number>(0);
+  const values = {
+    reported_item_type: 'Job',
+    reported_item_id: job.job_id,
+    report_reason: '',
+  };
+  const {
+    control,
+    handleSubmit,
+    formState: {errors},
+    reset,
+  } = useForm({defaultValues: values});
+
   const handleCalculatePercentage = async (job_id: number) => {
     const result = await calculatePercentage(job_id);
     console.log(result);
@@ -25,8 +40,45 @@ export default function JobAd({job}: {job: JobWithSkillsAndKeywords}) {
     }
   };
 
-  console.log(job, 'job');
-  console.log(percentage, 'percentage');
+  const handleSendReport = async () => {
+    const onSubmit = async (data: any) => {
+      const report = {
+        reported_item_type: 'Job',
+        reported_item_id: job.job_id,
+        report_reason: data.report_reason,
+      };
+      console.log(report);
+      const result = await sendReport(report);
+      if (result) {
+        Alert.alert('Ilmoitus lähetetty', 'Kiitos ilmoituksesta!');
+      } else {
+        Alert.alert('Ilmoituksen lähettäminen epäonnistui', 'Yritä uudelleen');
+      }
+    };
+    Alert.alert('Miksi ilmoitat ilmoituksen?', '', [
+      {
+        text: 'Väärä kategoria',
+        onPress: () => {
+          reset({report_reason: 'Väärä kategoria'});
+          handleSubmit(onSubmit)();
+        },
+      },
+      {
+        text: 'Epäilyttävä sisältö',
+        onPress: () => {
+          reset({report_reason: 'Epäilyttävä sisältö'});
+          handleSubmit(onSubmit)();
+        },
+      },
+      {
+        text: 'Muuta',
+        onPress: () => {
+          reset({report_reason: 'Muuta'});
+          handleSubmit(onSubmit)();
+        },
+      },
+    ]);
+  };
 
   useEffect(() => {
     handleCalculatePercentage(job.job_id);
@@ -46,7 +98,6 @@ export default function JobAd({job}: {job: JobWithSkillsAndKeywords}) {
       color: '#5d71c9',
       fontSize: 25,
       fontWeight: 'bold',
-      marginTop: 30,
       textAlign: 'center',
       margin: 5,
     },
@@ -244,7 +295,38 @@ export default function JobAd({job}: {job: JobWithSkillsAndKeywords}) {
 
   return (
     <View style={{alignItems: 'center', backgroundColor: '#5d71c9'}}>
-      <Card containerStyle={styles.card}>{renderContent()}</Card>
+      <Card containerStyle={styles.card}>
+        <>
+          <TouchableOpacity
+            style={{
+              margin: 0,
+              padding: 0,
+              left: 250,
+            }}
+            onPress={() => {
+              Alert.alert(
+                'Ilmoita',
+                'Haluatko ilmoittaa epäilyttävästä ilmoituksesta?',
+                [
+                  {
+                    text: 'Peruuta',
+                    onPress: () => console.log('Cancel Pressed'),
+                    style: 'cancel',
+                  },
+                  {text: 'Ilmoita', onPress: handleSendReport},
+                ],
+              );
+            }}
+          >
+            <FontAwesomeIcon
+              icon={faExclamationCircle}
+              size={25}
+              color="#D71313"
+            />
+          </TouchableOpacity>
+          {renderContent()}
+        </>
+      </Card>
       <TouchableOpacity onPress={navigateToPreviousScreen}>
         <FontAwesomeIcon
           icon={faArrowAltCircleLeft}
