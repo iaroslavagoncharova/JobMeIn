@@ -129,8 +129,8 @@ type ApplicationLink = {
 };
 
 export type UploadAttachment = {
-  attachment_name: string;
-  file: File | null;
+  attachment_name?: string;
+  file?: File | null;
 };
 
 export type AttachmentInfo = {
@@ -138,6 +138,21 @@ export type AttachmentInfo = {
   filename: string;
   filesize: number;
   media_type: string;
+};
+
+export type UpdateAttachment = {
+  attachment_name?: string | undefined;
+  preferred_filename?: string | undefined;
+  filename?: string;
+  filesize?: number;
+  media_type?: string;
+};
+
+export type FileValues = {
+  filename?: string | undefined;
+  filesize?: number | undefined;
+  media_type?: string | undefined;
+  uri?: string | undefined;
 };
 
 type Test = {

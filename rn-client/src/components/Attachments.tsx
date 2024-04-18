@@ -1,17 +1,24 @@
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {Text, StyleSheet, TouchableOpacity} from 'react-native';
 import React, {useState} from 'react';
 import {Card} from '@rneui/base';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faAdd} from '@fortawesome/free-solid-svg-icons';
+import {faAdd, faEdit} from '@fortawesome/free-solid-svg-icons';
 import {Attachment} from '../types/DBTypes';
+import useUpdateContext from '../hooks/updateHooks';
 import AttachmentPost from './AttachmentPost';
+import AttachmentUpdate from './AttachmentUpdate';
 
 export default function Attachments({
   attachments,
 }: {
   attachments: Attachment[];
 }) {
+  const [attachmentEditing, setAttachmentEditing] = useState<number | null>(
+    null,
+  );
   const [attachmentPosting, setAttachmentPosting] = useState<boolean>(false);
+  const {update, setUpdate} = useUpdateContext();
+
   const styles = StyleSheet.create({
     card: {
       backgroundColor: '#ffffff',
@@ -50,13 +57,37 @@ export default function Attachments({
   return (
     <Card containerStyle={styles.card}>
       <Text style={styles.header}> Liitteet </Text>
+      {attachments && attachments.length === 0 && (
+        <Text style={{color: '#5d71c9', textAlign: 'center'}}>
+          Ei lisättyjä liitteitä
+        </Text>
+      )}
       {attachments.map((attachment) => (
         <Card
           key={attachment.attachment_id}
           containerStyle={{borderRadius: 10}}
         >
-          <Text style={styles.boldText}>{attachment.attachment_name}</Text>
-          <Text style={styles.text}>{attachment.filename}</Text>
+          {attachmentEditing !== attachment.attachment_id ? (
+            <>
+              <Text style={styles.boldText}>{attachment.attachment_name}</Text>
+              <Text style={styles.text}>{attachment.filename}</Text>
+              <TouchableOpacity
+                onPress={() => setAttachmentEditing(attachment.attachment_id)}
+              >
+                <FontAwesomeIcon
+                  icon={faEdit}
+                  size={25}
+                  style={{color: '#5d71c9', margin: 5}}
+                />
+              </TouchableOpacity>
+            </>
+          ) : (
+            <AttachmentUpdate
+              attachmentEditing={attachmentEditing}
+              setAttachmentEditing={setAttachmentEditing}
+              attachment={attachment}
+            />
+          )}
         </Card>
       ))}
       {!attachmentPosting ? (
