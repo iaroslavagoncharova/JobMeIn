@@ -30,6 +30,7 @@ import {
   UnauthorizedUser,
   Test,
   AttachmentInfo,
+  UpdateAttachment,
 } from '../types/DBTypes';
 import {Values} from '../types/LocalTypes';
 import {
@@ -1039,6 +1040,7 @@ const useChats = () => {
 
 const useAttachments = () => {
   const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const [thisAttachment, setThisAttachment] = useState<Attachment>();
   const {update} = useUpdateContext();
   const getUserAttachments = async () => {
     const token = await AsyncStorage.getItem('token');
@@ -1068,6 +1070,29 @@ const useAttachments = () => {
     getUserAttachments();
   }, [update]);
 
+  const getAttachmentById = async (attachmentId: number) => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = await fetchData<Attachment>(
+        process.env.EXPO_PUBLIC_AUTH_API +
+          '/profile/attachments/' +
+          attachmentId,
+        options,
+      );
+      if (result) {
+        setThisAttachment(result);
+        return result;
+      }
+    } catch (e) {
+      console.error('Error fetching attachment', e);
+    }
+  };
+
   const postAttachment = async (
     file: UploadResponse,
     attachmentName: string,
@@ -1096,7 +1121,30 @@ const useAttachments = () => {
       options,
     );
   };
-  return {getUserAttachments, attachments, postAttachment};
+
+  const putAttachment = async (attId: number, attachment: UpdateAttachment) => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify(attachment),
+    };
+    return await fetchData<Attachment>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/profile/attachments/' + attId,
+      options,
+    );
+  };
+  return {
+    getUserAttachments,
+    attachments,
+    getAttachmentById,
+    thisAttachment,
+    postAttachment,
+    putAttachment,
+  };
 };
 
 const useApplications = () => {

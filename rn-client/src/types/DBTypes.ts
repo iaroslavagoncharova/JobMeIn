@@ -140,6 +140,19 @@ export type AttachmentInfo = {
   media_type: string;
 };
 
+export type UpdateAttachment = {
+  attachment_name?: string | undefined;
+  filename?: string;
+  filesize?: number;
+  media_type?: string;
+};
+
+export type FileValues = {
+  filename?: string | undefined;
+  filesize?: number | undefined;
+  media_type?: string | undefined;
+}
+
 type Test = {
   test_id: number;
   test_type: string;
