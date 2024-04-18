@@ -29,6 +29,7 @@ import NewJob from '../views/NewJob';
 import ReceivedApplication from '../views/ReceivedApplication';
 import ChatApplications from '../views/ChatApplications';
 import SingleTest from '../views/SingleTest';
+import UserTests from '../views/UserTests';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -77,7 +78,7 @@ const TabNavigator = () => {
         user.user_type === 'candidate' ? (
           <>
             <Tab.Screen name="Työhakemukset" component={Applications} />
-            <Tab.Screen name="Testit" component={Tests} />
+            <Tab.Screen name="Testit" component={UserTests} />
             <Tab.Screen name="Feed" component={Feed} />
             <Tab.Screen name="Keskustelut" component={Chats} />
             <Tab.Screen name="Profiili" component={Profile} />

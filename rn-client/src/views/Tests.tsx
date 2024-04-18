@@ -22,8 +22,13 @@ const Tests = () => {
   const {tests, getTestsByUser, getJobsByTest} = useTests();
   const {update, setUpdate} = useUpdateContext();
   const [userTests, setUserTests] = useState<Test[] | null>(null);
-  const [defaultJobs, setDefaultJobs] = useState<Job[] | null>(null);
-  const [myJobs, setMyJobs] = useState<Job[] | null>(null);
+  const [defaultJobs, setDefaultJobs] = useState<{
+    [testId: number]: Job[];
+  } | null>(null);
+  const [myJobs, setMyJobs] = useState<{
+    [testId: number]: Job[];
+  } | null>(null);
+
   const navigation: NavigationProp<ParamListBase> = useNavigation();
 
   const getUserTest = async () => {
@@ -33,27 +38,33 @@ const Tests = () => {
     }
   };
 
-  console.log(defaultJobs, 'defaultJobs');
-
   const getJobs = async () => {
-    tests?.map(async (test) => {
+    for (const test of tests ? tests : []) {
       const jobs = await getJobsByTest(test.test_id);
       if (jobs) {
-        setDefaultJobs(jobs);
+        setDefaultJobs((prevJobs) => ({
+          ...prevJobs,
+          [test.test_id]: jobs,
+        }));
       }
-    });
-    userTests?.map(async (test) => {
+    }
+
+    for (const test of userTests || []) {
       const jobs = await getJobsByTest(test.test_id);
       if (jobs) {
-        setMyJobs(jobs);
+        setMyJobs((prevJobs) => ({
+          ...prevJobs,
+          [test.test_id]: jobs,
+        }));
       }
-    });
+    }
   };
 
   useEffect(() => {
     getUserTest();
     getJobs();
   }, [update]);
+
   const styles = StyleSheet.create({
     container: {
       backgroundColor: '#ffffff',

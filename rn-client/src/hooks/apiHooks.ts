@@ -37,6 +37,7 @@ import {
   LoginResponse,
   MediaResponse,
   MessageResponse,
+  TestResponse,
   UploadResponse,
   UserResponse,
 } from '../types/MessageTypes';
@@ -675,6 +676,27 @@ const useJobs = () => {
       console.error('Error deleting job', e);
     }
   };
+
+  const calculatePercentage = async (job_id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = fetchData<number>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/jobs/calculate/' + job_id,
+        options,
+      );
+      if (result) {
+        return result;
+      }
+    } catch (e) {
+      console.error('Error calculating percentage', e);
+    }
+  };
+
   return {
     getAllJobs,
     jobs,
@@ -687,6 +709,7 @@ const useJobs = () => {
     postJob,
     putJob,
     deleteJob,
+    calculatePercentage,
   };
 };
 
@@ -1413,6 +1436,20 @@ const useKeywords = () => {
 const useTests = () => {
   const [tests, setTests] = useState<Test[]>();
   const {update} = useUpdateContext();
+  const getAllTests = async () => {
+    try {
+      const result = await fetchData<Test[]>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/tests/all',
+      );
+      if (result) {
+        return result;
+      } else {
+        return [];
+      }
+    } catch (e) {
+      console.error('Error fetching tests', e);
+    }
+  };
   const getTests = async () => {
     try {
       const result = await fetchData<Test[]>(
@@ -1510,6 +1547,53 @@ const useTests = () => {
     );
   };
 
+  const postTest = async (test: Test) => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        },
+        body: JSON.stringify(test),
+      };
+      const result = await fetchData<MessageResponse>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/tests',
+        options,
+      );
+      if (result) {
+        getTests();
+      }
+    } catch (e) {
+      console.error('Error posting test', e);
+    }
+  };
+
+  const putTest = async (test_id: number, test: Test) => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        },
+        body: JSON.stringify(test),
+      };
+      const result = await fetchData<TestResponse>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/tests/' + test_id,
+        options,
+      );
+      if (result) {
+        getTests();
+        return result;
+      }
+    } catch (e) {
+      console.error('Error updating test', e);
+    }
+  };
+
   const deleteJobFromTest = async (test_id: number, job_id: number) => {
     const token = await AsyncStorage.getItem('token');
     // job_id goes to body
@@ -1526,14 +1610,59 @@ const useTests = () => {
       options,
     );
   };
+
+  const getCandidateTests = async () => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      return await fetchData<Test[]>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/tests/candidate',
+        options,
+      );
+    } catch (e) {
+      if ((e as Error).message === 'No tests found') {
+        return [];
+      } else {
+        console.error('Error fetching tests', e);
+      }
+    }
+  };
+
+  const takeTest = async (test_id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      return await fetchData<TestResponse>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/tests/take/test/' + test_id,
+        options,
+      );
+    } catch (e) {
+      console.error('Error taking test', e);
+    }
+  };
+
   return {
     tests,
     getTests,
     getTestsByUser,
+    postTest,
+    putTest,
     deleteTest,
     getJobsByTest,
     addJobToTest,
     deleteJobFromTest,
+    getAllTests,
+    getCandidateTests,
+    takeTest,
   };
 };
 

@@ -1,4 +1,4 @@
-import {Attachment, Swipe, User} from './DBTypes';
+import {Attachment, Test, Swipe, User} from './DBTypes';
 
 type MessageResponse = {
   message: string;
@@ -34,6 +34,10 @@ type SwipeResponse = MessageResponse & {
   swipe: Swipe;
 };
 
+type TestResponse = MessageResponse & {
+  test: Test;
+};
+
 export type {
   MessageResponse,
   MediaResponse,
@@ -42,4 +46,5 @@ export type {
   UserResponse,
   LoginResponse,
   SwipeResponse,
+  TestResponse,
 };

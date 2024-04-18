@@ -55,14 +55,16 @@ const Applied = () => {
       </View>
     </TouchableOpacity>
   );
-
   return (
-    <FlatList
-      data={sentApplications}
-      renderItem={renderItem}
-      keyExtractor={(item) => item.application_id.toString()}
-      contentContainerStyle={styles.listContainer}
-    />
+    <>
+      <Text style={styles.text}>Tässä ovat lähettämäsi hakemukset</Text>
+      <FlatList
+        data={sentApplications}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.application_id.toString()}
+        contentContainerStyle={styles.listContainer}
+      />
+    </>
   );
 };
 
@@ -111,6 +113,12 @@ const styles = StyleSheet.create({
   tests: {
     fontSize: 14,
     color: 'grey',
+  },
+  text: {
+    fontSize: 16,
+    color: '#5d71c9',
+    textAlign: 'center',
+    margin: 10,
   },
 });
 

@@ -2,7 +2,11 @@ import {View, Text, ScrollView, StyleSheet} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Card} from '@rneui/base';
 import {useApplications, useUser} from '../hooks/apiHooks';
-import {Application, CandidateProfile, UnauthorizedUser} from '../types/DBTypes';
+import {
+  Application,
+  CandidateProfile,
+  UnauthorizedUser,
+} from '../types/DBTypes';
 import useUpdateContext from '../hooks/updateHooks';
 
 export default function ChatApplications({route}: any) {
@@ -243,7 +247,7 @@ export default function ChatApplications({route}: any) {
               >
                 <Text style={styles.text}>{attachment.attachment_name}</Text>
                 <Text style={styles.text}>
-                  {attachment.link ? attachment.link : 'Ei linkkiä'}
+                  {attachment.filename ? attachment.filename : 'Ei linkkiä'}
                 </Text>
               </Card>
             ))}

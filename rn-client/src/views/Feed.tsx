@@ -27,7 +27,7 @@ import useUpdateContext from '../hooks/updateHooks';
 
 const Feed = () => {
   const {handleAutoLogin} = useUserContext();
-  const {jobs, fields} = useJobs();
+  const {jobs, fields, calculatePercentage} = useJobs();
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const {update, setUpdate} = useUpdateContext();
   const [selectedField, setSelectedField] = useState<string>('');
@@ -35,6 +35,17 @@ const Feed = () => {
   const {matches, deleteMatch} = useMatch();
   const [loading, setLoading] = useState(false);
   const [swipingEnabled, setSwipingEnabled] = useState(true);
+
+  const handleCalculatePercentage = async (job_id: number) => {
+    const result = await calculatePercentage(job_id);
+    console.log(result);
+  };
+
+  console.log(jobs, 'jobs');
+
+  useEffect(() => {
+    handleCalculatePercentage(1);
+  }, []);
 
   const placeholder = {
     label: 'Valitse ala',

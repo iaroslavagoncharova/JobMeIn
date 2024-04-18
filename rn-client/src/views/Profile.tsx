@@ -1,6 +1,5 @@
 import {Text, View, StyleSheet, ScrollView, Alert} from 'react-native';
 import {Button, Card} from '@rneui/base';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   NavigationProp,
   ParamListBase,
@@ -141,9 +140,6 @@ const Profile = () => {
               <Edu education={education} />
               <ExperiencePage experience={experience} />
               <Skills skills={skills} allSkills={allSkills} />
-              <Card containerStyle={styles.card}>
-                <Text style={styles.header}>Testit</Text>
-              </Card>
               <Attachments attachments={attachments} />
               <Button
                 title="Poista profiili"
