@@ -51,7 +51,7 @@ const Tests = () => {
   useEffect(() => {
     handleGetTests();
     fetchUsernames();
-  }, []);
+  }, [update]);
 
   const fetchUsernames = async () => {
     const usernames: Record<number, string> = {};

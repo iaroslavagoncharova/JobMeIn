@@ -6,7 +6,14 @@ import {useChats} from '../hooks/apiHooks';
 import {ChatPreview} from '../components/ChatPreview';
 
 const Chats = ({navigation}: {navigation: NavigationProp<ParamListBase>}) => {
-  const {chats} = useChats();
+  const {chats, postAdminChat} = useChats();
+  const handleAdminChat = async () => {
+    const result = await postAdminChat();
+    if (result) {
+      console.log(result.chat_id, 'chat_id');
+      navigation.navigate('Keskustelu', {chat_id: result.chat_id});
+    }
+  };
   return (
     <View style={styles.container}>
       <View style={styles.chatsContainer}>
@@ -25,6 +32,18 @@ const Chats = ({navigation}: {navigation: NavigationProp<ParamListBase>}) => {
         ) : (
           <Text style={{marginLeft: 20}}>Sinulla ei ole keskusteluja</Text>
         )}
+        <TouchableOpacity onPress={handleAdminChat}>
+          <Text
+            style={{
+              marginLeft: 20,
+              marginTop: 20,
+              color: '#004aad',
+              textAlign: 'center',
+            }}
+          >
+            Ongelmia sovelluksen kanssa? Ota yhteyttä ylläpitoon tästä
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
