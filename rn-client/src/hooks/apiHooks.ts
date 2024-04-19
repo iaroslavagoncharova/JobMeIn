@@ -922,6 +922,7 @@ const useChats = () => {
         Authorization: 'Bearer ' + token,
       },
     };
+    console.log(chatId, 'chatId');
     const result = await fetchData<Chat>(
       process.env.EXPO_PUBLIC_AUTH_API + '/chats/' + chatId,
       options,
@@ -1029,6 +1030,24 @@ const useChats = () => {
     getUserChats();
   }, [update]);
 
+  const postAdminChat = async () => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    const result = await fetchData<Chat>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/chats/admin/',
+      options,
+    );
+    if (result) {
+      getUserChats();
+      return result;
+    }
+  };
+
   const sendInterviewInvitation = async (chat_id: number) => {
     const token = await AsyncStorage.getItem('token');
     try {
@@ -1101,6 +1120,8 @@ const useChats = () => {
     getMessagesFromChat,
     chats,
     thisChat,
+    chatMessages,
+    postAdminChat,
     postMessageToChat,
     sendInterviewInvitation,
     acceptInterviewInvitation,
