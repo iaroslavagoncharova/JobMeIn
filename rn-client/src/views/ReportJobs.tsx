@@ -118,10 +118,26 @@ export default function ReportedJobs() {
       </Text>
       <Text style={styles.text}>Yrityksen id: {item.user_id}</Text>
       <TouchableOpacity onPress={() => handleDeleteJob(item.job_id)}>
-        <FontAwesomeIcon icon={faTrash} size={30} color="#5d71c9" />
+        <FontAwesomeIcon
+          icon={faTrash}
+          size={30}
+          color="#5d71c9"
+          style={{
+            top: 0,
+            left: 40,
+          }}
+        />
       </TouchableOpacity>
       <TouchableOpacity onPress={() => handleIgnoreReport(item.user_id)}>
-        <FontAwesomeIcon icon={faCheck} size={30} color="#5d71c9" />
+        <FontAwesomeIcon
+          icon={faCheck}
+          size={30}
+          color="#5d71c9"
+          style={{
+            bottom: 30,
+            left: 0,
+          }}
+        />
       </TouchableOpacity>
     </View>
   );

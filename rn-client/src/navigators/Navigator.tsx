@@ -32,6 +32,7 @@ import ChatApplications from '../views/ChatApplications';
 import SingleTest from '../views/SingleTest';
 import UserTests from '../views/UserTests';
 import Reports from '../views/Reports';
+import UserReports from '../views/UserReports';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -101,7 +102,11 @@ const TabNavigator = () => {
         </>
       )}
       {user && user.user_type === 'admin' && (
-        <Tab.Screen name="Ilmiannot" component={Reports} />
+        <>
+          <Tab.Screen name="Ilmiannot" component={Reports} />
+          <Tab.Screen name="Keskustelut" component={Chats} />
+          <Tab.Screen name="Profiili" component={Profile} />
+        </>
       )}
       {!user && (
         <>
@@ -139,6 +144,7 @@ const StackNavigator = () => {
           />
           <Stack.Screen name="ChatHakemukset" component={ChatApplications} />
           <Stack.Screen name="Testi" component={SingleTest} />
+          <Stack.Screen name="ChatIlmiannot" component={UserReports} />
         </>
       ) : (
         <>

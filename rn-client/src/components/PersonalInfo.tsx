@@ -131,132 +131,11 @@ export default function PersonalInfo({user}: {user: User}) {
   return (
     <Card containerStyle={styles.card}>
       {user ? (
-        user.user_type === 'candidate' ? (
-          <>
-            <Text style={styles.header}>Henkilötiedot</Text>
-            {!personalEditing ? (
-              <View>
-                <TouchableOpacity
-                  style={{height: 1}}
-                  onPress={() => setPersonalEditing(!personalEditing)}
-                >
-                  <FontAwesomeIcon
-                    icon={faEdit}
-                    size={25}
-                    style={styles.icon}
-                  />
-                </TouchableOpacity>
-                <Text style={styles.boldText}>Nimi:</Text>
-                <Text style={styles.text}>{user?.fullname}</Text>
-                <Text style={styles.boldText}>Sähköposti:</Text>
-                <Text style={styles.text}>{user?.email}</Text>
-                <Text style={styles.boldText}>Käyttäjänimi:</Text>
-                <Text style={styles.text}>{user?.username}</Text>
-                <Text style={styles.boldText}>Puhelinnumero:</Text>
-                <Text style={styles.text}>{user?.phone}</Text>
-                <Text style={styles.boldText}>Status:</Text>
-                <Text style={styles.text}>
-                  {user?.status
-                    ? user?.status === 'Active'
-                      ? 'Aktiivinen'
-                      : 'Ei aktiivinen'
-                    : 'Et ole määritellyt statusta, työnhakusi ei ole aktiivinen'}
-                </Text>
-                <Text style={styles.boldText}>Kerro itsestäsi:</Text>
-                <Text style={styles.text}>
-                  {user?.about_me ? user?.about_me : 'Ei kuvailua'}
-                </Text>
-              </View>
-            ) : (
-              <>
-                <Controller
-                  control={control}
-                  render={({field: {onChange, onBlur, value}}) => (
-                    <TextInput
-                      style={styles.input}
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
-                      placeholder={user?.fullname}
-                    />
-                  )}
-                  name="fullname"
-                />
-                <Controller
-                  control={control}
-                  render={({field: {onChange, onBlur, value}}) => (
-                    <TextInput
-                      style={styles.input}
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
-                      placeholder={user?.email}
-                    />
-                  )}
-                  name="email"
-                />
-                <Controller
-                  control={control}
-                  render={({field: {onChange, onBlur, value}}) => (
-                    <TextInput
-                      style={styles.input}
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
-                      placeholder={user?.phone}
-                    />
-                  )}
-                  name="phone"
-                />
-                <RNPickerSelect
-                  placeholder={placeholder}
-                  items={items}
-                  value={user.status}
-                  onValueChange={(value) => {
-                    setStatus(value);
-                  }}
-                  style={{
-                    inputIOS: styles.input,
-                    inputAndroid: styles.input,
-                    placeholder: {
-                      color: '#5d71c9',
-                    },
-                  }}
-                />
-                <Controller
-                  control={control}
-                  render={({field: {onChange, onBlur, value}}) => (
-                    <TextInput
-                      style={styles.input}
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
-                      placeholder={
-                        user?.about_me ? user?.about_me : 'Kerro itsestäsi'
-                      }
-                    />
-                  )}
-                  name="about_me"
-                />
-                <Button
-                  onPress={handleSubmit(edit)}
-                  buttonStyle={styles.saveButton}
-                  title={'Tallenna'}
-                />
-                <Button
-                  onPress={() => setPersonalEditing(!personalEditing)}
-                  buttonStyle={styles.cancelButton}
-                  titleStyle={{color: '#5d71c9'}}
-                  title={'Peruuta'}
-                />
-              </>
-            )}
-          </>
-        ) : (
-          <>
-            {!personalEditing ? (
-              <>
-                <Text style={styles.header}>Yrityksen tiedot</Text>
+        <>
+          {user.user_type === 'candidate' ? (
+            <>
+              <Text style={styles.header}>Henkilötiedot</Text>
+              {!personalEditing ? (
                 <View>
                   <TouchableOpacity
                     style={{height: 1}}
@@ -268,140 +147,346 @@ export default function PersonalInfo({user}: {user: User}) {
                       style={styles.icon}
                     />
                   </TouchableOpacity>
-                  <Text style={styles.boldText}>Yhteyshenkilö:</Text>
+                  <Text style={styles.boldText}>Nimi:</Text>
                   <Text style={styles.text}>{user?.fullname}</Text>
                   <Text style={styles.boldText}>Sähköposti:</Text>
                   <Text style={styles.text}>{user?.email}</Text>
-                  <Text style={styles.boldText}>Yrityksen nimi:</Text>
+                  <Text style={styles.boldText}>Käyttäjänimi:</Text>
                   <Text style={styles.text}>{user?.username}</Text>
                   <Text style={styles.boldText}>Puhelinnumero:</Text>
                   <Text style={styles.text}>{user?.phone}</Text>
-                  <Text style={styles.boldText}>Osoite:</Text>
+                  <Text style={styles.boldText}>Status:</Text>
                   <Text style={styles.text}>
-                    {user?.address ? user?.address : 'Ei osoitetta'}
+                    {user?.status
+                      ? user?.status === 'Active'
+                        ? 'Aktiivinen'
+                        : 'Ei aktiivinen'
+                      : 'Et ole määritellyt statusta, työnhakusi ei ole aktiivinen'}
                   </Text>
-                  <Text style={styles.boldText}>Ala:</Text>
-                  <Text style={styles.text}>
-                    {user?.field ? user?.field : 'Ei alaa'}
-                  </Text>
-                  <Text style={styles.boldText}>Meistä:</Text>
+                  <Text style={styles.boldText}>Kerro itsestäsi:</Text>
                   <Text style={styles.text}>
                     {user?.about_me ? user?.about_me : 'Ei kuvailua'}
                   </Text>
                 </View>
-              </>
-            ) : (
-              <>
-                <Controller
-                  control={control}
-                  render={({field: {onChange, onBlur, value}}) => (
-                    <TextInput
-                      style={styles.input}
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
-                      placeholder={user?.fullname ? user?.fullname : 'Nimi'}
+              ) : (
+                <>
+                  <Controller
+                    control={control}
+                    render={({field: {onChange, onBlur, value}}) => (
+                      <TextInput
+                        style={styles.input}
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        value={value}
+                        placeholder={user?.fullname}
+                      />
+                    )}
+                    name="fullname"
+                  />
+                  <Controller
+                    control={control}
+                    render={({field: {onChange, onBlur, value}}) => (
+                      <TextInput
+                        style={styles.input}
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        value={value}
+                        placeholder={user?.email}
+                      />
+                    )}
+                    name="email"
+                  />
+                  <Controller
+                    control={control}
+                    render={({field: {onChange, onBlur, value}}) => (
+                      <TextInput
+                        style={styles.input}
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        value={value}
+                        placeholder={user?.phone}
+                      />
+                    )}
+                    name="phone"
+                  />
+                  <RNPickerSelect
+                    placeholder={placeholder}
+                    items={items}
+                    value={user.status}
+                    onValueChange={(value) => {
+                      setStatus(value);
+                    }}
+                    style={{
+                      inputIOS: styles.input,
+                      inputAndroid: styles.input,
+                      placeholder: {
+                        color: '#5d71c9',
+                      },
+                    }}
+                  />
+                  <Controller
+                    control={control}
+                    render={({field: {onChange, onBlur, value}}) => (
+                      <TextInput
+                        style={styles.input}
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        value={value}
+                        placeholder={
+                          user?.about_me ? user?.about_me : 'Kerro itsestäsi'
+                        }
+                      />
+                    )}
+                    name="about_me"
+                  />
+                  <Button
+                    onPress={handleSubmit(edit)}
+                    buttonStyle={styles.saveButton}
+                    title={'Tallenna'}
+                  />
+                  <Button
+                    onPress={() => setPersonalEditing(!personalEditing)}
+                    buttonStyle={styles.cancelButton}
+                    titleStyle={{color: '#5d71c9'}}
+                    title={'Peruuta'}
+                  />
+                </>
+              )}
+            </>
+          ) : user.user_type === 'employer' ? (
+            <>
+              {!personalEditing ? (
+                <>
+                  <Text style={styles.header}>Yrityksen tiedot</Text>
+                  <View>
+                    <TouchableOpacity
+                      style={{height: 1}}
+                      onPress={() => setPersonalEditing(!personalEditing)}
+                    >
+                      <FontAwesomeIcon
+                        icon={faEdit}
+                        size={25}
+                        style={styles.icon}
+                      />
+                    </TouchableOpacity>
+                    <Text style={styles.boldText}>Yhteyshenkilö:</Text>
+                    <Text style={styles.text}>{user?.fullname}</Text>
+                    <Text style={styles.boldText}>Sähköposti:</Text>
+                    <Text style={styles.text}>{user?.email}</Text>
+                    <Text style={styles.boldText}>Yrityksen nimi:</Text>
+                    <Text style={styles.text}>{user?.username}</Text>
+                    <Text style={styles.boldText}>Puhelinnumero:</Text>
+                    <Text style={styles.text}>{user?.phone}</Text>
+                    <Text style={styles.boldText}>Osoite:</Text>
+                    <Text style={styles.text}>
+                      {user?.address ? user?.address : 'Ei osoitetta'}
+                    </Text>
+                    <Text style={styles.boldText}>Ala:</Text>
+                    <Text style={styles.text}>
+                      {user?.field ? user?.field : 'Ei alaa'}
+                    </Text>
+                    <Text style={styles.boldText}>Meistä:</Text>
+                    <Text style={styles.text}>
+                      {user?.about_me ? user?.about_me : 'Ei kuvailua'}
+                    </Text>
+                  </View>
+                </>
+              ) : (
+                <>
+                  <Controller
+                    control={control}
+                    render={({field: {onChange, onBlur, value}}) => (
+                      <TextInput
+                        style={styles.input}
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        value={value}
+                        placeholder={user?.fullname ? user?.fullname : 'Nimi'}
+                      />
+                    )}
+                    name="fullname"
+                  />
+                  <Controller
+                    control={control}
+                    render={({field: {onChange, onBlur, value}}) => (
+                      <TextInput
+                        style={styles.input}
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        value={value}
+                        placeholder={user?.email ? user?.email : 'Sähköposti'}
+                      />
+                    )}
+                    name="email"
+                  />
+                  <Controller
+                    control={control}
+                    render={({field: {onChange, onBlur, value}}) => (
+                      <TextInput
+                        style={styles.input}
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        value={value}
+                        placeholder={
+                          user?.username ? user?.username : 'Yrityksen nimi'
+                        }
+                      />
+                    )}
+                    name="username"
+                  />
+                  <Controller
+                    control={control}
+                    render={({field: {onChange, onBlur, value}}) => (
+                      <TextInput
+                        style={styles.input}
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        value={value}
+                        placeholder={
+                          user?.phone ? user?.phone : 'Puhelinnumero'
+                        }
+                      />
+                    )}
+                    name="phone"
+                  />
+                  <Controller
+                    control={control}
+                    render={({field: {onChange, onBlur, value}}) => (
+                      <TextInput
+                        style={styles.input}
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        value={value}
+                        placeholder={user?.address ? user?.address : 'Osoite'}
+                      />
+                    )}
+                    name="address"
+                  />
+                  <Controller
+                    control={control}
+                    render={({field: {onChange, onBlur, value}}) => (
+                      <TextInput
+                        style={styles.input}
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        value={value}
+                        placeholder={user?.field ? user?.field : 'Ala'}
+                      />
+                    )}
+                    name="field"
+                  />
+                  <Controller
+                    control={control}
+                    render={({field: {onChange, onBlur, value}}) => (
+                      <TextInput
+                        style={styles.input}
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        value={value}
+                        placeholder={
+                          user?.about_me
+                            ? user?.about_me
+                            : 'Kerro yrityksestäsi'
+                        }
+                      />
+                    )}
+                    name="about_me"
+                  />
+                  <Button
+                    onPress={handleSubmit(edit)}
+                    buttonStyle={styles.saveButton}
+                    title={'Tallenna'}
+                  />
+                  <Button
+                    onPress={() => setPersonalEditing(!personalEditing)}
+                    buttonStyle={styles.cancelButton}
+                    titleStyle={{color: '#5d71c9'}}
+                    title={'Peruuta'}
+                  />
+                </>
+              )}
+            </>
+          ) : user.user_type === 'admin' ? (
+            <>
+              <Text style={styles.header}>Adminiin tiedot</Text>
+              {!personalEditing ? (
+                <View>
+                  <TouchableOpacity
+                    style={{height: 1}}
+                    onPress={() => setPersonalEditing(!personalEditing)}
+                  >
+                    <FontAwesomeIcon
+                      icon={faEdit}
+                      size={25}
+                      style={styles.icon}
                     />
-                  )}
-                  name="fullname"
-                />
-                <Controller
-                  control={control}
-                  render={({field: {onChange, onBlur, value}}) => (
-                    <TextInput
-                      style={styles.input}
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
-                      placeholder={user?.email ? user?.email : 'Sähköposti'}
-                    />
-                  )}
-                  name="email"
-                />
-                <Controller
-                  control={control}
-                  render={({field: {onChange, onBlur, value}}) => (
-                    <TextInput
-                      style={styles.input}
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
-                      placeholder={
-                        user?.username ? user?.username : 'Yrityksen nimi'
-                      }
-                    />
-                  )}
-                  name="username"
-                />
-                <Controller
-                  control={control}
-                  render={({field: {onChange, onBlur, value}}) => (
-                    <TextInput
-                      style={styles.input}
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
-                      placeholder={user?.phone ? user?.phone : 'Puhelinnumero'}
-                    />
-                  )}
-                  name="phone"
-                />
-                <Controller
-                  control={control}
-                  render={({field: {onChange, onBlur, value}}) => (
-                    <TextInput
-                      style={styles.input}
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
-                      placeholder={user?.address ? user?.address : 'Osoite'}
-                    />
-                  )}
-                  name="address"
-                />
-                <Controller
-                  control={control}
-                  render={({field: {onChange, onBlur, value}}) => (
-                    <TextInput
-                      style={styles.input}
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
-                      placeholder={user?.field ? user?.field : 'Ala'}
-                    />
-                  )}
-                  name="field"
-                />
-                <Controller
-                  control={control}
-                  render={({field: {onChange, onBlur, value}}) => (
-                    <TextInput
-                      style={styles.input}
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
-                      placeholder={
-                        user?.about_me ? user?.about_me : 'Kerro yrityksestäsi'
-                      }
-                    />
-                  )}
-                  name="about_me"
-                />
-                <Button
-                  onPress={handleSubmit(edit)}
-                  buttonStyle={styles.saveButton}
-                  title={'Tallenna'}
-                />
-                <Button
-                  onPress={() => setPersonalEditing(!personalEditing)}
-                  buttonStyle={styles.cancelButton}
-                  titleStyle={{color: '#5d71c9'}}
-                  title={'Peruuta'}
-                />
-              </>
-            )}
-          </>
-        )
+                  </TouchableOpacity>
+                  <Text style={styles.boldText}>Nimi:</Text>
+                  <Text style={styles.text}>{user?.fullname}</Text>
+                  <Text style={styles.boldText}>Sähköposti:</Text>
+                  <Text style={styles.text}>{user?.email}</Text>
+                  <Text style={styles.boldText}>Puhelinnumero:</Text>
+                  <Text style={styles.text}>{user?.phone}</Text>
+                </View>
+              ) : (
+                <>
+                  <Controller
+                    control={control}
+                    render={({field: {onChange, onBlur, value}}) => (
+                      <TextInput
+                        style={styles.input}
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        value={value}
+                        placeholder={user?.fullname}
+                      />
+                    )}
+                    name="fullname"
+                  />
+                  <Controller
+                    control={control}
+                    render={({field: {onChange, onBlur, value}}) => (
+                      <TextInput
+                        style={styles.input}
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        value={value}
+                        placeholder={user?.email}
+                      />
+                    )}
+                    name="email"
+                  />
+                  <Controller
+                    control={control}
+                    render={({field: {onChange, onBlur, value}}) => (
+                      <TextInput
+                        style={styles.input}
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        value={value}
+                        placeholder={user?.phone}
+                      />
+                    )}
+                    name="phone"
+                  />
+                  <Button
+                    onPress={handleSubmit(edit)}
+                    buttonStyle={styles.saveButton}
+                    title={'Tallenna'}
+                  />
+                  <Button
+                    onPress={() => setPersonalEditing(!personalEditing)}
+                    buttonStyle={styles.cancelButton}
+                    titleStyle={{color: '#5d71c9'}}
+                    title={'Peruuta'}
+                  />
+                </>
+              )}
+            </>
+          ) : (
+            <Text style={{color: '#ffffff'}}>Loading...</Text>
+          )}
+        </>
       ) : (
         <Text style={{color: '#ffffff'}}>Loading...</Text>
       )}

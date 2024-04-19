@@ -1741,6 +1741,29 @@ const useFile = () => {
 };
 
 const useReports = () => {
+  const getReportsByUser = async (user_id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = await fetchData<Report[]>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/reports/user/' + user_id,
+        options,
+      );
+      if (result) {
+        return result;
+      }
+    } catch (e) {
+      if ((e as Error).message === 'Reports not found') {
+        return [];
+      } else {
+        console.error('Error fetching reports', e);
+      }
+    }
+  };
   const getReportedUsers = async () => {
     const token = await AsyncStorage.getItem('token');
     try {
@@ -1890,6 +1913,7 @@ const useReports = () => {
     }
   };
   return {
+    getReportsByUser,
     sendReport,
     getUnresolvedReports,
     getReportedJobs,
