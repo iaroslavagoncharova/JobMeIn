@@ -18,7 +18,7 @@ import {useApplications, useJobs, useUser} from '../hooks/apiHooks';
 import {
   Application,
   JobWithSkillsAndKeywords,
-  UnauthorizedUser
+  UnauthorizedUser,
 } from '../types/DBTypes';
 import useUpdateContext from '../hooks/updateHooks';
 

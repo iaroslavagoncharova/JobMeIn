@@ -172,6 +172,17 @@ const SingleChat = ({route}: any) => {
                   buttonStyle={styles.saveButton}
                 />
               )}
+              {me?.user_type === 'admin' && (
+                <Button
+                  onPress={() =>
+                    navigation.navigate('ChatIlmiannot', {
+                      userId: thisChat?.chatting_with.user_id,
+                    })
+                  }
+                  title={'Ilmiannot'}
+                  buttonStyle={styles.saveButton}
+                />
+              )}
             </View>
             <ScrollView
               style={styles.msgContainer}

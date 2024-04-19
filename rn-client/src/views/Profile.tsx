@@ -126,55 +126,72 @@ const Profile = () => {
       }}
     >
       {user ? (
-        user.user_type === 'candidate' ? (
-          <View style={styles.container}>
-            <ScrollView showsVerticalScrollIndicator={false}>
-              <Text style={styles.bigHeader}>Profiili</Text>
-              <Button
-                title="Täältä voit nähdä miltä profiilisi näyttää työnantajalle"
-                titleStyle={{color: '#ffffff'}}
-                buttonStyle={styles.candidateProfileButton}
-                onPress={() => navigation.navigate('Työnhakijan profiili')}
-              ></Button>
-              <PersonalInfo user={user} />
-              <Edu education={education} />
-              <ExperiencePage experience={experience} />
-              <Skills skills={skills} allSkills={allSkills} />
-              <Attachments attachments={attachments} />
-              <Button
-                title="Poista profiili"
-                onPress={() => {
-                  handleDelete();
-                }}
-                buttonStyle={styles.deleteButton}
-              />
-              <Button
-                title="Kirjaudu ulos"
-                onPress={logout}
-                buttonStyle={styles.logoutButton}
-              />
-            </ScrollView>
-          </View>
-        ) : (
-          <View style={styles.container}>
-            <ScrollView showsVerticalScrollIndicator={false}>
-              <Text style={styles.bigHeader}>Profiili</Text>
-              <PersonalInfo user={user} />
-              <Button
-                title="Poista profiili"
-                onPress={() => {
-                  handleDelete();
-                }}
-                buttonStyle={styles.deleteButton}
-              />
-              <Button
-                title="Kirjaudu ulos"
-                onPress={logout}
-                buttonStyle={styles.logoutButton}
-              />
-            </ScrollView>
-          </View>
-        )
+        <>
+          {user.user_type === 'candidate' && (
+            <View style={styles.container}>
+              <ScrollView showsVerticalScrollIndicator={false}>
+                <Text style={styles.bigHeader}>Profiili</Text>
+                <Button
+                  title="Täältä voit nähdä miltä profiilisi näyttää työnantajalle"
+                  titleStyle={{color: '#ffffff'}}
+                  buttonStyle={styles.candidateProfileButton}
+                  onPress={() => navigation.navigate('Työnhakijan profiili')}
+                />
+                <PersonalInfo user={user} />
+                <Edu education={education} />
+                <ExperiencePage experience={experience} />
+                <Skills skills={skills} allSkills={allSkills} />
+                <Attachments attachments={attachments} />
+                <Button
+                  title="Poista profiili"
+                  onPress={handleDelete}
+                  buttonStyle={styles.deleteButton}
+                />
+                <Button
+                  title="Kirjaudu ulos"
+                  onPress={logout}
+                  buttonStyle={styles.logoutButton}
+                />
+              </ScrollView>
+            </View>
+          )}
+          {user.user_type === 'employer' && (
+            <View style={styles.container}>
+              <ScrollView showsVerticalScrollIndicator={false}>
+                <Text style={styles.bigHeader}>Profiili</Text>
+                <PersonalInfo user={user} />
+                <Button
+                  title="Poista profiili"
+                  onPress={handleDelete}
+                  buttonStyle={styles.deleteButton}
+                />
+                <Button
+                  title="Kirjaudu ulos"
+                  onPress={logout}
+                  buttonStyle={styles.logoutButton}
+                />
+              </ScrollView>
+            </View>
+          )}
+          {user.user_type === 'admin' && (
+            <View style={styles.container}>
+              <ScrollView showsVerticalScrollIndicator={false}>
+                <Text style={styles.bigHeader}>Adminin profiili</Text>
+                <PersonalInfo user={user} />
+                <Button
+                  title="Poista profiili"
+                  onPress={handleDelete}
+                  buttonStyle={styles.deleteButton}
+                />
+                <Button
+                  title="Kirjaudu ulos"
+                  onPress={logout}
+                  buttonStyle={styles.logoutButton}
+                />
+              </ScrollView>
+            </View>
+          )}
+        </>
       ) : (
         <Text style={{color: '#ffffff'}}>Loading...</Text>
       )}
