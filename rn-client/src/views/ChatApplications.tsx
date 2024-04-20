@@ -172,25 +172,25 @@ export default function ChatApplications({route}: any) {
             </Card>
           ))}
           <Card containerStyle={{borderRadius: 10}}>
-            <Text style={styles.header}>Käyttäjän tiedot</Text>
+            <Text style={styles.header}>Työnhakijan tiedot</Text>
             <Text style={styles.text}>Nimi: {privateUser?.fullname}</Text>
             <Text style={styles.text}>Käyttäjänimi: {user?.username}</Text>
             {interview_status === 'Accepted' && (
               <>
                 <Text style={styles.text}>
-                  Käyttäjän sähköposti: {privateUser?.email}
+                  Työnhakijan sähköposti: {privateUser?.email}
                 </Text>
                 <Text style={styles.text}>
-                  Käyttäjän puhelinnumero: {privateUser?.phone}
+                  Työnhakijan puhelinnumero: {privateUser?.phone}
                 </Text>
               </>
             )}
             <Text style={styles.text}>Itsestä: {user?.about_me}</Text>
             <Text style={styles.text}>
-              Käyttäjän taidot:{' '}
+              Työnhakijan taidot:{' '}
               {user?.skills.map((skill) => String(skill)).join(', ')}
             </Text>
-            <Text style={styles.boldText}>Käyttäjän koulutus:</Text>
+            <Text style={styles.boldText}>Työnhakijan koulutus:</Text>
             {user?.education.map((edu) => (
               <Card key={edu.education_id} containerStyle={{borderRadius: 10}}>
                 <Text style={styles.text}>
@@ -208,7 +208,7 @@ export default function ChatApplications({route}: any) {
                 </Text>
               </Card>
             ))}
-            <Text style={styles.boldText}>Käyttäjän työkokemus:</Text>
+            <Text style={styles.boldText}>Työnhakijan työkokemus:</Text>
             {user?.experience.map((exp) => (
               <Card key={exp.experience_id} containerStyle={{borderRadius: 10}}>
                 <Text style={styles.text}>
@@ -239,7 +239,7 @@ export default function ChatApplications({route}: any) {
                 </Text>
               </Card>
             ))}
-            <Text style={styles.boldText}>Käyttäjän liitteet: </Text>
+            <Text style={styles.boldText}>Työnhakijan liitteet: </Text>
             {user?.attachments.map((attachment) => (
               <Card
                 key={attachment.attachment_id}
