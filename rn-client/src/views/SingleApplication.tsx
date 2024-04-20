@@ -205,14 +205,15 @@ export default function SingleApplication({route}: {route: any}) {
                 ? application.created_at.toString().slice(0, 10)
                 : 'Ei määritelty'}
             </Text>
-            {!isSubmitted && (
+            {!isSubmitted &&
+            job?.deadline_date &&
+            new Date(job.deadline_date) > new Date() ? (
               <>
                 <Text style={styles.boldText}>
                   Sinulla on vielä aikaa hakea tähän työpaikkaan:{' '}
                 </Text>
-
                 <Text style={styles.text}>
-                  {job?.deadline_date
+                  {job.deadline_date
                     ? Math.ceil(
                         (new Date(job.deadline_date).getTime() -
                           new Date().getTime()) /
@@ -222,7 +223,14 @@ export default function SingleApplication({route}: {route: any}) {
                   päivää
                 </Text>
               </>
+            ) : (
+              <>
+                <Text style={styles.boldText}>
+                  Hakuaika tähän työpaikkaan on päättynyt
+                </Text>
+              </>
             )}
+
             <Text style={styles.boldText}>Hakemuksen vastaanottaja: </Text>
             <Text style={styles.text}>
               {user?.username ? user.fullname : 'Ei määritelty'}
