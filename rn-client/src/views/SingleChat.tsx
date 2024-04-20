@@ -480,7 +480,7 @@ const styles = StyleSheet.create({
     top: 0,
     backgroundColor: '#5d71c9',
     borderRadius: 12,
-    marginLeft: 35,
+    marginLeft: 20,
   },
 });
 
