@@ -49,6 +49,8 @@ export default function SingleApplication({route}: {route: any}) {
     }
   };
 
+  console.log(application.status, 'application status');
+
   const getJobInfo = async () => {
     const job = await getJobById(application.job_id);
     if (job) {
@@ -210,9 +212,9 @@ export default function SingleApplication({route}: {route: any}) {
                 </Text>
 
                 <Text style={styles.text}>
-                  {application.job.deadline_date
+                  {job?.deadline_date
                     ? Math.ceil(
-                        (new Date(application.job.deadline_date).getTime() -
+                        (new Date(job.deadline_date).getTime() -
                           new Date().getTime()) /
                           (1000 * 3600 * 24),
                       )
@@ -285,17 +287,17 @@ export default function SingleApplication({route}: {route: any}) {
             <Text style={styles.bigHeader}>Työpaikan tiedot</Text>
             <Text style={styles.boldText}>Työnimike: </Text>
             <Text style={styles.text}>
-              {application.job.job_title
+              {application?.job.job_title
                 ? application.job.job_title
                 : 'Ei määritelty'}
             </Text>
             <Text style={styles.boldText}>Ala: </Text>
             <Text style={styles.text}>
-              {application.job.field ? application.job.field : 'Ei määritelty'}
+              {application?.job.field ? application.job.field : 'Ei määritelty'}
             </Text>
             <Text style={styles.boldText}>Kuvaus: </Text>
             <Text style={styles.text}>
-              {application.job.job_description
+              {application?.job.job_description
                 ? application.job.job_description
                 : 'Ei määritelty'}
             </Text>
@@ -315,7 +317,12 @@ export default function SingleApplication({route}: {route: any}) {
             <Text style={styles.boldText}>Viimeinen hakupäivä: </Text>
             <Text style={styles.text}>
               {application.job.deadline_date
-                ? application.job.deadline_date.toString().slice(0, 10)
+                ? application.job.deadline_date
+                    .toString()
+                    .split('T')[0]
+                    .split('-')
+                    .reverse()
+                    .join('.')
                 : 'Ei määritelty'}
             </Text>
           </Card>
@@ -352,7 +359,9 @@ export default function SingleApplication({route}: {route: any}) {
               {user?.address ? user.address : 'Ei määritelty'}
             </Text>
           </Card>
-          {isSubmitted ? (
+          {application.status === 'Sent' ||
+          application.status === 'Accepted' ||
+          application.status === 'Declined' ? (
             <Button
               title="Hakemus on jo lähetetty"
               titleStyle={{color: '#5d71c9'}}

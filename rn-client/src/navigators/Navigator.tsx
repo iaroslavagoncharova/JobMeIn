@@ -33,6 +33,7 @@ import SingleTest from '../views/SingleTest';
 import UserTests from '../views/UserTests';
 import Reports from '../views/Reports';
 import UserReports from '../views/UserReports';
+import ChatEmployerInfo from '../views/ChatEmployerInfo';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -143,6 +144,10 @@ const StackNavigator = () => {
             component={ReceivedApplication}
           />
           <Stack.Screen name="ChatHakemukset" component={ChatApplications} />
+          <Stack.Screen
+            name="Työnantaja/hakemuksesi"
+            component={ChatEmployerInfo}
+          />
           <Stack.Screen name="Testi" component={SingleTest} />
           <Stack.Screen name="ChatIlmiannot" component={UserReports} />
         </>

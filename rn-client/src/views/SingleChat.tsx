@@ -183,6 +183,19 @@ const SingleChat = ({route}: any) => {
                   buttonStyle={styles.saveButton}
                 />
               )}
+              {me?.user_type === 'candidate' && (
+                <Button
+                  onPress={() =>
+                    navigation.navigate('Työnantaja/hakemuksesi', {
+                      userId: thisChat?.chatting_with.user_id,
+                      meId: me?.user_id,
+                      interview: thisChat?.interview_status,
+                    })
+                  }
+                  title={'Hakemukset'}
+                  buttonStyle={styles.saveButton}
+                />
+              )}
             </View>
             <ScrollView
               style={styles.msgContainer}

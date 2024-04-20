@@ -1476,6 +1476,15 @@ const useApplications = () => {
         options,
       );
       if (result) {
+        for (const app of result) {
+          const job = await fetchData<JobWithUser>(
+            process.env.EXPO_PUBLIC_AUTH_API +
+              '/jobs/application/' +
+              app.job_id,
+            options,
+          );
+          app.job = job;
+        }
         return result;
       }
     } catch (e) {
