@@ -65,7 +65,9 @@ const Tests = () => {
         }
       }) ?? [],
     );
-    setUsernames(usernames);
+    if (usernames) {
+      setUsernames(usernames);
+    }
   };
 
   const styles = StyleSheet.create({

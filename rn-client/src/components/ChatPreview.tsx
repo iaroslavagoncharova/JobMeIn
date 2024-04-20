@@ -1,9 +1,11 @@
 import {faCircleUser} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {NavigationProp, ParamListBase} from '@react-navigation/native';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Alert, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Text} from 'react-native-elements';
 import {ChatWithMessages} from '../types/DBTypes';
+import {useChats} from '../hooks/apiHooks';
+import useUpdateContext from '../hooks/updateHooks';
 
 type ChatPreviewProps = {
   item: ChatWithMessages;
@@ -11,11 +13,35 @@ type ChatPreviewProps = {
 };
 
 export const ChatPreview = ({item, navigation}: ChatPreviewProps) => {
+  const {deleteChat} = useChats();
+  const {update, setUpdate} = useUpdateContext();
+  const handleDeleteChat = async (chatId: number) => {
+    Alert.alert('Poista keskustelu', 'Haluatko varmasti poistaa keskustelun?', [
+      {
+        text: 'Peruuta',
+        style: 'cancel',
+      },
+      {
+        text: 'Poista',
+        onPress: async () => {
+          console.log(chatId, 'chatId');
+          const result = await deleteChat(chatId);
+          if (result) {
+            console.log('Chat deleted');
+            setUpdate((prevState) => !prevState);
+          }
+        },
+      },
+    ]);
+  };
   return (
     <TouchableOpacity
       style={styles.chat}
       onPress={() => {
         navigation.navigate('Keskustelu', {chat_id: item.chat_id});
+      }}
+      onLongPress={() => {
+        handleDeleteChat(item.chat_id);
       }}
     >
       <FontAwesomeIcon

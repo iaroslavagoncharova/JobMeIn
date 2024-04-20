@@ -1113,6 +1113,29 @@ const useChats = () => {
     }
   };
 
+  const deleteChat = async (chat_id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    try {
+      const options = {
+        method: 'DELETE',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = await fetchData<MessageResponse>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/chats/' + chat_id,
+        options,
+      );
+      console.log(result, 'result');
+      if (result.message === 'Chat deleted') {
+        getUserChats();
+        return result;
+      }
+    } catch (e) {
+      console.error('Error deleting chat', e);
+    }
+  };
+
   return {
     getUserChats,
     getChatById,
@@ -1126,6 +1149,7 @@ const useChats = () => {
     sendInterviewInvitation,
     acceptInterviewInvitation,
     declineInterviewInvitation,
+    deleteChat,
   };
 };
 
