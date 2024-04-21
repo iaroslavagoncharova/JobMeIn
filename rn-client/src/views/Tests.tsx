@@ -164,6 +164,9 @@ const Tests = () => {
       borderRadius: 12,
       padding: 10,
     },
+    plusButton: {
+      margin: 20,
+    },
   });
 
   return (
@@ -212,7 +215,12 @@ const Tests = () => {
           )}
           {!posting ? (
             <TouchableOpacity onPress={() => setPosting(true)}>
-              <FontAwesomeIcon icon={faPlusCircle} size={50} color="#5d71c9" />
+              <FontAwesomeIcon
+                icon={faPlusCircle}
+                size={50}
+                color="#5d71c9"
+                style={styles.plusButton}
+              />
             </TouchableOpacity>
           ) : (
             <Card containerStyle={{borderRadius: 10}}>
