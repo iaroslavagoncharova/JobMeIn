@@ -14,6 +14,7 @@ const Chats = ({navigation}: {navigation: NavigationProp<ParamListBase>}) => {
       navigation.navigate('Keskustelu', {chat_id: result.chat_id});
     }
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.chatsContainer}>

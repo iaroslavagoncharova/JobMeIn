@@ -64,6 +64,7 @@ export default function Candidate({candidate}: {candidate: CandidateProfile}) {
       height: 470,
       margin: 10,
       padding: 10,
+      marginTop: 40,
       borderRadius: 25,
       alignItems: 'center',
       backgroundColor: '#ffffff',
@@ -130,7 +131,7 @@ export default function Candidate({candidate}: {candidate: CandidateProfile}) {
       borderRadius: 25,
       width: 30,
       height: 30,
-      bottom: 30,
+      bottom: 41,
       left: 70,
     },
     buttonLeft: {
@@ -138,7 +139,7 @@ export default function Candidate({candidate}: {candidate: CandidateProfile}) {
       borderRadius: 25,
       width: 30,
       height: 30,
-      top: 15,
+      top: 20,
       right: 60,
     },
   });
@@ -328,16 +329,29 @@ export default function Candidate({candidate}: {candidate: CandidateProfile}) {
       <TouchableOpacity onPress={navigateToPreviousScreen}>
         <FontAwesomeIcon
           icon={faArrowAltCircleLeft}
-          size={45}
+          size={40}
           style={styles.buttonLeft}
         />
       </TouchableOpacity>
+      <Text
+        style={{
+          color: '#ffffff',
+          fontSize: 15,
+          right: 80,
+          top: 25,
+        }}
+      >
+        Lisää tietoja
+      </Text>
       <TouchableOpacity onPress={navigateToNextScreen}>
         <FontAwesomeIcon
           icon={faArrowAltCircleRight}
-          size={45}
+          size={40}
           style={styles.buttonRight}
         />
+        <Text style={{color: '#ffffff', fontSize: 15, left: 70, bottom: 38}}>
+          Lisää tietoja
+        </Text>
       </TouchableOpacity>
     </View>
   );

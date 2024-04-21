@@ -200,7 +200,7 @@ const EmployerFeed = () => {
         key={jobs.length}
         cards={filteredCandidates}
         renderCard={(candidateData: CandidateProfile) => (
-          <Candidate candidate={candidateData} />
+          <Candidate candidate={candidateData} key={candidateData.user_id} />
         )}
         renderNoMoreCards={() => (
           <View>

@@ -1,27 +1,35 @@
-import {Card} from '@rneui/base';
+import {Button, Card} from '@rneui/base';
 import {
+  Alert,
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
 import {useEffect, useState} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faEdit, faPlusCircle, faTrash} from '@fortawesome/free-solid-svg-icons';
+import {faPlusCircle} from '@fortawesome/free-solid-svg-icons';
 import {
   NavigationProp,
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
-import {useJobs, useTests} from '../hooks/apiHooks';
+import {Controller, useForm} from 'react-hook-form';
+import {useTests} from '../hooks/apiHooks';
 import {Job, Test} from '../types/DBTypes';
 import useUpdateContext from '../hooks/updateHooks';
 
 const Tests = () => {
-  const {tests, getTestsByUser, getJobsByTest} = useTests();
+  const {tests, getTestsByUser, getJobsByTest, postTest} = useTests();
   const {update, setUpdate} = useUpdateContext();
   const [userTests, setUserTests] = useState<Test[] | null>(null);
+  const [posting, setPosting] = useState<boolean>(false);
+  const values = {
+    test_type: '',
+    test_link: '',
+  };
   const [defaultJobs, setDefaultJobs] = useState<{
     [testId: number]: Job[];
   } | null>(null);
@@ -30,6 +38,17 @@ const Tests = () => {
   } | null>(null);
 
   const navigation: NavigationProp<ParamListBase> = useNavigation();
+
+  const {
+    control,
+    handleSubmit,
+    formState: {errors},
+    reset,
+  } = useForm({defaultValues: values});
+
+  const resetForm = () => {
+    reset(values);
+  };
 
   const getUserTest = async () => {
     const userTests = await getTestsByUser();
@@ -49,7 +68,7 @@ const Tests = () => {
       }
     }
 
-    for (const test of userTests || []) {
+    for (const test of userTests ?? []) {
       const jobs = await getJobsByTest(test.test_id);
       if (jobs) {
         setMyJobs((prevJobs) => ({
@@ -64,6 +83,22 @@ const Tests = () => {
     getUserTest();
     getJobs();
   }, [update]);
+
+  const handlePostTest = async (inputs: any) => {
+    console.log(inputs);
+    if (!inputs.test_type || inputs.test_type === '') {
+      return;
+    }
+    if (!inputs.test_link || inputs.test_link === '') {
+      return;
+    }
+    const result = await postTest(inputs);
+    if (result) {
+      setUpdate((prevState) => !prevState);
+      resetForm();
+      setPosting(false);
+    }
+  };
 
   const styles = StyleSheet.create({
     container: {
@@ -129,6 +164,9 @@ const Tests = () => {
       borderRadius: 12,
       padding: 10,
     },
+    plusButton: {
+      margin: 20,
+    },
   });
 
   return (
@@ -173,6 +211,60 @@ const Tests = () => {
           ) : (
             <Card containerStyle={{borderRadius: 10}}>
               <Text style={styles.text}>Ei testejä</Text>
+            </Card>
+          )}
+          {!posting ? (
+            <TouchableOpacity onPress={() => setPosting(true)}>
+              <FontAwesomeIcon
+                icon={faPlusCircle}
+                size={50}
+                color="#5d71c9"
+                style={styles.plusButton}
+              />
+            </TouchableOpacity>
+          ) : (
+            <Card containerStyle={{borderRadius: 10}}>
+              <Text style={styles.header}>Lisää uusi testi</Text>
+              <Controller
+                control={control}
+                render={({field: {onChange, onBlur, value}}) => (
+                  <TextInput
+                    style={styles.input}
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value ?? ''}
+                    placeholder="Testin nimi*"
+                  />
+                )}
+                name="test_type"
+                rules={{required: 'Testin nimi vaaditaan'}}
+              />
+              <Controller
+                control={control}
+                render={({field: {onChange, onBlur, value}}) => (
+                  <TextInput
+                    style={styles.input}
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value ?? ''}
+                    placeholder="Linkki*"
+                    inputMode="url"
+                  />
+                )}
+                name="test_link"
+                rules={{required: 'Linkki vaaditaan'}}
+              />
+              <Button
+                title="Tallenna"
+                onPress={handleSubmit(handlePostTest)}
+                buttonStyle={styles.saveButton}
+              />
+              <Button
+                title="Peruuta"
+                onPress={() => setPosting(false)}
+                buttonStyle={styles.cancelButton}
+                titleStyle={{color: '#5d71c9'}}
+              />
             </Card>
           )}
         </ScrollView>

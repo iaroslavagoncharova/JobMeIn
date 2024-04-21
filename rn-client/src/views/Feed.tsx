@@ -200,7 +200,7 @@ const Feed = () => {
         key={jobs.length}
         cards={filteredJobs}
         renderCard={(jobData: JobWithSkillsAndKeywords) => (
-          <JobAd job={jobData} />
+          <JobAd job={jobData} key={jobData.job_id} />
         )}
         renderNoMoreCards={() => (
           <View>
