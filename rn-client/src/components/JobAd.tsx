@@ -90,6 +90,7 @@ export default function JobAd({job}: {job: JobWithSkillsAndKeywords}) {
       height: 470,
       margin: 10,
       padding: 10,
+      marginTop: 40,
       borderRadius: 25,
       alignItems: 'center',
       backgroundColor: '#ffffff',
@@ -162,7 +163,7 @@ export default function JobAd({job}: {job: JobWithSkillsAndKeywords}) {
       borderRadius: 25,
       width: 30,
       height: 30,
-      bottom: 30,
+      bottom: 41,
       left: 70,
     },
     buttonLeft: {
@@ -170,7 +171,7 @@ export default function JobAd({job}: {job: JobWithSkillsAndKeywords}) {
       borderRadius: 25,
       width: 30,
       height: 30,
-      top: 15,
+      top: 20,
       right: 60,
     },
   });
@@ -272,8 +273,6 @@ export default function JobAd({job}: {job: JobWithSkillsAndKeywords}) {
             </Card>
           </>
         );
-      default:
-        return null;
     }
   };
 
@@ -294,7 +293,14 @@ export default function JobAd({job}: {job: JobWithSkillsAndKeywords}) {
   };
 
   return (
-    <View style={{alignItems: 'center', backgroundColor: '#5d71c9'}}>
+    <View
+      style={{
+        alignItems: 'center',
+        backgroundColor: '#5d71c9',
+        flex: 1,
+        justifyContent: 'center',
+      }}
+    >
       <Card containerStyle={styles.card}>
         <>
           <TouchableOpacity
@@ -330,16 +336,22 @@ export default function JobAd({job}: {job: JobWithSkillsAndKeywords}) {
       <TouchableOpacity onPress={navigateToPreviousScreen}>
         <FontAwesomeIcon
           icon={faArrowAltCircleLeft}
-          size={45}
+          size={40}
           style={styles.buttonLeft}
         />
+        <Text style={{color: '#ffffff', fontSize: 15, right: 80, top: 25}}>
+          Lisää tietoja
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={navigateToNextScreen}>
         <FontAwesomeIcon
           icon={faArrowAltCircleRight}
-          size={45}
+          size={40}
           style={styles.buttonRight}
         />
+        <Text style={{color: '#ffffff', fontSize: 15, left: 70, bottom: 38}}>
+          Lisää tietoja
+        </Text>
       </TouchableOpacity>
     </View>
   );
