@@ -20,6 +20,7 @@ import {Controller, useForm} from 'react-hook-form';
 import {Button, Card} from '@rneui/base';
 import {CheckBox} from 'react-native-elements';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
+import RNPickerSelect from 'react-native-picker-select';
 import {useJobs, useKeywords, useSkills} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
 import {JobWithSkillsAndKeywords, KeyWord, Skill} from '../types/DBTypes';
@@ -35,6 +36,7 @@ export default function NewJob() {
   const [showMore, setShowMore] = useState(false);
   const [deadline_date, setDeadlineDate] = useState<Date | null>(null);
   const [open, setOpen] = useState<boolean>(false);
+  const [value, setValue] = useState<string | null>(null);
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const values = {
     job_title: '',
@@ -71,6 +73,40 @@ export default function NewJob() {
     setOpen(true);
   };
 
+  const placeholder = {
+    label: 'Valitse ala',
+    value: null,
+    color: '#5d71c9',
+  };
+
+  const items = [
+    {label: 'IT', value: 'IT', color: '#5d71c9'},
+    {label: 'Ravintola- ja catering', value: 'Rakentaminen', color: '#5d71c9'},
+    {label: 'Kauppa', value: 'Kauppa', color: '#5d71c9'},
+    {
+      label: 'Sosiaali- ja terveysala',
+      value: 'Sosiaali- ja terveysala',
+      color: '#5d71c9',
+    },
+    {
+      label: 'Kasvatus- ja opetusala',
+      value: 'Kasvatus- ja opetusala',
+      color: '#5d71c9',
+    },
+    {
+      label: 'Myynti ja markkinointi',
+      value: 'Myynti ja markkinointi',
+      color: '#5d71c9',
+    },
+    {
+      label: 'Hallinto ja toimisto',
+      value: 'Hallinto ja toimisto',
+      color: '#5d71c9',
+    },
+    {label: 'Rakennusala', value: 'Rakennusala', color: '#5d71c9'},
+    {label: 'Muu', value: 'Muu', color: '#5d71c9'},
+  ];
+
   const handlePost = async (
     inputs: Omit<JobWithSkillsAndKeywords, 'job_id' | 'user_id' | 'username'>,
   ) => {
@@ -91,11 +127,20 @@ export default function NewJob() {
       const deadline = new Date(deadline_date);
       inputs.deadline_date = deadline.toISOString().split('T')[0];
     }
+    if (!inputs.deadline_date) {
+      Alert.alert('Virhe', 'Valitse viimeinen hakupäivä');
+      return;
+    }
     console.log(inputs.deadline_date);
+    if (!value) {
+      Alert.alert('Virhe', 'Valitse ala');
+      return;
+    }
     const newJob = {
       ...inputs,
       skills: skillString,
       keywords: keywordsString,
+      field: value,
     };
     console.log(newJob);
     const result = await postJob(newJob);
@@ -263,19 +308,19 @@ export default function NewJob() {
             {errors.job_title && (
               <Text style={styles.text}>{errors.job_title.message}</Text>
             )}
-            <Controller
-              control={control}
-              render={({field: {onChange, onBlur, value}}) => (
-                <TextInput
-                  style={styles.input}
-                  placeholder="Ala"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                />
-              )}
-              name="field"
-              rules={{required: 'Ala on pakollinen'}}
+            <RNPickerSelect
+              placeholder={placeholder}
+              items={items}
+              onValueChange={(value) => {
+                setValue(value);
+              }}
+              style={{
+                inputIOS: styles.input,
+                inputAndroid: styles.input,
+                placeholder: {
+                  color: '#5d71c9',
+                },
+              }}
             />
             {errors.field && (
               <Text style={styles.text}>{errors.field.message}</Text>
@@ -360,7 +405,7 @@ export default function NewJob() {
                 />
               )}
               <Text style={{color: '#5d71c9', margin: 5, textAlign: 'center'}}>
-                Valittu valmistumispäivä:{' '}
+                Valittu päivä:{' '}
                 {deadline_date
                   ? deadline_date.toLocaleString('fi-FI').split(' ')[0]
                   : 'Ei valittu'}

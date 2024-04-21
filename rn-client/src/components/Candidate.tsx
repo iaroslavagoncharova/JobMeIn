@@ -164,8 +164,8 @@ export default function Candidate({candidate}: {candidate: CandidateProfile}) {
                 }}
               >
                 <Text style={styles.header3}>Taidot</Text>
-                {candidate.skills.map((skill) => (
-                  <Text>{skill.skill_name}</Text>
+                {candidate.skills.map((skill, index) => (
+                  <Text key={index}>{skill.skill_name}</Text>
                 ))}
               </Card>
             ) : (
@@ -179,8 +179,8 @@ export default function Candidate({candidate}: {candidate: CandidateProfile}) {
                 }}
               >
                 <Text style={styles.header3}>Liitteet</Text>
-                {candidate.attachments.map((attachment) => (
-                  <Text>{attachment.attachment_name}</Text>
+                {candidate.attachments.map((attachment, index) => (
+                  <Text key={index}>{attachment.attachment_name}</Text>
                 ))}
               </Card>
             ) : (
@@ -198,6 +198,7 @@ export default function Candidate({candidate}: {candidate: CandidateProfile}) {
                   containerStyle={{
                     borderRadius: 10,
                   }}
+                  key={edu.education_id}
                 >
                   <Text style={styles.boldText}>Koulu: {edu.school}</Text>
                   <Text style={styles.boldText}>
