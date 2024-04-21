@@ -226,7 +226,7 @@ INSERT INTO KeyWords (keyword_name) VALUES ('Full Stack'), ('Ravintola'), ('Marj
 INSERT INTO KeywordsJobs (keyword_id, job_id) VALUES (1, 1), (2, 2), (3, 3);
 INSERT INTO Applications (user_id, job_id, status) VALUES (1, 2, 'Pending'), (1, 1, 'Submitted'), (1, 3, 'Pending');
 INSERT INTO ApplicationLinks (application_id, link) VALUES (1, 'https://example.com/application1'), (2, 'https://example.com/application2'), (3, 'https://example.com/application3');
-INSERT INTO Tests (test_type, user_id, test_link) VALUES ('Java-testi',  2, 'https://example.com/java_test'), ('Persoonallisuustesti', NULL, 'https://example.com/personality_test'), ('Empatiatesti', 2, 'https://example.com/empathy_test');
+INSERT INTO Tests (test_type, user_id, test_link) VALUES ('Kommunikaatio-testi',  2, 'https://forms.gle/LPxh8wnxB6a1JAHe8'), ('Tiimityöskentely-tiimi', NULL, 'https://forms.gle/RbYGC1tvz5LepXRm7'), ('Ongelmanratkaisu-testi', 2, 'https://forms.gle/QuJhbEPp4t93vEkK6'), ('Sopeutumiskyky-testi', NULL, 'https://forms.gle/Lkr9D98ha8Ch5G7p8');
 INSERT INTO JobTests (job_id, test_id) VALUES (1, 1), (2, 2), (3, 3);
 INSERT INTO UserTests (test_id, user_id, completed_at) VALUES (1, 1, '2024-03-24'), (3, 1, '2024-03-23');
 INSERT INTO Chats (user1_id, user2_id) VALUES (1, 2), (2, 3);
