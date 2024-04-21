@@ -106,6 +106,7 @@ export default function SingleTest({route}: {route: any}) {
           const result = await deleteTest(test.test_id);
           if (result) {
             setUpdate((prevState) => !prevState);
+            navigation.navigate('Testit');
           }
         },
       },
@@ -251,8 +252,8 @@ export default function SingleTest({route}: {route: any}) {
                 Käytössä seuraavissa työpaikoissa
               </Text>
               {jobs.map((item) => (
-                <>
-                  <Text style={styles.boldText} key={item.job_id}>
+                <View key={item.job_id}>
+                  <Text style={styles.boldText}>
                     - {item.job_title}{' '}
                   </Text>
                   <TouchableOpacity onPress={() => handleRemoveJob(item)}>
@@ -262,7 +263,7 @@ export default function SingleTest({route}: {route: any}) {
                       style={{color: '#5d71c9', bottom: 30, left: 10}}
                     />
                   </TouchableOpacity>
-                </>
+                </View>
               ))}
               <Text style={styles.boldText}>
                 Lisää testi muihin työpaikkoihin

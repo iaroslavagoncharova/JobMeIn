@@ -1612,6 +1612,7 @@ const useTests = () => {
       );
       if (result.message === 'Test deleted') {
         getTests();
+        return result;
       }
     } catch (e) {
       if ((e as Error).message === 'No tests found') {
@@ -1622,15 +1623,26 @@ const useTests = () => {
 
   const getJobsByTest = async (test_id: number) => {
     const token = await AsyncStorage.getItem('token');
-    const options = {
-      headers: {
-        Authorization: 'Bearer ' + token,
-      },
-    };
-    return await fetchData<JobWithSkillsAndKeywords[]>(
-      process.env.EXPO_PUBLIC_AUTH_API + '/tests/test/' + test_id,
-      options,
-    );
+    try {
+      const options = {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = await fetchData<JobWithSkillsAndKeywords[]>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/tests/test/' + test_id,
+        options,
+      );
+      if (result) {
+        return result;
+      }
+    } catch (e) {
+      if ((e as Error).message === 'Jobs not found') {
+        return [];
+      } else {
+        console.error('Error fetching jobs', e);
+      }
+    }
   };
 
   const addJobToTest = async (test_id: number, job_id: number) => {
@@ -1666,7 +1678,7 @@ const useTests = () => {
         options,
       );
       if (result) {
-        getTests();
+        return result;
       }
     } catch (e) {
       console.error('Error posting test', e);
