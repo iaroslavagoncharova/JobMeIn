@@ -1,10 +1,11 @@
-import {Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import React, {useState} from 'react';
 import {Card} from '@rneui/base';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faAdd, faEdit} from '@fortawesome/free-solid-svg-icons';
+import {faAdd, faEdit, faTrash} from '@fortawesome/free-solid-svg-icons';
 import {Attachment} from '../types/DBTypes';
 import useUpdateContext from '../hooks/updateHooks';
+import {useAttachments} from '../hooks/apiHooks';
 import AttachmentPost from './AttachmentPost';
 import AttachmentUpdate from './AttachmentUpdate';
 
@@ -18,6 +19,25 @@ export default function Attachments({
   );
   const [attachmentPosting, setAttachmentPosting] = useState<boolean>(false);
   const {update, setUpdate} = useUpdateContext();
+
+  const {deleteAttachment} = useAttachments();
+
+  const handleDelete = async (id: number) => {
+    Alert.alert('Poista liite', 'Haluatko varmasti poistaa liitteen?', [
+      {
+        text: 'Peruuta',
+        onPress: () => {},
+        style: 'cancel',
+      },
+      {
+        text: 'Poista',
+        onPress: () => {
+          deleteAttachment(id);
+          setUpdate((prevState) => !prevState);
+        },
+      },
+    ]);
+  };
 
   const styles = StyleSheet.create({
     card: {
@@ -76,6 +96,15 @@ export default function Attachments({
               >
                 <FontAwesomeIcon
                   icon={faEdit}
+                  size={25}
+                  style={{color: '#5d71c9', margin: 5}}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => handleDelete(attachment.attachment_id)}
+              >
+                <FontAwesomeIcon
+                  icon={faTrash}
                   size={25}
                   style={{color: '#5d71c9', margin: 5}}
                 />

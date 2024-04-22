@@ -1254,6 +1254,22 @@ const useAttachments = () => {
       options,
     );
   };
+
+  const deleteAttachment = async (attId: number) => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      method: 'DELETE',
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+
+    return await fetchData<MessageResponse>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/profile/attachments/' + attId,
+      options,
+    );
+  };
+
   return {
     getUserAttachments,
     attachments,
@@ -1261,6 +1277,7 @@ const useAttachments = () => {
     thisAttachment,
     postAttachment,
     putAttachment,
+    deleteAttachment,
   };
 };
 
