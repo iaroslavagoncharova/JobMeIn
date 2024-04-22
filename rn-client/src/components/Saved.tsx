@@ -5,6 +5,7 @@ import {
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
+import {Button} from 'react-native-elements';
 import {Application, JobWithUser} from '../types/DBTypes';
 import {useApplications, useJobs} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
@@ -36,7 +37,7 @@ const Saved = () => {
   }, [update]);
 
   const renderItem = ({item}: {item: Application}) => (
-    <TouchableOpacity onPress={() => navigation.navigate('Hakemuksesi', item)}>
+    <View>
       <View style={styles.itemContainer}>
         <Text style={styles.position}>{item.job.username}</Text>
         {item.job.job_title && (
@@ -60,15 +61,19 @@ const Saved = () => {
         <View style={styles.matchContainer}>
           <Text style={styles.matchPercentage}>{`100%`}</Text>
         </View>
+        <Button
+          title="Siirry hakemuksen lähettämiseen"
+          titleStyle={{color: '#ffffff'}}
+          buttonStyle={styles.applyButton}
+          onPress={() => navigation.navigate('Hakemuksesi', item)}
+        />
       </View>
-    </TouchableOpacity>
+    </View>
   );
 
   return (
     <>
-      <Text style={styles.text}>
-        Tässä ovat hakemukset työpaikkoihin, jotka olet swippaillut oikealle
-      </Text>
+      <Text style={styles.text}>Tykkäämäsi työpaikkailmoitukset</Text>
       <FlatList
         data={savedApplications}
         renderItem={renderItem}
@@ -125,6 +130,13 @@ const styles = StyleSheet.create({
     color: '#5d71c9',
     textAlign: 'center',
     margin: 10,
+  },
+  applyButton: {
+    margin: 5,
+    backgroundColor: '#5d71c9',
+    borderColor: '#004AAD',
+    borderWidth: 3,
+    borderRadius: 12,
   },
 });
 

@@ -107,9 +107,7 @@ export default function UserReports(route: {route: any}) {
       <View style={styles.container}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <Text style={styles.bigHeader}>Käyttäjän ilmiannot</Text>
-          <Text style={styles.text}>
-            Klikkaa ilmiannon tiedot nähdäksesi kaikki ilmiannot
-          </Text>
+          <Text style={styles.text}>Kaikki ilmiannot</Text>
           <Card containerStyle={{borderRadius: 10}}>
             {reports?.map((report, index) => (
               <Card key={index} containerStyle={styles.card}>

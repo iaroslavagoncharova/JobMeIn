@@ -166,7 +166,7 @@ export default function ReceivedApplication({route}: {route: any}) {
               width: '90%',
             }}
           >
-            <Text style={styles.boldText}>Hakemus ID: </Text>
+            <Text style={styles.boldText}>Hakemuksen ID: </Text>
             <Text style={styles.text}>{application.application_id}</Text>
             <Text style={styles.boldText}>Lähetetty: </Text>
             <Text style={styles.text}>
@@ -210,7 +210,7 @@ export default function ReceivedApplication({route}: {route: any}) {
                 <Text style={styles.text}>Tutkinto: {education.degree}</Text>
                 <Text style={styles.text}>Ala: {education.field}</Text>
                 <Text style={styles.text}>
-                  Valmistuminen:{' '}
+                  Valmistunut:{' '}
                   {education.graduation
                     ? education.graduation
                         .toString()

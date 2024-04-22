@@ -37,18 +37,18 @@ export default function Candidate({candidate}: {candidate: CandidateProfile}) {
       console.log(report);
       const result = await sendReport(report);
       if (result) {
-        Alert.alert('Ilmoitus lähetetty', 'Kiitos ilmoituksesta!');
+        Alert.alert('Ilmianto lähetetty', 'Kiitos ilmiannosta!');
       } else {
-        Alert.alert('Ilmoituksen lähettäminen epäonnistui', 'Yritä uudelleen');
+        Alert.alert('Ilmiannon lähettäminen epäonnistui', 'Yritä uudelleen');
       }
     };
-    Alert.alert('Miksi ilmoitat työnhakijan?', '', [
+    Alert.alert('Miksi ilmiannat työnhakijan?', '', [
       {
         text: 'Väärä kategoria',
         onPress: () => onSubmit({report_reason: 'Väärä kategoria'}),
       },
       {
-        text: 'Feikki profiili',
+        text: 'Väärennetty profiili',
         onPress: () => onSubmit({report_reason: 'Sopimaton sisältö'}),
       },
       {
@@ -305,15 +305,15 @@ export default function Candidate({candidate}: {candidate: CandidateProfile}) {
             }}
             onPress={() => {
               Alert.alert(
-                'Ilmoita',
-                'Haluatko ilmoittaa epäilyttävästä työnhakijasta?',
+                'Ilmianna',
+                'Haluatko ilmiantaa epäilyttävän työnhakijan?',
                 [
                   {
                     text: 'Peruuta',
                     onPress: () => console.log('Cancel Pressed'),
                     style: 'cancel',
                   },
-                  {text: 'Ilmoita', onPress: handleSendReport},
+                  {text: 'Ilmianna', onPress: handleSendReport},
                 ],
               );
             }}

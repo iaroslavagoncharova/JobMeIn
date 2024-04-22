@@ -180,7 +180,7 @@ export default function SingleJob({route}: {route: any}) {
             return;
           }
           Alert.alert('Työilmoitus poistettu onnistuneesti');
-          navigation.navigate('Minun työpaikat');
+          navigation.navigate('Minun ilmoitukseni');
           setUpdate((prevState) => !prevState);
         },
       },

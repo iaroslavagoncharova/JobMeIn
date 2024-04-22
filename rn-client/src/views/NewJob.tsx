@@ -148,7 +148,7 @@ export default function NewJob() {
       console.log('Job posted successfully');
       resetForm();
       setUpdate(!update);
-      navigation.navigate('Minun työpaikat');
+      navigation.navigate('Minun ilmoitukseni');
     } else {
       Alert.alert('Virhe', 'Työpaikan luonti epäonnistui');
     }
@@ -421,7 +421,7 @@ export default function NewJob() {
             <View>
               <TextInput
                 style={styles.input}
-                placeholder="Search for a skill..."
+                placeholder="Hae taitoja..."
                 onChangeText={setSearchValue}
                 value={searchValue}
               />
@@ -468,7 +468,7 @@ export default function NewJob() {
               titleStyle={{color: '#5d71c9'}}
             />
             <Button
-              onPress={() => navigation.navigate('Minun työpaikat')}
+              onPress={() => navigation.navigate('Minun ilmoitukseni')}
               title={'Peruuta'}
               buttonStyle={styles.cancelButton}
               titleStyle={{color: '#5d71c9'}}

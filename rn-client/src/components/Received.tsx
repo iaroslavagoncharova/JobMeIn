@@ -7,6 +7,7 @@ import {
 } from '@react-navigation/native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faRotateRight} from '@fortawesome/free-solid-svg-icons';
+import {Button} from 'react-native-elements';
 import {useApplications, useJobs} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
 import {Application, JobWithSkillsAndKeywords} from '../types/DBTypes';
@@ -62,9 +63,7 @@ export default function Received() {
       <FlatList
         data={jobApplications ? jobApplications : []}
         renderItem={({item}) => (
-          <TouchableOpacity
-            onPress={() => navigation.navigate('SaapunutHakemus', item)}
-          >
+          <View>
             <View style={styles.itemContainer}>
               <Text style={styles.date}>
                 Työhakemuksen ID: {''}
@@ -81,8 +80,14 @@ export default function Received() {
                       .join('.')
                   : ''}
               </Text>
+              <Button
+                title="Näytä hakemus"
+                titleStyle={{color: '#ffffff'}}
+                buttonStyle={styles.showApplicationButton}
+                onPress={() => navigation.navigate('SaapunutHakemus', item)}
+              />
             </View>
-          </TouchableOpacity>
+          </View>
         )}
         keyExtractor={(item) => item.application_id.toString()}
       />
@@ -151,5 +156,12 @@ const styles = StyleSheet.create({
   matchPercentage: {
     color: '#ffffff',
     fontWeight: 'bold',
+  },
+  showApplicationButton: {
+    margin: 5,
+    backgroundColor: '#5d71c9',
+    borderColor: '#004AAD',
+    borderWidth: 3,
+    borderRadius: 12,
   },
 });

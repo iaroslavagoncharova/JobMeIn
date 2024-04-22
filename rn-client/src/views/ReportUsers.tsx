@@ -64,8 +64,8 @@ export default function ReportedUsers() {
 
   const handleIgnoreReport = async (userId: number) => {
     Alert.alert(
-      'Hylkää raportti',
-      'Haluatko varmasti hylätä raportin?',
+      'Hylkää ilmianto',
+      'Haluatko varmasti hylätä ilmiannon?',
       [
         {
           text: 'Peruuta',
@@ -78,7 +78,7 @@ export default function ReportedUsers() {
             const resolved = await resolveReport(userId);
             if (resolved) {
               setUpdate((prevState) => !prevState);
-              Alert.alert('Raportti hylätty');
+              Alert.alert('Ilmianto hylätty');
             }
           },
         },
@@ -148,7 +148,7 @@ export default function ReportedUsers() {
   return (
     <>
       <Text style={styles.text}>
-        Tässä ovat käyttäjät, jotka on raportoitu sivuston ylläpidolle.
+        Sivuston ylläpidolle ilmiannetut käyttäjät
       </Text>
       <TouchableOpacity onPress={handleGetReportedUsers}>
         <FontAwesomeIcon icon={faRotateRight} size={30} color="#5d71c9" />

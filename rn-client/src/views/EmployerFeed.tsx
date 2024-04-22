@@ -85,7 +85,7 @@ const EmployerFeed = () => {
       const match = matches[0];
       Alert.alert(
         'Uusi match!',
-        `Sinulla on uusi match työnhakijan ${match.user.username} kanssa! Voit aloittaa keskustelun napauttamalla ilmoitusta.`,
+        `Uusi match työnhakijan ${match.user.username} kanssa! Voit aloittaa keskustelun napauttamalla ilmoitusta.`,
         [
           {
             text: 'OK',

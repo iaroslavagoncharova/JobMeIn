@@ -218,7 +218,7 @@ export default function ExperienceUpdate({
             : 'Ei valittu'}
       </Text>
       <Button
-        title="Muokkaa työsuhteen alkamispäivää"
+        title="Muokkaa työsuhteen alkamispäivämäärää"
         titleStyle={{color: '#5d71c9', fontSize: 15}}
         onPress={showModeStart}
         buttonStyle={styles.calendarButton}
@@ -249,13 +249,13 @@ export default function ExperienceUpdate({
       {includeEndDate ? (
         <>
           <Button
-            title="Muokkaa työsuhteen päättymispäivää"
+            title="Muokkaa työsuhteen päättymispäivämäärää"
             titleStyle={{color: '#5d71c9', fontSize: 15}}
             onPress={() => showModeEnd()}
             buttonStyle={styles.calendarButton}
           />
           <Text style={styles.text}>
-            Työsuhteen päättymispäivä:{' '}
+            Työsuhteen päättymispvm:{' '}
             {endDate
               ? endDate.toLocaleString('fi-FI').split(' ')[0]
               : exp.end_date

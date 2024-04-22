@@ -63,8 +63,8 @@ export default function ReportedJobs() {
 
   const handleIgnoreReport = async (jobId: number) => {
     Alert.alert(
-      'Hylkää raportti',
-      'Haluatko varmasti hylätä raportin?',
+      'Hylkää ilmianto',
+      'Haluatko varmasti hylätä ilmiannon?',
       [
         {
           text: 'Peruuta',
@@ -77,7 +77,7 @@ export default function ReportedJobs() {
             const resolved = await resolveReport(jobId);
             if (resolved) {
               setUpdate((prevState) => !prevState);
-              Alert.alert('Raportti hylätty');
+              Alert.alert('Ilmianto hylätty');
             }
           },
         },
@@ -145,7 +145,7 @@ export default function ReportedJobs() {
   return (
     <>
       <Text style={styles.text}>
-        Tässä ovat työpaikat, jotka on raportoitu sivuston ylläpidolle.
+        Sivuston ylläpidolle ilmiannetut työpaikkailmoitukset
       </Text>
       <TouchableOpacity onPress={handleGetReportedJobs}>
         <FontAwesomeIcon icon={faRotateRight} size={30} color="#5d71c9" />

@@ -50,7 +50,7 @@ const CompanyRegisterForm = () => {
     try {
       console.log(inputs, 'inputs 2');
       await postUser(inputs);
-      Alert.alert('Käyttäjä on luotu', 'Voit kirjautua sisään');
+      Alert.alert('Käyttäjä luotu', 'Voit kirjautua sisään');
       // TODO: navigate to login, not the auth screen
       navigation.navigate('Kirjaudu/luo profiili');
     } catch (error) {

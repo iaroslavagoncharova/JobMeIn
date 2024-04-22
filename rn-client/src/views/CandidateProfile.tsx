@@ -187,7 +187,7 @@ export default function CandidateProfile() {
       case 2:
         return (
           <>
-            <Text style={styles.header1}>Kokemus</Text>
+            <Text style={styles.header1}>Työkokemus</Text>
             {experience ? (
               experience.map((exp) => (
                 <Card
@@ -224,7 +224,7 @@ export default function CandidateProfile() {
                 </Card>
               ))
             ) : (
-              <Text style={styles.skills}>Ei kokemusta</Text>
+              <Text style={styles.skills}>Ei työkokemusta</Text>
             )}
           </>
         );
