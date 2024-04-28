@@ -1157,8 +1157,6 @@ const useAttachments = () => {
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [thisAttachment, setThisAttachment] = useState<Attachment>();
   const {update} = useUpdateContext();
-  const downloadAttachment = async (filename: string) => {
-  };
   const getUserAttachments = async () => {
     const token = await AsyncStorage.getItem('token');
     try {
