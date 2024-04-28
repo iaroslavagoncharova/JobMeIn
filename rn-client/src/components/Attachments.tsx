@@ -1,9 +1,10 @@
-import {Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {Text, StyleSheet, TouchableOpacity, Linking} from 'react-native';
 import React, {useState} from 'react';
 import {Card} from '@rneui/base';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faAdd, faDownload, faEdit} from '@fortawesome/free-solid-svg-icons';
 import {Attachment} from '../types/DBTypes';
+import {useAttachments} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
 import AttachmentPost from './AttachmentPost';
 import AttachmentUpdate from './AttachmentUpdate';
@@ -19,18 +20,15 @@ export default function Attachments({
   const [attachmentPosting, setAttachmentPosting] = useState<boolean>(false);
   const {update, setUpdate} = useUpdateContext();
 
-  // const downloadAttachment = async (filename: string) => {
-  //   try {
-  //     const url = window.URL.createObjectURL(new Blob([response.data]));
-  //     const link = document.createElement('a');
-  //     link.href = url;
-  //     link.setAttribute('download', filename);
-  //     document.body.appendChild(link);
-  //     link.click();
-  //   } catch (error) {
-  //     console.error('Error downloading attachment:', error);
-  //   }
-  // };
+  const handleDownload = async (filename: string) => {
+    try {
+      const link =
+        process.env.EXPO_PUBLIC_UPLOAD_SERVER + '/download/' + filename;
+      Linking.openURL(link);
+    } catch (error) {
+      console.error('Error downloading attachment:', error);
+    }
+  };
 
   const styles = StyleSheet.create({
     card: {
@@ -78,12 +76,18 @@ export default function Attachments({
       {attachments.map((attachment) => (
         <Card
           key={attachment.attachment_id}
-          containerStyle={{borderRadius: 10}}
+          containerStyle={{
+            borderRadius: 10,
+            width: 250,
+            alignItems: 'center',
+          }}
         >
           {attachmentEditing !== attachment.attachment_id ? (
             <>
               <Text style={styles.boldText}>{attachment.attachment_name}</Text>
-              <Text style={styles.text}>{attachment.filename}</Text>
+              <Text style={styles.text}>
+                {attachment.filename.substring(0, 20) + '...'}
+              </Text>
               <TouchableOpacity
                 onPress={() => setAttachmentEditing(attachment.attachment_id)}
               >
@@ -93,7 +97,9 @@ export default function Attachments({
                   style={{color: '#5d71c9', margin: 5}}
                 />
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => handleDownload(attachment.filename)}
+              >
                 <FontAwesomeIcon
                   icon={faDownload}
                   size={25}
