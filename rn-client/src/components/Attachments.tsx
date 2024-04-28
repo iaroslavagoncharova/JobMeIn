@@ -1,8 +1,13 @@
-import {Text, StyleSheet, TouchableOpacity, Linking} from 'react-native';
+import {Text, StyleSheet, TouchableOpacity, Linking, Alert} from 'react-native';
 import React, {useState} from 'react';
 import {Card} from '@rneui/base';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faAdd, faDownload, faEdit} from '@fortawesome/free-solid-svg-icons';
+import {
+  faAdd,
+  faDownload,
+  faEdit,
+  faTrash,
+} from '@fortawesome/free-solid-svg-icons';
 import {Attachment} from '../types/DBTypes';
 import {useAttachments} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
@@ -19,6 +24,28 @@ export default function Attachments({
   );
   const [attachmentPosting, setAttachmentPosting] = useState<boolean>(false);
   const {update, setUpdate} = useUpdateContext();
+  const {deleteAttachment} = useAttachments();
+
+  const handleDelete = async (attachment_id: number) => {
+    Alert.alert('Poistetaanko liite?', 'Haluatko varmasti poistaa liitteen?', [
+      {
+        text: 'Kyllä',
+        onPress: async () => {
+          const result = await deleteAttachment(attachment_id);
+          console.log(result, 'result');
+          if (result) {
+            setUpdate((prevState) => !prevState);
+          } else {
+            Alert.alert('Liitteen poistaminen epäonnistui', 'Yritä uudelleen');
+          }
+        },
+      },
+      {
+        text: 'Peruuta',
+        onPress: () => {},
+      },
+    ]);
+  };
 
   const handleDownload = async (filename: string) => {
     try {
@@ -102,6 +129,15 @@ export default function Attachments({
               >
                 <FontAwesomeIcon
                   icon={faDownload}
+                  size={25}
+                  style={{color: '#5d71c9', margin: 5}}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => handleDelete(attachment.attachment_id)}
+              >
+                <FontAwesomeIcon
+                  icon={faTrash}
                   size={25}
                   style={{color: '#5d71c9', margin: 5}}
                 />

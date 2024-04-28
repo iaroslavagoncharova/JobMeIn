@@ -115,7 +115,7 @@ export default function CandidateProfile() {
             <Text style={styles.header2}>
               Ala: {user?.field ? user.field : 'Ei alaa'}
             </Text>
-            <Text style={styles.header2}>
+            <Text style={styles.boldText}>
               {user?.about_me ? user.about_me : 'Ei kuvausta'}
             </Text>
             {skills ? (
