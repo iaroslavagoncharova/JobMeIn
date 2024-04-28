@@ -23,7 +23,9 @@
     "@react-navigation/native-stack": "^6.9.25",
     "@react-navigation/stack": "^6.3.29",
     "@rneui/base": "^4.0.0-rc.8",
-    "expo": "^50.0.14",
+    "expo": "^50.0.17",
+    "expo-document-picker": "~11.10.1",
+    "expo-file-system": "~16.0.9",
     "expo-status-bar": "~1.11.1",
     "install": "^0.13.0",
     "npm": "^10.5.0",
@@ -38,9 +40,7 @@
     "react-native-safe-area-context": "4.8.2",
     "react-native-screens": "~3.29.0",
     "react-native-swipe-cards": "^0.1.1",
-    "react-native-tab-view": "^3.5.2",
-    "expo-file-system": "~16.0.9",
-    "expo-document-picker": "~11.10.1"
+    "react-native-tab-view": "^3.5.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

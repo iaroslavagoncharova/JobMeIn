@@ -180,22 +180,23 @@ const Tests = () => {
       <View style={styles.container}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <Text style={styles.bigHeader}>JobMeIn testit</Text>
-          <Card containerStyle={{borderRadius: 10}}>
-            {tests ? (
-              tests.map((test) => (
-                <View key={test.test_id}>
-                  <TouchableOpacity
-                    onPress={() => navigation.navigate('Testi', {test})}
-                  >
-                    <Text style={styles.boldText}>{test.test_type}</Text>
-                    <Text style={styles.text}>{test.test_link}</Text>
-                  </TouchableOpacity>
-                </View>
-              ))
-            ) : (
-              <Text style={styles.text}>Ei testejä</Text>
-            )}
-          </Card>
+          {tests ? (
+            tests.map((test) => (
+              <Card
+                containerStyle={{borderRadius: 10, width: 300}}
+                key={test.test_id}
+              >
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Testi', {test})}
+                >
+                  <Text style={styles.boldText}>{test.test_type}</Text>
+                  <Text style={styles.text}>{test.test_link}</Text>
+                </TouchableOpacity>
+              </Card>
+            ))
+          ) : (
+            <Text style={styles.text}>Ei testejä</Text>
+          )}
           <Text style={styles.bigHeader}>Minun testit</Text>
           {userTests ? (
             userTests.map((test) => (
