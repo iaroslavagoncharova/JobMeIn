@@ -183,7 +183,11 @@ const Tests = () => {
           {tests ? (
             tests.map((test) => (
               <Card
-                containerStyle={{borderRadius: 10, width: 300}}
+                containerStyle={{
+                  borderRadius: 10,
+                  width: 300,
+                  marginBottom: 5,
+                }}
                 key={test.test_id}
               >
                 <TouchableOpacity

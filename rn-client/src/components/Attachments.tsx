@@ -2,7 +2,7 @@ import {Text, StyleSheet, TouchableOpacity} from 'react-native';
 import React, {useState} from 'react';
 import {Card} from '@rneui/base';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faAdd, faEdit} from '@fortawesome/free-solid-svg-icons';
+import {faAdd, faDownload, faEdit} from '@fortawesome/free-solid-svg-icons';
 import {Attachment} from '../types/DBTypes';
 import useUpdateContext from '../hooks/updateHooks';
 import AttachmentPost from './AttachmentPost';
@@ -18,6 +18,19 @@ export default function Attachments({
   );
   const [attachmentPosting, setAttachmentPosting] = useState<boolean>(false);
   const {update, setUpdate} = useUpdateContext();
+
+  // const downloadAttachment = async (filename: string) => {
+  //   try {
+  //     const url = window.URL.createObjectURL(new Blob([response.data]));
+  //     const link = document.createElement('a');
+  //     link.href = url;
+  //     link.setAttribute('download', filename);
+  //     document.body.appendChild(link);
+  //     link.click();
+  //   } catch (error) {
+  //     console.error('Error downloading attachment:', error);
+  //   }
+  // };
 
   const styles = StyleSheet.create({
     card: {
@@ -76,6 +89,13 @@ export default function Attachments({
               >
                 <FontAwesomeIcon
                   icon={faEdit}
+                  size={25}
+                  style={{color: '#5d71c9', margin: 5}}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <FontAwesomeIcon
+                  icon={faDownload}
                   size={25}
                   style={{color: '#5d71c9', margin: 5}}
                 />
