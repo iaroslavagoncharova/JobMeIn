@@ -20,6 +20,7 @@ export default function ChatEmployerInfo({route}: any) {
   const user_id = route.params.userId;
   const interview_status = route.params.interview;
   const me_id = route.params.meId;
+  console.log(me_id, 'me_id');
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const {getUserApplications} = useApplications();
   const {getUserById} = useUser();
@@ -36,7 +37,6 @@ export default function ChatEmployerInfo({route}: any) {
       setApplications([]);
     }
   };
-  console.log(applications, 'applications');
 
   const handleGetUserInfo = async (user_id: number) => {
     const response = await getUserById(user_id);
@@ -46,13 +46,6 @@ export default function ChatEmployerInfo({route}: any) {
       setUser(null);
     }
   };
-
-  console.log(applications, 'applications');
-  console.log(user, 'user');
-  applications.map((application) => {
-    console.log(application.job, 'application job');
-  });
-
   useEffect(() => {
     handleGetApplications();
     handleGetUserInfo(user_id);
@@ -248,16 +241,17 @@ export default function ChatEmployerInfo({route}: any) {
                 {user?.email ? user.email : 'Ei määritelty'}
               </Text>
             </Card>
-            {interview_status === 'Accepted' && (
-              <>
-                <Text style={styles.text}>
-                  Työnhakijan sähköposti: {user?.email}
-                </Text>
-                <Text style={styles.text}>
-                  Työnhakijan puhelinnumero: {user?.phone}
-                </Text>
-              </>
-            )}
+            {interview_status === 'Accepted' &&
+              user?.user_type === 'candidate' && (
+                <>
+                  <Text style={styles.text}>
+                    Työnhakijan sähköposti: {user?.email}
+                  </Text>
+                  <Text style={styles.text}>
+                    Työnhakijan puhelinnumero: {user?.phone}
+                  </Text>
+                </>
+              )}
           </Card>
         </ScrollView>
       </View>

@@ -203,7 +203,15 @@ export default function SingleApplication({route}: {route: any}) {
             <Text style={styles.bigHeader}>Hakemuksen tiedot</Text>
             <Text style={styles.boldText}>Hakemuksen tila: </Text>
             <Text style={styles.text}>
-              {application.status ? application.status : 'Ei määritelty'}
+              {application.status
+                ? application.status === 'Submitted'
+                  ? 'Odottaa vastausta'
+                  : application.status === 'Accepted'
+                    ? 'Hyväksytty'
+                    : application.status === 'Declined'
+                      ? 'Hylätty'
+                      : 'Ei määritelty'
+                : 'Ei määritelty'}
             </Text>
             <Text style={styles.boldText}>Hakemuksen luontipäivä: </Text>
             <Text style={styles.text}>
@@ -239,11 +247,7 @@ export default function SingleApplication({route}: {route: any}) {
                   päivää
                 </Text>
               </>
-            ) : (
-              <>
-                <Text style={styles.redText}>Hakuaika päättynyt</Text>
-              </>
-            )}
+            ) : null}
             {!isSubmitted &&
               job?.deadline_date &&
               new Date(job.deadline_date) > new Date() && (
