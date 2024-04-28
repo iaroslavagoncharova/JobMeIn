@@ -5,6 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  Linking,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Button, Card} from '@rneui/base';
@@ -245,17 +246,23 @@ export default function SingleTest({route}: {route: any}) {
               <Text style={styles.bigHeader}>
                 {newTest.test_type ? newTest.test_type : test.test_type}
               </Text>
-              <Text style={styles.text}>
-                {newTest.test_link ? newTest.test_link : test.test_link}
-              </Text>
+              <TouchableOpacity
+                onPress={async () => {
+                  Linking.openURL(
+                    newTest.test_link ? newTest.test_link : test.test_link,
+                  );
+                }}
+              >
+                <Text style={styles.text}>
+                  {newTest.test_link ? newTest.test_link : test.test_link}
+                </Text>
+              </TouchableOpacity>
               <Text style={styles.boldText}>
                 Käytössä seuraavissa työpaikoissa
               </Text>
               {jobs.map((item) => (
                 <View key={item.job_id}>
-                  <Text style={styles.boldText}>
-                    - {item.job_title}{' '}
-                  </Text>
+                  <Text style={styles.boldText}>- {item.job_title} </Text>
                   <TouchableOpacity onPress={() => handleRemoveJob(item)}>
                     <FontAwesomeIcon
                       icon={faTrash}

@@ -13,11 +13,7 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import {useApplications, useUser} from '../hooks/apiHooks';
-import {
-  Application,
-  CandidateProfile,
-  UnauthorizedUser,
-} from '../types/DBTypes';
+import {Application, UnauthorizedUser} from '../types/DBTypes';
 import useUpdateContext from '../hooks/updateHooks';
 
 export default function ChatEmployerInfo({route}: any) {
@@ -30,9 +26,9 @@ export default function ChatEmployerInfo({route}: any) {
   const {update} = useUpdateContext();
   const [applications, setApplications] = useState<Application[]>([]);
   const [user, setUser] = useState<UnauthorizedUser | null>(null);
-  const handleGetApplications = async (me_id: number) => {
-    console.log(me_id, 'me_id');
-    const response = await getUserApplications(me_id);
+  const handleGetApplications = async () => {
+    console.log(user_id, 'user_id');
+    const response = await getUserApplications(user_id);
     console.log(response, 'response');
     if (response) {
       setApplications(response);
@@ -58,7 +54,7 @@ export default function ChatEmployerInfo({route}: any) {
   });
 
   useEffect(() => {
-    handleGetApplications(me_id);
+    handleGetApplications();
     handleGetUserInfo(user_id);
   }, [update]);
 
@@ -157,6 +153,9 @@ export default function ChatEmployerInfo({route}: any) {
             </Text>
           )}
           <Text style={styles.bigHeader}>Hakemukset</Text>
+          {applications.length === 0 && (
+            <Text style={styles.text}>Ei hakemuksia</Text>
+          )}
           {applications.map((application) => (
             <Card
               key={application.application_id}
