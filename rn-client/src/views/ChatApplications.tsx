@@ -153,7 +153,7 @@ export default function ChatApplications({route}: any) {
             >
               <Text style={styles.header}>Hakemus</Text>
               <Text style={styles.text}>
-                Hakemus ID: {application.application_id}
+                Hakemuksen ID: {application.application_id}
               </Text>
               <Text style={styles.text}>
                 Hakemus luotu:{' '}
@@ -178,14 +178,14 @@ export default function ChatApplications({route}: any) {
             {interview_status === 'Accepted' && (
               <>
                 <Text style={styles.text}>
-                  Työnhakijan sähköposti: {privateUser?.email}
+                  Sähköpostiosoite: {privateUser?.email}
                 </Text>
                 <Text style={styles.text}>
-                  Työnhakijan puhelinnumero: {privateUser?.phone}
+                  Puhelinnumero: {privateUser?.phone}
                 </Text>
               </>
             )}
-            <Text style={styles.text}>Itsestä: {user?.about_me}</Text>
+            <Text style={styles.text}>Kuvaus: {user?.about_me}</Text>
             <Text style={styles.text}>
               Työnhakijan taidot:{' '}
               {user?.skills.map((skill) => String(skill)).join(', ')}

@@ -154,7 +154,7 @@ export default function ExperiencePost({
         name="description"
       />
       <Button
-        title="Valitse työsuhteen alkamispäivä*"
+        title="Valitse työsuhteen alkamispäivämäärä*"
         titleStyle={{color: '#5d71c9', fontSize: 15}}
         onPress={() => setOpenStart(true)}
         buttonStyle={styles.calendarButton}
@@ -175,7 +175,7 @@ export default function ExperiencePost({
         />
       )}
       <Text style={{color: '#5d71c9', margin: 5, textAlign: 'center'}}>
-        Työsuhteen alkamispäivä:{' '}
+        Työsuhteen alkamispvm:{' '}
         {start_date ? start_date.toLocaleDateString('fi-FI') : 'Ei valittu'}
       </Text>
       <CheckBox
@@ -188,7 +188,7 @@ export default function ExperiencePost({
       {includeEndDate ? (
         <>
           <Button
-            title="Valitse työsuhteen päättymispäivä"
+            title="Valitse työsuhteen päättymispäivämäärä"
             titleStyle={{color: '#5d71c9', fontSize: 15}}
             onPress={() => setOpenEnd(true)}
             buttonStyle={styles.calendarButton}
@@ -209,7 +209,7 @@ export default function ExperiencePost({
             />
           )}
           <Text style={{color: '#5d71c9', margin: 5, textAlign: 'center'}}>
-            Työsuhteen päättymispäivä:{' '}
+            Työsuhteen päättymispvm:{' '}
             {end_date ? end_date.toLocaleString('fi-FI') : 'Ei valittu'}
           </Text>
         </>

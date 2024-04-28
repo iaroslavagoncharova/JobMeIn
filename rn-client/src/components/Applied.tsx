@@ -5,6 +5,7 @@ import {
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
+import {Button} from 'react-native-elements';
 import {Application, ApplicationApplied, JobWithUser} from '../types/DBTypes';
 import {useApplications, useJobs} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
@@ -31,7 +32,7 @@ const Applied = () => {
     fetchJobs();
   }, [update]);
   const renderItem = ({item}: {item: Application}) => (
-    <TouchableOpacity onPress={() => navigation.navigate('Hakemuksesi', item)}>
+    <View>
       <View style={styles.itemContainer}>
         <Text style={styles.position}>{item.job.username}</Text>
         {item.job.job_title && (
@@ -43,21 +44,18 @@ const Applied = () => {
         <View style={styles.matchContainer}>
           <Text style={styles.matchPercentage}>100%</Text>
         </View>
-        <Text
-          style={{
-            color: '#5d71c9',
-            textAlign: 'center',
-            fontWeight: 'bold',
-          }}
-        >
-          Näytä hakemus
-        </Text>
+        <Button
+          title="Näytä hakemus"
+          titleStyle={{color: '#ffffff'}}
+          buttonStyle={styles.showButton}
+          onPress={() => navigation.navigate('Hakemuksesi', item)}
+        />
       </View>
-    </TouchableOpacity>
+    </View>
   );
   return (
     <>
-      <Text style={styles.text}>Tässä ovat lähettämäsi hakemukset</Text>
+      <Text style={styles.text}>Lähettämäsi hakemukset</Text>
       <FlatList
         data={sentApplications}
         renderItem={renderItem}
@@ -119,6 +117,13 @@ const styles = StyleSheet.create({
     color: '#5d71c9',
     textAlign: 'center',
     margin: 10,
+  },
+  showButton: {
+    margin: 5,
+    backgroundColor: '#5d71c9',
+    borderColor: '#004AAD',
+    borderWidth: 3,
+    borderRadius: 12,
   },
 });
 

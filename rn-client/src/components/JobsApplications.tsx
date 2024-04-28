@@ -17,7 +17,7 @@ const JobsApplications = () => {
         tabBarStyle: {backgroundColor: 'white'},
       }}
     >
-      <Tab.Screen name="Minun työpaikat" component={CompanyJobs} />
+      <Tab.Screen name="Minun ilmoitukseni" component={CompanyJobs} />
       <Tab.Screen name="Saapuneet hakemukset" component={Received} />
     </Tab.Navigator>
   );

@@ -132,7 +132,7 @@ const Profile = () => {
               <ScrollView showsVerticalScrollIndicator={false}>
                 <Text style={styles.bigHeader}>Profiili</Text>
                 <Button
-                  title="Täältä voit nähdä miltä profiilisi näyttää työnantajalle"
+                  title="Työnantajan näkymä"
                   titleStyle={{color: '#ffffff'}}
                   buttonStyle={styles.candidateProfileButton}
                   onPress={() => navigation.navigate('Työnhakijan profiili')}
@@ -176,7 +176,7 @@ const Profile = () => {
           {user.user_type === 'admin' && (
             <View style={styles.container}>
               <ScrollView showsVerticalScrollIndicator={false}>
-                <Text style={styles.bigHeader}>Adminin profiili</Text>
+                <Text style={styles.bigHeader}>Ylläpitäjän profiili</Text>
                 <PersonalInfo user={user} />
                 <Button
                   title="Poista profiili"

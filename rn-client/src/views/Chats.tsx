@@ -31,7 +31,7 @@ const Chats = ({navigation}: {navigation: NavigationProp<ParamListBase>}) => {
             />
           ))
         ) : (
-          <Text style={{marginLeft: 20}}>Sinulla ei ole keskusteluja</Text>
+          <Text style={{marginLeft: 20}}>Ei keskusteluja</Text>
         )}
         <TouchableOpacity onPress={handleAdminChat}>
           <Text
