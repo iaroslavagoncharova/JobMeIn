@@ -63,10 +63,10 @@ const ExampleFeed = () => {
 
   const exampleCard = {
     job_id: 1,
-    job_title: 'Esimerkki työ',
+    job_title: 'Esimerkkityö',
     salary: '1000',
     job_description:
-      'Tämä on esimerkki työpaikasta. Kirjaudu nähdäksesi oikean työpaikan.',
+      'Työpaikkailmoitusesimerkki',
     field: 'Esimerkki',
     deadline_date: '2024-12-12',
     job_address: 'Helsinki',
@@ -79,7 +79,7 @@ const ExampleFeed = () => {
   }, []);
 
   const handleYup = (job: JobWithSkillsAndKeywords) => {
-    Alert.alert('Kirjautuneena pääset hakemaan työpaikkaa', '', [
+    Alert.alert('Kirjaudu hakeaksesi työpaikkaa', '', [
       {
         text: 'OK',
         onPress: () => {
@@ -90,7 +90,7 @@ const ExampleFeed = () => {
   };
 
   const handleNope = (job: JobWithSkillsAndKeywords) => {
-    Alert.alert('Kirjautuneena pääset hakemaan työpaikkaa', '', [
+    Alert.alert('Kirjaudu hakeaksesi työpaikkaa', '', [
       {
         text: 'OK',
         onPress: () => {

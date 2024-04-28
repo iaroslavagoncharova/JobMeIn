@@ -146,6 +146,12 @@ export default function SingleApplication({route}: {route: any}) {
       fontWeight: 'bold',
       textAlign: 'center',
     },
+    redText: {
+      fontSize: 16,
+      color: '#D71313',
+      fontWeight: 'bold',
+      textAlign: 'center',
+    },
     card: {
       backgroundColor: '#ffffff',
       margin: 5,
@@ -205,13 +211,23 @@ export default function SingleApplication({route}: {route: any}) {
                 ? application.created_at.toString().slice(0, 10)
                 : 'Ei määritelty'}
             </Text>
+            <Text style={styles.boldText}>Vastaanottaja: </Text>
+            <Text style={styles.text}>
+              {user?.username ? user.fullname : 'Ei määritelty'}
+            </Text>
+            <Text style={styles.boldText}>
+              Hakemuksen teksti (vapaaehtoinen):{' '}
+            </Text>
+            <Text style={styles.text}>
+              {applicationInfo?.application_text
+                ? applicationInfo.application_text
+                : application.application_text}
+            </Text>
             {!isSubmitted &&
             job?.deadline_date &&
             new Date(job.deadline_date) > new Date() ? (
               <>
-                <Text style={styles.boldText}>
-                  Sinulla on vielä aikaa hakea tähän työpaikkaan:{' '}
-                </Text>
+                <Text style={styles.boldText}>Hakuaikaa jäljellä: </Text>
                 <Text style={styles.text}>
                   {job.deadline_date
                     ? Math.ceil(
@@ -225,65 +241,52 @@ export default function SingleApplication({route}: {route: any}) {
               </>
             ) : (
               <>
-                <Text style={styles.boldText}>
-                  Hakuaika tähän työpaikkaan on päättynyt
-                </Text>
+                <Text style={styles.redText}>Hakuaika päättynyt</Text>
               </>
             )}
-
-            <Text style={styles.boldText}>Hakemuksen vastaanottaja: </Text>
-            <Text style={styles.text}>
-              {user?.username ? user.fullname : 'Ei määritelty'}
-            </Text>
-            <Text style={styles.boldText}>
-              Hakemuksen teksti (vapaaehtoinen):{' '}
-            </Text>
-            <Text style={styles.text}>
-              {applicationInfo?.application_text
-                ? applicationInfo.application_text
-                : application.application_text}
-            </Text>
-            {!isSubmitted && (
-              <>
-                {!editing ? (
-                  <Button
-                    title="Muokkaa"
-                    onPress={() => setEditing(!editing)}
-                    buttonStyle={styles.saveButton}
-                  ></Button>
-                ) : (
-                  <>
-                    <Controller
-                      control={control}
-                      render={({field: {onChange, onBlur, value}}) => (
-                        <TextInput
-                          style={styles.input}
-                          onBlur={onBlur}
-                          onChangeText={onChange}
-                          value={value ?? ''}
-                          placeholder={'Kirjoita hakemuksen teksti tähän'}
-                        />
-                      )}
-                      name="application_text"
-                    />
+            {!isSubmitted &&
+              job?.deadline_date &&
+              new Date(job.deadline_date) > new Date() && (
+                <>
+                  {!editing ? (
                     <Button
-                      title="Tallenna muutokset"
-                      onPress={() => {
-                        handleSubmit(addText)();
-                        resetForm();
-                      }}
+                      title="Muokkaa"
+                      onPress={() => setEditing(!editing)}
                       buttonStyle={styles.saveButton}
                     ></Button>
-                    <Button
-                      title="Peruuta"
-                      titleStyle={{color: '#5d71c9'}}
-                      onPress={() => setEditing(!editing)}
-                      buttonStyle={styles.cancelButton}
-                    ></Button>
-                  </>
-                )}
-              </>
-            )}
+                  ) : (
+                    <>
+                      <Controller
+                        control={control}
+                        render={({field: {onChange, onBlur, value}}) => (
+                          <TextInput
+                            style={styles.input}
+                            onBlur={onBlur}
+                            onChangeText={onChange}
+                            value={value ?? ''}
+                            placeholder={'Kirjoita hakemuksen teksti tähän'}
+                          />
+                        )}
+                        name="application_text"
+                      />
+                      <Button
+                        title="Tallenna muutokset"
+                        onPress={() => {
+                          handleSubmit(addText)();
+                          resetForm();
+                        }}
+                        buttonStyle={styles.saveButton}
+                      ></Button>
+                      <Button
+                        title="Peruuta"
+                        titleStyle={{color: '#5d71c9'}}
+                        onPress={() => setEditing(!editing)}
+                        buttonStyle={styles.cancelButton}
+                      ></Button>
+                    </>
+                  )}
+                </>
+              )}
           </Card>
           <Card
             containerStyle={{
@@ -367,7 +370,7 @@ export default function SingleApplication({route}: {route: any}) {
               {user?.address ? user.address : 'Ei määritelty'}
             </Text>
           </Card>
-          {application.status === 'Sent' ||
+          {application.status === 'Submitted' ||
           application.status === 'Accepted' ||
           application.status === 'Declined' ? (
             <Button

@@ -131,13 +131,13 @@ export default function ExperiencePage({
                   <Text style={styles.text}>{exp.description}</Text>
                 </>
               ) : null}
-              <Text style={styles.boldText}>Työskentely alkaa:</Text>
+              <Text style={styles.boldText}>Työsuhteen alkupvm:</Text>
               <Text style={styles.text}>
                 {new Date(exp.start_date).toLocaleDateString('fi-FI')}
               </Text>
               {exp.end_date ? (
                 <>
-                  <Text style={styles.boldText}>Työskentely päättyy:</Text>
+                  <Text style={styles.boldText}>Työsuhteen päättymispvm:</Text>
                   <Text style={styles.text}>
                     {new Date(exp.end_date).toLocaleDateString('fi-FI')}
                   </Text>

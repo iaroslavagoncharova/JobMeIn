@@ -50,12 +50,12 @@ export default function JobAd({job}: {job: JobWithSkillsAndKeywords}) {
       console.log(report);
       const result = await sendReport(report);
       if (result) {
-        Alert.alert('Ilmoitus lähetetty', 'Kiitos ilmoituksesta!');
+        Alert.alert('Ilmianto lähetetty', 'Kiitos ilmiannosta!');
       } else {
         Alert.alert('Ilmoituksen lähettäminen epäonnistui', 'Yritä uudelleen');
       }
     };
-    Alert.alert('Miksi ilmoitat ilmoituksen?', '', [
+    Alert.alert('Miksi ilmiannat ilmoituksen?', '', [
       {
         text: 'Väärä kategoria',
         onPress: () => {
@@ -211,6 +211,19 @@ export default function JobAd({job}: {job: JobWithSkillsAndKeywords}) {
             <Text style={styles.header3}>Ala: {job.field}</Text>
             <Text style={styles.header3}>Sijainti: {job.job_address}</Text>
             <Text style={styles.header3}>Palkka: {job.salary}€/kk</Text>
+            <Text style={styles.header3}>Työpaikan kuvaus: </Text>
+            <Text style={styles.text}>{job.job_description}</Text>
+            <Text style={styles.header3}>Taidot: </Text>
+            {job.skills.split(',').map((skill, index) => (
+              <Text key={index} style={styles.text}>
+                {skill}
+              </Text>
+            ))}
+            {job.keywords.split(',').map((keyword, index) => (
+              <Text key={index} style={styles.boldText}>
+                #{keyword}
+              </Text>
+            ))}
             <Text
               style={{
                 color: '#ffffff',
@@ -230,19 +243,6 @@ export default function JobAd({job}: {job: JobWithSkillsAndKeywords}) {
                     .join('.')
                 : 'Ei määritelty'}
             </Text>
-            <Text style={styles.header3}>Työpaikan kuvaus: </Text>
-            <Text style={styles.text}>{job.job_description}</Text>
-            <Text style={styles.header3}>Taidot: </Text>
-            {job.skills.split(',').map((skill, index) => (
-              <Text key={index} style={styles.text}>
-                {skill}
-              </Text>
-            ))}
-            {job.keywords.split(',').map((keyword, index) => (
-              <Text key={index} style={styles.boldText}>
-                #{keyword}
-              </Text>
-            ))}
           </>
         );
       case 2:
@@ -311,15 +311,15 @@ export default function JobAd({job}: {job: JobWithSkillsAndKeywords}) {
             }}
             onPress={() => {
               Alert.alert(
-                'Ilmoita',
-                'Haluatko ilmoittaa epäilyttävästä ilmoituksesta?',
+                'Ilmianna',
+                'Haluatko ilmiantaa epäilyttävän ilmoituksen?',
                 [
                   {
                     text: 'Peruuta',
                     onPress: () => console.log('Cancel Pressed'),
                     style: 'cancel',
                   },
-                  {text: 'Ilmoita', onPress: handleSendReport},
+                  {text: 'Ilmianna', onPress: handleSendReport},
                 ],
               );
             }}

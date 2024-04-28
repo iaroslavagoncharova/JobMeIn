@@ -17,10 +17,7 @@ export default function ExampleJobAd({job}: {job: JobWithSkillsAndKeywords}) {
   const {update} = useUpdateContext();
 
   const handleSendReport = async () => {
-    Alert.alert(
-      'Ilmoita',
-      'Kirjautunee käyttäjänä voit ilmoittaa epäilyttävästä ilmoituksesta.',
-    );
+    Alert.alert('Ilmoita', 'Kirjaudu ilmiantaaksesi epäilyttävän ilmoituksen.');
   };
   const styles = StyleSheet.create({
     card: {
@@ -227,15 +224,15 @@ export default function ExampleJobAd({job}: {job: JobWithSkillsAndKeywords}) {
             }}
             onPress={() => {
               Alert.alert(
-                'Ilmoita',
-                'Haluatko ilmoittaa epäilyttävästä ilmoituksesta?',
+                'Ilmianna',
+                'Haluatko ilmiantaa epäilyttävän ilmoituksen?',
                 [
                   {
                     text: 'Peruuta',
                     onPress: () => console.log('Cancel Pressed'),
                     style: 'cancel',
                   },
-                  {text: 'Ilmoita', onPress: handleSendReport},
+                  {text: 'Ilmianna', onPress: handleSendReport},
                 ],
               );
             }}

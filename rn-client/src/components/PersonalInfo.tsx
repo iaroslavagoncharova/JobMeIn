@@ -161,7 +161,7 @@ export default function PersonalInfo({user}: {user: User}) {
                       ? user?.status === 'Active'
                         ? 'Aktiivinen'
                         : 'Ei aktiivinen'
-                      : 'Et ole määritellyt statusta, työnhakusi ei ole aktiivinen'}
+                      : 'Ei määritelty (määrittele aktivoidaksesi)'}
                   </Text>
                   <Text style={styles.boldText}>Kerro itsestäsi:</Text>
                   <Text style={styles.text}>
@@ -285,7 +285,7 @@ export default function PersonalInfo({user}: {user: User}) {
                     <Text style={styles.text}>
                       {user?.field ? user?.field : 'Ei alaa'}
                     </Text>
-                    <Text style={styles.boldText}>Meistä:</Text>
+                    <Text style={styles.boldText}>Tietoa meistä:</Text>
                     <Text style={styles.text}>
                       {user?.about_me ? user?.about_me : 'Ei kuvailua'}
                     </Text>
@@ -408,7 +408,7 @@ export default function PersonalInfo({user}: {user: User}) {
             </>
           ) : user.user_type === 'admin' ? (
             <>
-              <Text style={styles.header}>Adminiin tiedot</Text>
+              <Text style={styles.header}>Ylläpitäjän tiedot</Text>
               {!personalEditing ? (
                 <View>
                   <TouchableOpacity

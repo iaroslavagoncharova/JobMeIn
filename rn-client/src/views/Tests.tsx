@@ -197,7 +197,7 @@ const Tests = () => {
           ) : (
             <Text style={styles.text}>Ei testejä</Text>
           )}
-          <Text style={styles.bigHeader}>Minun testit</Text>
+          <Text style={styles.bigHeader}>Minun testini</Text>
           {userTests ? (
             userTests.map((test) => (
               <Card containerStyle={{borderRadius: 10}} key={test.test_id}>

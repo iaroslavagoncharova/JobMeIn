@@ -82,7 +82,7 @@ const CompanyRegister = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.registerContainer}>
-        <Text style={styles.headerText}>Luo yrityksen profiili</Text>
+        <Text style={styles.headerText}>Luo yritysprofiili</Text>
         <View style={styles.links}>
           <TouchableOpacity
             style={styles.linkText}

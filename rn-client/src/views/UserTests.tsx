@@ -149,9 +149,8 @@ const Tests = () => {
         <ScrollView showsVerticalScrollIndicator={false}>
           <Text style={styles.bigHeader}>Testit</Text>
           <Text style={styles.text}>
-            Klikkaamalla testiä pääset suorittamaan sen KERRAN, sen jälkeen
-            paina pitkään testiä ja valitse 'Kyllä' merkitäksesi testin
-            suoritetuksi.
+            Siirry tekemään testiä klikkaamalla. Suoritettuasi testin voit
+            merkitä sen suoritetuksi painamalla pohjassa.
           </Text>
           {tests ? (
             tests.map((test) => (
