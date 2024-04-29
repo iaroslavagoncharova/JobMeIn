@@ -24,8 +24,7 @@ To deploy the JobMe In app, follow these steps:
 
 ## API Documentation
 
-[Auth-api](https://users.metropolia.fi/~iaroslag/apidoc/auth-api/)
-[Media-api](https://users.metropolia.fi/~iaroslag/apidoc/media-api/)
+[Auth-api](https://users.metropolia.fi/~iaroslag/jobmein/)
 
 ## Database Description
 
