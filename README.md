@@ -53,4 +53,15 @@ The app's database consists of 23 tables:
 - **Users**:
 - **UserSkills**:
 - **UserTests**:
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/2626cacd-a564-4320-92d0-76f523afb382" width="400" />
+Click the image to open it in a new tab.
+
+## CI/CD
+
+[Workflow](https://github.com/iaroslavagoncharova/job-server/actions/workflows/node.js.yml)
+
+## Tests (integration+api, unit)
+
+[Tests](https://github.com/iaroslavagoncharova/job-server/tree/main/auth-api/test)
+
 
