@@ -1267,15 +1267,16 @@ const useAttachments = () => {
     );
   };
 
-  const deleteAttachment = async (attId: number) => {
-    const token = await AsyncStorage.getItem('token');
+  const deleteAttachment = async (attId: number, token: string) => {
     try {
       const options = {
         method: 'DELETE',
         headers: {
+          'Content-Type': 'application/json',
           Authorization: 'Bearer ' + token,
         },
       };
+      console.log(token, 'token');
       const result = await fetchData<MessageResponse>(
         process.env.EXPO_PUBLIC_AUTH_API + '/profile/attachments/' + attId,
         options,

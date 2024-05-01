@@ -8,6 +8,7 @@ import {
   faEdit,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Attachment} from '../types/DBTypes';
 import {useAttachments} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
@@ -31,7 +32,11 @@ export default function Attachments({
       {
         text: 'Kyllä',
         onPress: async () => {
-          const result = await deleteAttachment(attachment_id);
+          const token = await AsyncStorage.getItem('token');
+          if (!token) {
+            return;
+          }
+          const result = await deleteAttachment(attachment_id, token);
           console.log(result, 'result');
           if (result) {
             setUpdate((prevState) => !prevState);

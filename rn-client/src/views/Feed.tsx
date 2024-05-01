@@ -181,6 +181,7 @@ const Feed = () => {
         placeholder={placeholder}
         items={items}
         value={selectedField}
+        useNativeAndroidPickerStyle={true}
         onValueChange={(value) => setSelectedField(value)}
         style={{
           inputIOS: styles.pickerInput,
@@ -218,6 +219,7 @@ const Feed = () => {
         handleNope={swipingEnabled ? handleNope : undefined}
         showYup={false}
         showNope={false}
+        useNativeDriver={true}
       />
       {loading && <ActivityIndicator size="large" color="#ffffff" />}
     </View>
