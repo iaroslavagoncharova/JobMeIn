@@ -61,6 +61,38 @@ Click the image to open it in a new tab.
 
 ## Functionalities
 
+**Users** can 
+- create profiles and log in
+- access instructions on how to use the application
+
+**Candidates** can 
+- add to the profile, edit, and delete personal information, education, work experience, attachments, and skills
+- browse job ads by swiping right and left (liking and disliking a job) and using navigation arrows for more details (such as salary, address, required skills, deadline date, and employer's information)
+- maintain privacy until accepting interview invitations; introduced to employers by randomized names (adjective + animal)
+- set job status ("active" or "not active") to control visibility to employers
+- select preferred fields and filter job listings accordingly
+- send applications to liked jobs and manage sent applications
+- get a notification when there is a match and be able to start a chat with an employer who has swiped them
+- complete tests to increase compatibility percentage for jobs and visibility
+- view compatibility percentage for each job based on completed tests and skills matching
+- report inappropriate job ads
+
+**Employers** can
+- add and edit company information
+- post job ads, specify required skills, tests, and keywords, and manage them
+- browse candidates by swiping right and left (liking or disliking a candidate) and using navigation arrows for more details (education, experience, skills, attachments)
+- report inappropriate candidates
+- get a notification when there is a match and be able to start a chat with a candidate who has liked one or more job ads of this employer
+- create and attach tests to job ads, or utilize existing tests
+- review, accept, and decline applications
+- send interview invitations to candidates
+- select preferred fields and filter candidate listings accordingly
+
+**Administrator** can
+- receive and manage reports, including accepting or ignoring them
+- remove inappropriate candidates and job ads
+- provide support by chatting with candidates and employers regarding issues
+
 ## Known issues
 
 ## References
