@@ -97,7 +97,7 @@ Click the image to open it in a new tab.
 
 ## References
 
-**Libraries**: 
+**Libraries**: react-native-community/datetimepicker, react-native-fontawesome, react-navigation/bottom-tabs, react-navigation/material-top-tabs, rneui/base, expo-document-picker, expo-file-system, expo-intent-launcher, react-native-swipe-cards
 
 ## CI/CD
 
