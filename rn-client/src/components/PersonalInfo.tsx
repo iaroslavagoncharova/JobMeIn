@@ -159,8 +159,8 @@ export default function PersonalInfo({user}: {user: User}) {
                   <Text style={styles.text}>
                     {user?.status
                       ? user?.status === 'Active'
-                        ? 'Aktiivinen'
-                        : 'Ei aktiivinen'
+                        ? 'Aktiivinen (työnantajat näkevät profiilisi)'
+                        : 'Ei aktiivinen (työnantajat eivät näe profiiliasi)'
                       : 'Ei määritelty (määrittele aktivoidaksesi)'}
                   </Text>
                   <Text style={styles.boldText}>Kerro itsestäsi:</Text>
