@@ -48,6 +48,7 @@ const SingleChat = ({route}: any) => {
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const chatId: number = route.params.chat_id;
   const {getUserById} = useUser();
+  const [showInstructions, setShowInstructions] = useState<boolean>(true);
   const [me, setMe] = useState<UnauthorizedUser | null>(null);
   const [otherUser, setOtherUser] = useState<UnauthorizedUser | null>(null);
   const {update, setUpdate} = useUpdateContext();
@@ -386,6 +387,46 @@ const SingleChat = ({route}: any) => {
           </>
         )}
       </View>
+      {showInstructions && (
+        <View
+          style={{
+            ...StyleSheet.absoluteFillObject,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: '#ffffff',
+              padding: 20,
+              borderRadius: 10,
+              margin: 10,
+            }}
+          >
+            <Text style={styles.boldText}>Ohjeet</Text>
+            <Text style={styles.text}>
+              Tässä näet keskustelun käyttäjän kanssa. Voit lähettää viestejä
+              viestikenttään ja lähettää haastattelukutsun, jos olet työnantaja.
+            </Text>
+            <Text style={styles.text}>
+              Jos olet työnhakija, voit hyväksyä tai hylätä haastattelukutsun.
+              Painamalla Hakemukset-nappia voit tarkastella hakemukset ja nähdä
+              sekä työnantajan että työnhakijan tiedot.
+            </Text>
+            <Text style={styles.boldText}>
+              Muista että työnhakijoiden tiedot ovat näkyvissä vain, jos hän on
+              hyväksynyt haastattelukutsun. Haastattelua ei voi perua.
+            </Text>
+            <Button
+              title="Sulje"
+              titleStyle={{color: '#ffffff'}}
+              buttonStyle={styles.saveButton}
+              onPress={() => setShowInstructions(false)}
+            />
+          </View>
+        </View>
+      )}
     </View>
   );
 };
@@ -495,7 +536,19 @@ const styles = StyleSheet.create({
     top: 0,
     backgroundColor: '#5d71c9',
     borderRadius: 12,
-    marginLeft: 20,
+  },
+  text: {
+    fontSize: 16,
+    color: '#5d71c9',
+    textAlign: 'center',
+    margin: 5,
+  },
+  boldText: {
+    fontSize: 16,
+    color: '#5d71c9',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 5,
   },
 });
 

@@ -14,6 +14,7 @@ import {Application, JobWithSkillsAndKeywords} from '../types/DBTypes';
 
 export default function Received() {
   const {getJobsByCompany} = useJobs();
+  const [showInstructions, setShowInstructions] = useState<boolean>(true);
   const [companyJobs, setCompanyJobs] = useState<JobWithSkillsAndKeywords[]>(
     [],
   );
@@ -112,6 +113,38 @@ export default function Received() {
         renderItem={renderItem}
         keyExtractor={(item) => item.job_id.toString()}
       />
+      {showInstructions && (
+        <View
+          style={{
+            ...StyleSheet.absoluteFillObject,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: '#ffffff',
+              padding: 20,
+              borderRadius: 10,
+              margin: 10,
+            }}
+          >
+            <Text style={styles.boldText}>Ohjeet</Text>
+            <Text style={styles.text}>
+              Tässä näet kaikki työpaikkasi ja niille saapuneet hakemukset. Voit
+              nähdä hakemukset klikkaamalla "Näytä hakemus" -nappia. Jos et näe
+              yhtään hakemusta, paina "Päivitä" -nappia.
+            </Text>
+            <Button
+              title="Sulje"
+              titleStyle={{color: '#ffffff'}}
+              buttonStyle={styles.showButton}
+              onPress={() => setShowInstructions(false)}
+            />
+          </View>
+        </View>
+      )}
     </>
   );
 }
@@ -158,6 +191,26 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   showApplicationButton: {
+    margin: 5,
+    backgroundColor: '#5d71c9',
+    borderColor: '#004AAD',
+    borderWidth: 3,
+    borderRadius: 12,
+  },
+  text: {
+    fontSize: 16,
+    color: '#5d71c9',
+    textAlign: 'center',
+    margin: 10,
+  },
+  boldText: {
+    fontSize: 16,
+    color: '#5d71c9',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 5,
+  },
+  showButton: {
     margin: 5,
     backgroundColor: '#5d71c9',
     borderColor: '#004AAD',

@@ -2,11 +2,14 @@ import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faCircleUser} from '@fortawesome/free-solid-svg-icons';
 import {NavigationProp, ParamListBase} from '@react-navigation/native';
+import {Button} from '@rneui/base';
+import {useState} from 'react';
 import {useChats} from '../hooks/apiHooks';
 import {ChatPreview} from '../components/ChatPreview';
 
 const Chats = ({navigation}: {navigation: NavigationProp<ParamListBase>}) => {
   const {chats, postAdminChat} = useChats();
+  const [showInstructions, setShowInstructions] = useState<boolean>(true);
   const handleAdminChat = async () => {
     const result = await postAdminChat();
     if (result) {
@@ -46,6 +49,42 @@ const Chats = ({navigation}: {navigation: NavigationProp<ParamListBase>}) => {
           </Text>
         </TouchableOpacity>
       </View>
+      {showInstructions && (
+        <View
+          style={{
+            ...StyleSheet.absoluteFillObject,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: '#ffffff',
+              padding: 20,
+              borderRadius: 10,
+              margin: 10,
+            }}
+          >
+            <Text style={styles.boldText}>Ohjeet</Text>
+            <Text style={styles.text}>
+              Tässä näet keskustelut työnantajien/työnhakijoiden kanssa.
+              Keskustelu ilmestyy tänne, kun työnantaja on joko swipannut
+              oikealle tai hyväksynyt työnhakijan hakemuksen.
+            </Text>
+            <Text style={styles.text}>
+              Voit aloittaa keskustelun painamalla keskustelua. Jos sinulla on
+              ongelmia sovelluksen kanssa, voit ottaa yhteyttä ylläpitoon.
+            </Text>
+            <Button
+              title="Sulje"
+              titleStyle={{color: '#ffffff'}}
+              buttonStyle={styles.applyButton}
+              onPress={() => setShowInstructions(false)}
+            />
+          </View>
+        </View>
+      )}
     </View>
   );
 };
@@ -91,6 +130,26 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     borderRadius: 50,
     padding: 5,
+  },
+  applyButton: {
+    margin: 5,
+    backgroundColor: '#5d71c9',
+    borderColor: '#004AAD',
+    borderWidth: 3,
+    borderRadius: 12,
+  },
+  text: {
+    fontSize: 16,
+    color: '#5d71c9',
+    textAlign: 'center',
+    margin: 5,
+  },
+  boldText: {
+    fontSize: 16,
+    color: '#5d71c9',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 5,
   },
 });
 

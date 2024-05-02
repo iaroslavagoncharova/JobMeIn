@@ -5,7 +5,7 @@ import {
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {useUserContext} from '../hooks/ContextHooks';
 import {
   useAttachments,
@@ -27,6 +27,7 @@ const Profile = () => {
   const {deleteUser} = useUser();
   const {chats} = useChats();
   const {getEducation, education} = useEducation();
+  const [showInstructions, setShowInstructions] = useState<boolean>(true);
   const {getExperience, experience} = useExperience();
   const {getSkills, skills, allSkills, getAllSkills} = useSkills();
   const {attachments, getUserAttachments} = useAttachments();
@@ -116,6 +117,26 @@ const Profile = () => {
       borderWidth: 3,
       borderRadius: 12,
     },
+    applyButton: {
+      margin: 5,
+      backgroundColor: '#5d71c9',
+      borderColor: '#004AAD',
+      borderWidth: 3,
+      borderRadius: 12,
+    },
+    text: {
+      fontSize: 16,
+      color: '#5d71c9',
+      textAlign: 'center',
+      margin: 5,
+    },
+    boldText: {
+      fontSize: 16,
+      color: '#5d71c9',
+      fontWeight: 'bold',
+      textAlign: 'center',
+      marginVertical: 5,
+    },
   });
   return (
     <View
@@ -194,6 +215,43 @@ const Profile = () => {
         </>
       ) : (
         <Text style={{color: '#ffffff'}}>Loading...</Text>
+      )}
+      {showInstructions && (
+        <View
+          style={{
+            ...StyleSheet.absoluteFillObject,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: '#ffffff',
+              padding: 20,
+              borderRadius: 10,
+              margin: 10,
+            }}
+          >
+            <Text style={styles.boldText}>Ohjeet</Text>
+            <Text style={styles.text}>
+              Tässä näet profiilisi tiedot. Voit muokata tietoja painamalla
+              muokkaa-painiketta. Voit myös poistaa profiilisi ja kirjautua
+              ulos.
+            </Text>
+            <Text style={styles.text}>
+              Työnhakijana voit lisätä koulutuksia, työkokemuksia, taitoja ja
+              liitteitä. Myös pystyt katsomaan miltä profiilisi näyttää
+              työnantajan näkökulmasta.
+            </Text>
+            <Button
+              title="Sulje"
+              titleStyle={{color: '#ffffff'}}
+              buttonStyle={styles.applyButton}
+              onPress={() => setShowInstructions(false)}
+            />
+          </View>
+        </View>
       )}
     </View>
   );

@@ -1,4 +1,4 @@
-import {Card} from '@rneui/base';
+import {Button, Card} from '@rneui/base';
 import {
   Alert,
   Linking,
@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {useEffect, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
   faCircle,
@@ -24,6 +24,7 @@ import {
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useJobs, useTests, useUser} from '../hooks/apiHooks';
 import {Job, Test} from '../types/DBTypes';
 import useUpdateContext from '../hooks/updateHooks';
@@ -31,6 +32,7 @@ import useUpdateContext from '../hooks/updateHooks';
 const Tests = () => {
   const {update, setUpdate} = useUpdateContext();
   const {getUserById} = useUser();
+  const [showInstructions, setShowInstructions] = useState<boolean>(true);
   const [userTests, setUserTests] = useState<Test[] | null>(null);
   const [tests, setTests] = useState<Test[] | null>(null);
   const {getAllTests, getCandidateTests, takeTest} = useTests();
@@ -233,6 +235,47 @@ const Tests = () => {
           )}
         </ScrollView>
       </View>
+      {showInstructions && (
+        <View
+          style={{
+            ...StyleSheet.absoluteFillObject,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: '#ffffff',
+              padding: 20,
+              borderRadius: 10,
+              margin: 10,
+            }}
+          >
+            <Text style={styles.boldText}>Ohjeet</Text>
+            <Text style={styles.text}>
+              Tässä näet työnantajien ja JobMe In:n testit. Suorittamassa
+              testejä nostat mahdollisuuksiasi työllistyä.
+            </Text>
+            <Text style={styles.text}>
+              Työpaikan vaaditut testit näet työpaikkailmoituksista. Siirry
+              tekemään testiä klikkaamalla.
+            </Text>
+            <Text style={styles.text}>
+              Suoritettuasi testin voit merkitä sen suoritetuksi painamalla
+              pohjassa.
+            </Text>
+            <Button
+              title="Sulje"
+              titleStyle={{color: '#ffffff'}}
+              buttonStyle={styles.saveButton}
+              onPress={() => {
+                setShowInstructions(false);
+              }}
+            />
+          </View>
+        </View>
+      )}
     </View>
   );
 };
