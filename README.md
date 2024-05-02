@@ -1,4 +1,4 @@
-![diagram](https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/527d4c16-7c56-4085-99b2-5fadd82e7e45)# JobMe In
+## JobMe In
 
 **Welcome to JobMe In**, a Tinder-type app for job search free of discrimination. This README provides information on how to use the app, deploy it, and details about its functionalities.
 
