@@ -39,6 +39,8 @@ const EmployerFeed = () => {
   const [loading, setLoading] = useState(false);
   const [swipingEnabled, setSwipingEnabled] = useState(true);
 
+  console.log(fields, 'fields');
+
   const getCandidates = async () => {
     const response = await getAllCandidates();
     if (response) {
@@ -53,8 +55,8 @@ const EmployerFeed = () => {
   };
 
   const items = fields.map((field) => ({
-    label: field,
-    value: field,
+    label: field.field_name,
+    value: field.field_name,
     color: '#5d71c9',
   }));
 

@@ -34,6 +34,7 @@ import {
   Report,
   ReportedUser,
   ReportedJob,
+  Field,
 } from '../types/DBTypes';
 import {Values} from '../types/LocalTypes';
 import {
@@ -549,7 +550,7 @@ const useSkills = () => {
 
 const useJobs = () => {
   const [jobs, setJobs] = useState<JobWithSkillsAndKeywords[]>([]);
-  const [fields, setFields] = useState<string[]>([]);
+  const [fields, setFields] = useState<Field[]>([]);
   const [companyJobs, setCompanyJobs] = useState<JobWithSkillsAndKeywords[]>(
     [],
   );
@@ -610,11 +611,19 @@ const useJobs = () => {
   };
 
   const getFields = async () => {
-    const result = await fetchData<string[]>(
-      process.env.EXPO_PUBLIC_AUTH_API + '/jobs/fields',
-    );
-    if (result) {
-      setFields(result);
+    try {
+      const result = await fetchData<Field[]>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/jobs/fields',
+      );
+      if (result) {
+        setFields(result);
+      }
+    } catch (e) {
+      if ((e as Error).message === 'No fields found') {
+        setFields([]);
+      } else {
+        console.error('Error fetching fields', e);
+      }
     }
   };
 
