@@ -1829,7 +1829,7 @@ const useTests = () => {
           Authorization: 'Bearer ' + token,
         },
       };
-      return await fetchData<Test>(
+      return await fetchData<Test[]>(
         process.env.EXPO_PUBLIC_AUTH_API + '/tests/job/' + job_id,
         options,
       );
