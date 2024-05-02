@@ -28,6 +28,10 @@ To deploy the JobMe In app, follow these steps:
 
 [Auth-api](https://users.metropolia.fi/~iaroslag/jobmein/)
 
+## UI Design
+
+[Canva mockup](https://www.canva.com/design/DAF77H6FG6M/UkPWFmMVxXkB_4k-d2aC7w/edit?utm_content=DAF77H6FG6M&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+
 ## Database Description
 
 The app's database consists of 23 tables:
