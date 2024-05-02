@@ -209,8 +209,9 @@ export default function ChatApplications({route}: any) {
             <Text style={styles.text}>
               Työnhakijan taidot:{' '}
               {user?.skills.map((skill, index) => (
-                <Text key={index}>
-                  {user?.skills.length - 1 === index ? skill : skill + ', '}
+                <Text style={styles.text} key={index}>
+                  {skill}
+                  {index < user.skills.length - 1 ? ', ' : ''}
                 </Text>
               ))}
             </Text>
