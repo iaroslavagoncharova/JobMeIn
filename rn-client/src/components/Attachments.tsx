@@ -24,8 +24,6 @@ export default function Attachments({
     null,
   );
   const [attachmentPosting, setAttachmentPosting] = useState<boolean>(false);
-<<<<<<< HEAD
-=======
   const {update, setUpdate} = useUpdateContext();
   const {deleteAttachment} = useAttachments();
 
@@ -63,7 +61,6 @@ export default function Attachments({
       console.error('Error downloading attachment:', error);
     }
   };
->>>>>>> bc7fc4bbca106189433086c84a5d41fb9460e459
 
   const styles = StyleSheet.create({
     card: {
