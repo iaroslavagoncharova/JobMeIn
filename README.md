@@ -1,4 +1,4 @@
-# JobMe In
+![diagram](https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/527d4c16-7c56-4085-99b2-5fadd82e7e45)# JobMe In
 
 **Welcome to JobMe In**, a Tinder-type app for job search free of discrimination. This README provides information on how to use the app, deploy it, and details about its functionalities.
 
@@ -61,7 +61,7 @@ The app's database consists of 23 tables:
 - **UserSkills** associates users with their skills from the Skills table
 - **UserTests** associates users with the tests they have taken from the Tests table
 
-<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/2626cacd-a564-4320-92d0-76f523afb382" width="400" />
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/edc6f18b-1068-4c9f-8296-ff4ee66e419b" width="400" />
 Click the image to open it in a new tab.
 
 ## Functionalities
