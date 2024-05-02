@@ -30,6 +30,7 @@ const Feed = () => {
   const {jobs, fields, calculatePercentage} = useJobs();
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const {update, setUpdate} = useUpdateContext();
+  const [showInstructions, setShowInstructions] = useState<boolean>(true);
   const [selectedField, setSelectedField] = useState<string>('');
   const {postSwipe} = useSwipe();
   const {matches, deleteMatch} = useMatch();
@@ -173,6 +174,26 @@ const Feed = () => {
       borderWidth: 3,
       borderRadius: 12,
     },
+    applyButton: {
+      margin: 5,
+      backgroundColor: '#5d71c9',
+      borderColor: '#004AAD',
+      borderWidth: 3,
+      borderRadius: 12,
+    },
+    text: {
+      fontSize: 16,
+      color: '#5d71c9',
+      textAlign: 'center',
+      margin: 5,
+    },
+    boldText: {
+      fontSize: 16,
+      color: '#5d71c9',
+      fontWeight: 'bold',
+      textAlign: 'center',
+      marginVertical: 5,
+    },
   });
 
   return (
@@ -220,6 +241,46 @@ const Feed = () => {
         showNope={false}
       />
       {loading && <ActivityIndicator size="large" color="#ffffff" />}
+      {showInstructions && (
+        <View
+          style={{
+            ...StyleSheet.absoluteFillObject,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: '#ffffff',
+              padding: 20,
+              borderRadius: 10,
+              margin: 10,
+            }}
+          >
+            <Text style={styles.boldText}>Ohjeet</Text>
+            <Text style={styles.text}>
+              Tässä näet työpaikkailmoitukset. Voit suodattaa ilmoituksia
+              valitsemalla alan yllä olevasta valikosta.
+            </Text>
+            <Text style={styles.text}>
+              Tykkää työpaikasta swippaamalla oikealle ja hylkää swippaamalla
+              vasemmalle. Klikkaamalla nuoleja voit katsella lisää tietoja
+              työpaikasta.
+            </Text>
+            <Text style={styles.text}>
+              Kun swippaat oikealle, työpaikka tallentuu Työhakemukset-sivuun
+              Tykätyt-kohtaan.
+            </Text>
+            <Button
+              title="Sulje"
+              titleStyle={{color: '#ffffff'}}
+              buttonStyle={styles.applyButton}
+              onPress={() => setShowInstructions(false)}
+            />
+          </View>
+        </View>
+      )}
     </View>
   );
 };

@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, FlatList, StyleSheet, TouchableOpacity} from 'react-native';
 import {
   NavigationProp,
@@ -14,6 +14,7 @@ const Applied = () => {
   const {sentApplications} = useApplications();
   const {getJobForApplication} = useJobs();
   const {update} = useUpdateContext();
+  const [showInstructions, setShowInstructions] = useState<boolean>(true);
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   useEffect(() => {
     const fetchJobs = async () => {
@@ -31,6 +32,7 @@ const Applied = () => {
 
     fetchJobs();
   }, [update]);
+  console.log(showInstructions, 'showInstructions');
   const renderItem = ({item}: {item: Application}) => (
     <View>
       <View style={styles.itemContainer}>
@@ -62,6 +64,55 @@ const Applied = () => {
         keyExtractor={(item) => item.application_id.toString()}
         contentContainerStyle={styles.listContainer}
       />
+      {showInstructions && (
+        <TouchableOpacity
+          onPress={() => setShowInstructions(false)}
+          style={{
+            position: 'absolute',
+            bottom: 20,
+            right: 20,
+            backgroundColor: '#004aad',
+            borderRadius: 50,
+            width: 50,
+            height: 50,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Text style={{color: '#ffffff', fontWeight: 'bold'}}>?</Text>
+        </TouchableOpacity>
+      )}
+      {showInstructions && (
+        <View
+          style={{
+            ...StyleSheet.absoluteFillObject,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: '#ffffff',
+              padding: 20,
+              borderRadius: 10,
+              margin: 10,
+            }}
+          >
+            <Text style={styles.boldText}>Ohjeet</Text>
+            <Text style={styles.text}>
+              Tässä näet lähettämäsi hakemukset. Paina "Näytä hakemus"
+              nähdäksesi hakemuksen tiedot.
+            </Text>
+            <Button
+              title="Sulje"
+              titleStyle={{color: '#ffffff'}}
+              buttonStyle={styles.showButton}
+              onPress={() => setShowInstructions(false)}
+            />
+          </View>
+        </View>
+      )}
     </>
   );
 };
@@ -117,6 +168,13 @@ const styles = StyleSheet.create({
     color: '#5d71c9',
     textAlign: 'center',
     margin: 10,
+  },
+  boldText: {
+    fontSize: 16,
+    color: '#5d71c9',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 5,
   },
   showButton: {
     margin: 5,

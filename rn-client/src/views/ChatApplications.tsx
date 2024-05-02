@@ -1,6 +1,6 @@
 import {View, Text, ScrollView, StyleSheet} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {Card} from '@rneui/base';
+import {Button, Card} from '@rneui/base';
 import {useApplications, useUser} from '../hooks/apiHooks';
 import {
   Application,
@@ -15,6 +15,7 @@ export default function ChatApplications({route}: any) {
   const {getUserApplications} = useApplications();
   const {getCandidate, getUserById} = useUser();
   const {update} = useUpdateContext();
+  const [showInstructions, setShowInstructions] = useState<boolean>(true);
   const [applications, setApplications] = useState<Application[]>([]);
   const [user, setUser] = useState<CandidateProfile | null>(null);
   const [privateUser, setPrivateUser] = useState<UnauthorizedUser | null>(null);
@@ -188,7 +189,11 @@ export default function ChatApplications({route}: any) {
             <Text style={styles.text}>Kuvaus: {user?.about_me}</Text>
             <Text style={styles.text}>
               Työnhakijan taidot:{' '}
-              {user?.skills.map((skill) => String(skill)).join(', ')}
+              {user?.skills.map((skill, index) => (
+                <Text key={index}>
+                  {user?.skills.length - 1 === index ? skill : skill + ', '}
+                </Text>
+              ))}
             </Text>
             <Text style={styles.boldText}>Työnhakijan koulutus:</Text>
             {user?.education.map((edu) => (
@@ -254,6 +259,38 @@ export default function ChatApplications({route}: any) {
           </Card>
         </ScrollView>
       </View>
+      {showInstructions && (
+        <View
+          style={{
+            ...StyleSheet.absoluteFillObject,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: '#ffffff',
+              padding: 20,
+              borderRadius: 10,
+              margin: 10,
+            }}
+          >
+            <Text style={styles.boldText}>Ohjeet</Text>
+            <Text style={styles.text}>
+              Tässä näet työnhakijan hakemukset ja tiedot. Voit lähettää hänelle
+              kutsun haastatteluun. Jos työnhakija hyväksyy kutsun, näet hänen
+              henkilötietonsa.
+            </Text>
+            <Button
+              title="Sulje"
+              titleStyle={{color: '#ffffff'}}
+              buttonStyle={styles.saveButton}
+              onPress={() => setShowInstructions(false)}
+            />
+          </View>
+        </View>
+      )}
     </View>
   );
 }

@@ -33,14 +33,20 @@ export default function SingleApplication({route}: {route: any}) {
   const {getUserById} = useUser();
   const isSubmitted = application.status === 'Submitted';
   const {getJobById} = useJobs();
+  const [showInstructions, setShowInstructions] = useState<boolean>(true);
   const {
     putApplication,
     getSavedApplications,
     getApplicationById,
     sendApplication,
+    deleteApplication,
   } = useApplications();
   const [user, setUser] = useState<UnauthorizedUser | null>(null);
   const [job, setJob] = useState<JobWithSkillsAndKeywords | null>(null);
+  const isDeadlinePassed =
+    !isSubmitted &&
+    job?.deadline_date &&
+    new Date(job.deadline_date) < new Date();
 
   const getEmployerInfo = async () => {
     const user = await getUserById(application.job.user_id);
@@ -99,6 +105,31 @@ export default function SingleApplication({route}: {route: any}) {
     setEditing(!editing);
   };
 
+  const handleDeleteApplication = async () => {
+    Alert.alert(
+      'Poista hakemus',
+      'Haluatko varmasti poistaa hakemuksen?',
+      [
+        {
+          text: 'Peruuta',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Poista',
+          onPress: async () => {
+            const result = await deleteApplication(application.application_id);
+            if (result) {
+              Alert.alert('Hakemus poistettu!');
+              setUpdate((prevState) => !prevState);
+              navigation.navigate('Tykätyt');
+            }
+          },
+        },
+      ],
+      {cancelable: false},
+    );
+  };
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       resetForm();
@@ -139,12 +170,14 @@ export default function SingleApplication({route}: {route: any}) {
       fontSize: 16,
       color: '#5d71c9',
       textAlign: 'center',
+      margin: 5,
     },
     boldText: {
       fontSize: 16,
       color: '#5d71c9',
       fontWeight: 'bold',
       textAlign: 'center',
+      marginVertical: 5,
     },
     redText: {
       fontSize: 16,
@@ -378,15 +411,65 @@ export default function SingleApplication({route}: {route: any}) {
               titleStyle={{color: '#5d71c9'}}
               buttonStyle={styles.cancelButton}
             ></Button>
-          ) : (
+          ) : isDeadlinePassed ? (
             <Button
-              title="Lähetä hakemus!"
-              onPress={() => send()}
-              buttonStyle={styles.saveButton}
+              title="Poista hakemus"
+              titleStyle={{color: '#5d71c9'}}
+              onPress={() => handleDeleteApplication()}
+              buttonStyle={styles.cancelButton}
             ></Button>
+          ) : (
+            <>
+              <Button
+                title="Lähetä hakemus!"
+                onPress={() => send()}
+                buttonStyle={styles.saveButton}
+              ></Button>
+              <Button
+                title="Poista hakemus"
+                titleStyle={{color: '#5d71c9'}}
+                onPress={() => handleDeleteApplication()}
+                buttonStyle={styles.cancelButton}
+              ></Button>
+            </>
           )}
         </ScrollView>
       </View>
+      {showInstructions && (
+        <View
+          style={{
+            ...StyleSheet.absoluteFillObject,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: '#ffffff',
+              padding: 20,
+              borderRadius: 10,
+              margin: 10,
+            }}
+          >
+            <Text style={styles.boldText}>Ohjeet</Text>
+            <Text style={styles.text}>
+              Voit muokata hakemuksen tekstiä painamalla "Muokkaa" -nappia. Voit
+              myös poistaa hakemuksen painamalla "Poista hakemus" -nappia.
+            </Text>
+            <Text style={styles.text}>
+              Kun olet valmis, paina "Lähetä hakemus" -nappia. Jos hakemuksen
+              hakuaika on päättynyt, voit poistaa hakemuksen.
+            </Text>
+            <Button
+              title="Sulje"
+              titleStyle={{color: '#ffffff'}}
+              buttonStyle={styles.saveButton}
+              onPress={() => setShowInstructions(false)}
+            />
+          </View>
+        </View>
+      )}
     </View>
   );
 }

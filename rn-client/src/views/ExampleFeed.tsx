@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   Alert,
   StyleSheet,
+  FlatList,
 } from 'react-native';
 // @ts-ignore
 import SwipeCards from 'react-native-swipe-cards';
@@ -22,10 +23,12 @@ import {Button} from '@rneui/base';
 import {useUserContext} from '../hooks/ContextHooks';
 import {JobWithSkillsAndKeywords} from '../types/DBTypes';
 import ExampleJobAd from '../components/ExampleJobAd';
+import {useJobs} from '../hooks/apiHooks';
 const ExampleFeed = () => {
   const {handleAutoLogin} = useUserContext();
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const [selectedField, setSelectedField] = useState<string>('');
+  const [showInstructions, setShowInstructions] = useState<boolean>(true);
 
   const placeholder = {
     label: 'Valitse ala',
@@ -65,8 +68,7 @@ const ExampleFeed = () => {
     job_id: 1,
     job_title: 'Esimerkkityö',
     salary: '1000',
-    job_description:
-      'Työpaikkailmoitusesimerkki',
+    job_description: 'Työpaikkailmoitusesimerkki',
     field: 'Esimerkki',
     deadline_date: '2024-12-12',
     job_address: 'Helsinki',
@@ -117,6 +119,26 @@ const ExampleFeed = () => {
       borderWidth: 3,
       borderRadius: 12,
     },
+    text: {
+      fontSize: 16,
+      color: '#5d71c9',
+      textAlign: 'center',
+      margin: 5,
+    },
+    boldText: {
+      fontSize: 16,
+      color: '#5d71c9',
+      fontWeight: 'bold',
+      textAlign: 'center',
+      marginVertical: 5,
+    },
+    showButton: {
+      margin: 5,
+      backgroundColor: '#5d71c9',
+      borderColor: '#004AAD',
+      borderWidth: 3,
+      borderRadius: 12,
+    },
   });
 
   return (
@@ -160,6 +182,44 @@ const ExampleFeed = () => {
         showYup={false}
         showNope={false}
       />
+      {showInstructions && (
+        <View
+          style={{
+            ...StyleSheet.absoluteFillObject,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: '#ffffff',
+              padding: 20,
+              borderRadius: 10,
+              margin: 10,
+            }}
+          >
+            <Text style={styles.text}>
+              Tinder työnhaulle? Meillä on sinut katettu. Swipe-and-match
+              potentiaalisten työnantajien kanssa saadaksesi haastatteluja.
+            </Text>
+            <Text style={styles.boldText}>- Anonyymi ja syrjimätön haku</Text>
+            <Text style={styles.boldText}>- Persoonallisuustestit</Text>
+            <Text style={styles.boldText}>- Työpaikkailmoitukset</Text>
+            <Text style={styles.boldText}>- Chat-keskustelut</Text>
+            <Text style={styles.text}>
+              Kirjaudu sisään tai luo profiili hakeaksesi työpaikkoja ja
+              tallentaaksesi hakemuksia. Aloita urasi JobMe In-sovelluksessa!
+            </Text>
+            <Button
+              title="Sulje"
+              titleStyle={{color: '#ffffff'}}
+              buttonStyle={styles.showButton}
+              onPress={() => setShowInstructions(false)}
+            />
+          </View>
+        </View>
+      )}
     </View>
   );
 };

@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, FlatList, StyleSheet, TouchableOpacity} from 'react-native';
 import {
   NavigationProp,
@@ -15,6 +15,7 @@ const Saved = () => {
   const {getJobForApplication} = useJobs();
   const {update} = useUpdateContext();
   const navigation: NavigationProp<ParamListBase> = useNavigation();
+  const [showInstructions, setShowInstructions] = useState<boolean>(true);
 
   console.log(savedApplications, 'savedApplications ');
 
@@ -80,6 +81,56 @@ const Saved = () => {
         keyExtractor={(item) => item.job_id.toString()}
         contentContainerStyle={styles.listContainer}
       />
+      {showInstructions && (
+        <TouchableOpacity
+          onPress={() => setShowInstructions(false)}
+          style={{
+            position: 'absolute',
+            bottom: 20,
+            right: 20,
+            backgroundColor: '#004aad',
+            borderRadius: 50,
+            width: 50,
+            height: 50,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Text style={{color: '#ffffff', fontWeight: 'bold'}}>?</Text>
+        </TouchableOpacity>
+      )}
+      {showInstructions && (
+        <View
+          style={{
+            ...StyleSheet.absoluteFillObject,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: '#ffffff',
+              padding: 20,
+              borderRadius: 10,
+              margin: 10,
+            }}
+          >
+            <Text style={styles.boldText}>Ohjeet</Text>
+            <Text style={styles.text}>
+              Tässä näet työpaikkailmoitukset, joita olet swipannut oikealle.
+              Voit siirtyä hakemuksen lähettämiseen painamalla "Siirry
+              hakemuksen lähettämiseen" -nappia.
+            </Text>
+            <Button
+              title="Sulje"
+              titleStyle={{color: '#ffffff'}}
+              buttonStyle={styles.applyButton}
+              onPress={() => setShowInstructions(false)}
+            />
+          </View>
+        </View>
+      )}
     </>
   );
 };
@@ -130,6 +181,13 @@ const styles = StyleSheet.create({
     color: '#5d71c9',
     textAlign: 'center',
     margin: 10,
+  },
+  boldText: {
+    fontSize: 16,
+    color: '#5d71c9',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 5,
   },
   applyButton: {
     margin: 5,

@@ -24,6 +24,7 @@ import useUpdateContext from '../hooks/updateHooks';
 const Tests = () => {
   const {tests, getTestsByUser, getJobsByTest, postTest} = useTests();
   const {update, setUpdate} = useUpdateContext();
+  const [showInstructions, setShowInstructions] = useState<boolean>(true);
   const [userTests, setUserTests] = useState<Test[] | null>(null);
   const [posting, setPosting] = useState<boolean>(false);
   const values = {
@@ -274,6 +275,38 @@ const Tests = () => {
           )}
         </ScrollView>
       </View>
+      {showInstructions && (
+        <View
+          style={{
+            ...StyleSheet.absoluteFillObject,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: '#ffffff',
+              padding: 20,
+              borderRadius: 10,
+              margin: 10,
+            }}
+          >
+            <Text style={styles.boldText}>Ohjeet</Text>
+            <Text style={styles.text}>
+              Tässä näet sekä JobMe In:n että sinun lisäämät testit. Voit lisätä
+              uuden testin painamalla plus-ikonia. Voit tarkastella, muokata,
+              poistaa ja lisätä testit työpaikkoihin painamalla testin nimeä.
+            </Text>
+            <Button
+              title="Sulje"
+              titleStyle={{color: '#ffffff'}}
+              buttonStyle={styles.saveButton}
+              onPress={() => setShowInstructions(false)}
+            />
+          </View>
+        </View>
+      )}
     </View>
   );
 };

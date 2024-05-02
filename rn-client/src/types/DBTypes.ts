@@ -60,7 +60,7 @@ type CandidateProfile = {
   about_me: string;
   link: string;
   field: string;
-  skills: SkillName[];
+  skills: string[];
   experience: Experience[];
   education: Education[];
   attachments: Attachment[];
