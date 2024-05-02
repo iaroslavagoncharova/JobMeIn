@@ -1,5 +1,0 @@
-JobMeIn
-muistakaa runnata npm install ja luoda .env ennen kun alatte käyttää tätä sovellusta
-jos runnatte tietokannan scriptia ekan kerran, muistakaa tämä: CREATE user 'jobuser'@'localhost' identified by 'MeOllaanRyhma3!';  GRANT ALL PRIVILEGES on JobMeIn.* to 'jobuser'@'localhost'; FLUSH PRIVILEGES;
-jos se sanoo Operation CREATE USER failed for 'jobuser'@'localhost', sitten käyttäjä on jo olemassa
-voitte tarkistaa tällä: show grants for 'jobuser'@'localhost';

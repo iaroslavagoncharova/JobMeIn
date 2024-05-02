@@ -1,9 +1,16 @@
-import {Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {Text, StyleSheet, TouchableOpacity, Linking, Alert} from 'react-native';
 import React, {useState} from 'react';
 import {Card} from '@rneui/base';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faAdd, faDownload, faEdit} from '@fortawesome/free-solid-svg-icons';
+import {
+  faAdd,
+  faDownload,
+  faEdit,
+  faTrash,
+} from '@fortawesome/free-solid-svg-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Attachment} from '../types/DBTypes';
+import {useAttachments} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
 import AttachmentPost from './AttachmentPost';
 import AttachmentUpdate from './AttachmentUpdate';
@@ -17,6 +24,46 @@ export default function Attachments({
     null,
   );
   const [attachmentPosting, setAttachmentPosting] = useState<boolean>(false);
+<<<<<<< HEAD
+=======
+  const {update, setUpdate} = useUpdateContext();
+  const {deleteAttachment} = useAttachments();
+
+  const handleDelete = async (attachment_id: number) => {
+    Alert.alert('Poistetaanko liite?', 'Haluatko varmasti poistaa liitteen?', [
+      {
+        text: 'Kyllä',
+        onPress: async () => {
+          const token = await AsyncStorage.getItem('token');
+          if (!token) {
+            return;
+          }
+          const result = await deleteAttachment(attachment_id, token);
+          console.log(result, 'result');
+          if (result) {
+            setUpdate((prevState) => !prevState);
+          } else {
+            Alert.alert('Liitteen poistaminen epäonnistui', 'Yritä uudelleen');
+          }
+        },
+      },
+      {
+        text: 'Peruuta',
+        onPress: () => {},
+      },
+    ]);
+  };
+
+  const handleDownload = async (filename: string) => {
+    try {
+      const link =
+        process.env.EXPO_PUBLIC_UPLOAD_SERVER + '/download/' + filename;
+      Linking.openURL(link);
+    } catch (error) {
+      console.error('Error downloading attachment:', error);
+    }
+  };
+>>>>>>> bc7fc4bbca106189433086c84a5d41fb9460e459
 
   const styles = StyleSheet.create({
     card: {
@@ -64,12 +111,18 @@ export default function Attachments({
       {attachments.map((attachment) => (
         <Card
           key={attachment.attachment_id}
-          containerStyle={{borderRadius: 10}}
+          containerStyle={{
+            borderRadius: 10,
+            width: 250,
+            alignItems: 'center',
+          }}
         >
           {attachmentEditing !== attachment.attachment_id ? (
             <>
               <Text style={styles.boldText}>{attachment.attachment_name}</Text>
-              <Text style={styles.text}>{attachment.filename}</Text>
+              <Text style={styles.text}>
+                {attachment.filename.substring(0, 20) + '...'}
+              </Text>
               <TouchableOpacity
                 onPress={() => setAttachmentEditing(attachment.attachment_id)}
               >
@@ -79,9 +132,20 @@ export default function Attachments({
                   style={{color: '#5d71c9', margin: 5}}
                 />
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => handleDownload(attachment.filename)}
+              >
                 <FontAwesomeIcon
                   icon={faDownload}
+                  size={25}
+                  style={{color: '#5d71c9', margin: 5}}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => handleDelete(attachment.attachment_id)}
+              >
+                <FontAwesomeIcon
+                  icon={faTrash}
                   size={25}
                   style={{color: '#5d71c9', margin: 5}}
                 />

@@ -34,6 +34,7 @@ import {
   Report,
   ReportedUser,
   ReportedJob,
+  Field,
 } from '../types/DBTypes';
 import {Values} from '../types/LocalTypes';
 import {
@@ -370,19 +371,31 @@ const useExperience = () => {
   };
 
   const putExperience = async (id: number, experience: ExperienceInfo) => {
-    const token = await AsyncStorage.getItem('token');
-    const options = {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
-      },
-      body: JSON.stringify(experience),
-    };
-    return await fetchData<Experience>(
-      process.env.EXPO_PUBLIC_AUTH_API + '/profile/experience/' + id,
-      options,
-    );
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const options = {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        },
+        body: JSON.stringify(experience),
+      };
+      const result = await fetchData<Experience>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/profile/experience/' + id,
+        options,
+      );
+      if (result) {
+        return result;
+      }
+    } catch (e) {
+      if ((e as Error).message === 'No fields to update') {
+        Alert.alert('Et ole tehnyt muutoksia');
+      } else {
+        console.error('Error updating experience', e);
+        Alert.alert('Error updating experience');
+      }
+    }
   };
 
   const deleteExperience = async (id: number) => {
@@ -537,7 +550,7 @@ const useSkills = () => {
 
 const useJobs = () => {
   const [jobs, setJobs] = useState<JobWithSkillsAndKeywords[]>([]);
-  const [fields, setFields] = useState<string[]>([]);
+  const [fields, setFields] = useState<Field[]>([]);
   const [companyJobs, setCompanyJobs] = useState<JobWithSkillsAndKeywords[]>(
     [],
   );
@@ -598,11 +611,19 @@ const useJobs = () => {
   };
 
   const getFields = async () => {
-    const result = await fetchData<string[]>(
-      process.env.EXPO_PUBLIC_AUTH_API + '/jobs/fields',
-    );
-    if (result) {
-      setFields(result);
+    try {
+      const result = await fetchData<Field[]>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/jobs/fields',
+      );
+      if (result) {
+        setFields(result);
+      }
+    } catch (e) {
+      if ((e as Error).message === 'No fields found') {
+        setFields([]);
+      } else {
+        console.error('Error fetching fields', e);
+      }
     }
   };
 
@@ -1058,7 +1079,7 @@ const useChats = () => {
         },
       };
       const result = fetchData<MessageResponse>(
-        process.env.EXPO_PUBLIC_AUTH_API + '/chats/interview_sent/' + chat_id,
+        process.env.EXPO_PUBLIC_AUTH_API + '/chats/interview/' + chat_id,
         options,
       );
       if (result) {
@@ -1157,8 +1178,6 @@ const useAttachments = () => {
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [thisAttachment, setThisAttachment] = useState<Attachment>();
   const {update} = useUpdateContext();
-  const downloadAttachment = async (filename: string) => {
-  };
   const getUserAttachments = async () => {
     const token = await AsyncStorage.getItem('token');
     try {
@@ -1256,6 +1275,29 @@ const useAttachments = () => {
       options,
     );
   };
+
+  const deleteAttachment = async (attId: number, token: string) => {
+    try {
+      const options = {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      console.log(token, 'token');
+      const result = await fetchData<MessageResponse>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/profile/attachments/' + attId,
+        options,
+      );
+      if (result) {
+        getUserAttachments();
+        return result;
+      }
+    } catch (e) {
+      console.error('Error deleting attachment', e);
+    }
+  };
   return {
     getUserAttachments,
     attachments,
@@ -1263,6 +1305,7 @@ const useAttachments = () => {
     thisAttachment,
     postAttachment,
     putAttachment,
+    deleteAttachment,
   };
 };
 
@@ -1273,15 +1316,26 @@ const useApplications = () => {
   const {update} = useUpdateContext();
   const getApplicationById = async (id: number) => {
     const token = await AsyncStorage.getItem('token');
-    const options = {
-      headers: {
-        Authorization: 'Bearer ' + token,
-      },
-    };
-    return await fetchData<Application>(
-      process.env.EXPO_PUBLIC_AUTH_API + '/applications/' + id,
-      options,
-    );
+    try {
+      const options = {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      };
+      const result = await fetchData<Application>(
+        process.env.EXPO_PUBLIC_AUTH_API + '/applications/' + id,
+        options,
+      );
+      if (result) {
+        return result;
+      }
+    } catch (e) {
+      if ((e as Error).message === 'No application found') {
+        return null;
+      } else {
+        console.error('Error fetching application', e);
+      }
+    }
   };
   const getApplicationByJobId = async (job_id: number) => {
     const token = await AsyncStorage.getItem('token');

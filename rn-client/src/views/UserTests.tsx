@@ -52,8 +52,11 @@ const Tests = () => {
 
   useEffect(() => {
     handleGetTests();
-    fetchUsernames();
   }, [update]);
+
+  useEffect(() => {
+    fetchUsernames();
+  }, [tests]);
 
   const fetchUsernames = async () => {
     const usernames: Record<number, string> = {};
@@ -206,7 +209,7 @@ const Tests = () => {
                 >
                   {test.user_id !== null ? (
                     <Text style={styles.boldText}>
-                      {usernames[test.test_id] || 'Lataa...'}
+                      {usernames[test.test_id] ?? 'Lataa...'}
                     </Text>
                   ) : (
                     <Text style={styles.boldText}>JobMe In</Text>

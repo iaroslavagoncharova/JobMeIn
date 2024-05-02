@@ -50,6 +50,7 @@ const SingleChat = ({route}: any) => {
   const {getUserById} = useUser();
   const [showInstructions, setShowInstructions] = useState<boolean>(true);
   const [me, setMe] = useState<UnauthorizedUser | null>(null);
+  const [otherUser, setOtherUser] = useState<UnauthorizedUser | null>(null);
   const {update, setUpdate} = useUpdateContext();
   const {
     getChatById,
@@ -133,8 +134,18 @@ const SingleChat = ({route}: any) => {
     }
   };
 
+  const getChattingWith = async () => {
+    if (thisChat) {
+      const user = await getUserById(thisChat.chatting_with.user_id);
+      if (user) {
+        setOtherUser(user);
+      }
+    }
+  };
+
   useEffect(() => {
     getMe();
+    getChattingWith();
   }, [thisChat]);
 
   // testi
@@ -161,18 +172,19 @@ const SingleChat = ({route}: any) => {
               <Text style={styles.chatParticipant}>
                 {thisChat.chatting_with.username}
               </Text>
-              {me?.user_type === 'employer' && (
-                <Button
-                  onPress={() =>
-                    navigation.navigate('ChatHakemukset', {
-                      userId: thisChat?.chatting_with.user_id,
-                      interview: thisChat?.interview_status,
-                    })
-                  }
-                  title={'Hakemukset'}
-                  buttonStyle={styles.saveButton}
-                />
-              )}
+              {me?.user_type === 'employer' &&
+                otherUser?.user_type === 'candidate' && (
+                  <Button
+                    onPress={() =>
+                      navigation.navigate('ChatHakemukset', {
+                        userId: thisChat?.chatting_with.user_id,
+                        interview: thisChat?.interview_status,
+                      })
+                    }
+                    title={'Hakemukset'}
+                    buttonStyle={styles.saveButton}
+                  />
+                )}
               {me?.user_type === 'admin' && (
                 <Button
                   onPress={() =>
@@ -184,19 +196,20 @@ const SingleChat = ({route}: any) => {
                   buttonStyle={styles.saveButton}
                 />
               )}
-              {me?.user_type === 'candidate' && (
-                <Button
-                  onPress={() =>
-                    navigation.navigate('Työnantaja/hakemuksesi', {
-                      userId: thisChat?.chatting_with.user_id,
-                      meId: me?.user_id,
-                      interview: thisChat?.interview_status,
-                    })
-                  }
-                  title={'Hakemukset'}
-                  buttonStyle={styles.saveButton}
-                />
-              )}
+              {me?.user_type === 'candidate' &&
+                otherUser?.user_type === 'employer' && (
+                  <Button
+                    onPress={() =>
+                      navigation.navigate('Työnantaja/hakemuksesi', {
+                        userId: thisChat?.chatting_with.user_id,
+                        meId: me?.user_id,
+                        interview: thisChat?.interview_status,
+                      })
+                    }
+                    title={'Hakemukset'}
+                    buttonStyle={styles.saveButton}
+                  />
+                )}
             </View>
             <ScrollView
               style={styles.msgContainer}
@@ -260,7 +273,9 @@ const SingleChat = ({route}: any) => {
             />
           </TouchableOpacity>
         </View>
-        {thisChat && me?.user_type === 'employer' ? (
+        {thisChat &&
+        me?.user_type === 'employer' &&
+        otherUser?.user_type === 'candidate' ? (
           <>
             {thisChat.interview_status === 'Pending' && (
               <Text style={{color: '#004aad', margin: 10}}>
@@ -268,7 +283,7 @@ const SingleChat = ({route}: any) => {
               </Text>
             )}
 
-            {thisChat.interview_status === '' && (
+            {thisChat.interview_status === null && (
               <Button
                 title={'Kutsu haastatteluun'}
                 buttonStyle={styles.saveButton}
