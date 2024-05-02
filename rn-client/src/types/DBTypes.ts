@@ -1,11 +1,11 @@
 import {Key} from 'react';
 
-type UserLevel = {
+export type UserLevel = {
   level_id: number;
   level_name: 'User' | 'Admin';
 };
 
-type User = {
+export type User = {
   user_id: number;
   username: string;
   password: string;
@@ -36,9 +36,9 @@ export type ReportedUser = {
   report_reason: string;
 };
 
-type UnauthorizedUser = Omit<User, 'password'>;
+export type UnauthorizedUser = Omit<User, 'password'>;
 
-type Experience = {
+export type Experience = {
   experience_id: number;
   user_id: number;
   job_title: string;
@@ -49,24 +49,24 @@ type Experience = {
   end_date: Date | string;
 };
 
-type SkillName = {
+export type SkillName = {
   [x: string]: Key | null | undefined;
   skill_name: string;
 };
 
-type CandidateProfile = {
+export type CandidateProfile = {
   user_id: number;
   username: string;
   about_me: string;
   link: string;
   field: string;
-  skills: SkillName[];
+  skills: string[];
   experience: Experience[];
   education: Education[];
   attachments: Attachment[];
 };
 
-type ExperienceInfo = {
+export type ExperienceInfo = {
   job_title?: string | null;
   job_place?: string | null;
   job_city?: string | null;
@@ -75,7 +75,7 @@ type ExperienceInfo = {
   end_date?: Date | string | null;
 };
 
-type Education = {
+export type Education = {
   education_id: number;
   user_id: number;
   school: string;
@@ -91,34 +91,34 @@ export type EducationInfo = {
   graduation?: Date | null | string;
 };
 
-type Skill = {
+export type Skill = {
   skill_id: number;
   skill_name: string;
   type: string;
 };
 
-type JobSkill = {
+export type JobSkill = {
   skill_id: number;
   job_id: number;
 };
 
-type UserSkill = {
+export type UserSkill = {
   userskill_id: number;
   user_id: number;
   skill_id: number;
 };
 
-type KeyWord = {
+export type KeyWord = {
   keyword_id: number;
   keyword_name: string;
 };
 
-type KeywordsJob = {
+export type KeywordsJob = {
   keyword_id: number;
   job_id: number;
 };
 
-type Attachment = {
+export type Attachment = {
   attachment_id: number;
   attachment_name: string;
   filename: string;
@@ -127,7 +127,7 @@ type Attachment = {
   user_id: number;
 };
 
-type Application = {
+export type Application = {
   application_id: number;
   user_id: number;
   job_id: number;
@@ -137,7 +137,7 @@ type Application = {
   job: JobWithUser;
 };
 
-type ApplicationLink = {
+export type ApplicationLink = {
   link_id: number;
   application_id: number;
   link: string;
@@ -170,26 +170,26 @@ export type FileValues = {
   uri?: string | undefined;
 };
 
-type Test = {
+export type Test = {
   test_id: number;
   test_type: string;
   user_id: number | null;
   test_link: string | null;
 };
 
-type JobTest = {
+export type JobTest = {
   job_id: number;
   test_id: number;
 };
 
-type UserTest = {
+export type UserTest = {
   test_id: number;
   user_id: number;
   percentage: number;
   completed_at: Date | string;
 };
 
-type Chat = {
+export type Chat = {
   chat_id: number;
   user1_id: number;
   user2_id: number;
@@ -197,7 +197,7 @@ type Chat = {
   created_at: Date | string;
 };
 
-type ChatWithMessages = Pick<Chat, 'chat_id' | 'interview_status'> & {
+export type ChatWithMessages = Pick<Chat, 'chat_id' | 'interview_status'> & {
   chatting_with: {
     username: string;
     user_id: number;
@@ -205,7 +205,7 @@ type ChatWithMessages = Pick<Chat, 'chat_id' | 'interview_status'> & {
   messages?: Omit<MessageWithUser, 'chat_id'>[];
 };
 
-type Message = {
+export type Message = {
   message_id: number;
   user_id: number;
   chat_id: number;
@@ -213,18 +213,18 @@ type Message = {
   sent_at: Date | string;
 };
 
-type PostMessage = {
+export type PostMessage = {
   chat_id: number;
   message_text: string;
 };
 
-type PostMessageText = {
+export type PostMessageText = {
   message_text: string;
 };
 
-type MessageWithUser = Message & Pick<User, 'username'>;
+export type MessageWithUser = Message & Pick<User, 'username'>;
 
-type Swipe = {
+export type Swipe = {
   swipe_id: number;
   swiper_id: number;
   swiped_id: number;
@@ -233,18 +233,18 @@ type Swipe = {
   created_at: Date | string | null;
 };
 
-type Match = {
+export type Match = {
   match_id: number;
   user1_id: number;
   user2_id: number;
   matched_at: Date | string | null;
 };
 
-type MatchWithUser = Match & {
+export type MatchWithUser = Match & {
   user: UnauthorizedUser;
 };
 
-type UpdateUser = {
+export type UpdateUser = {
   email: string;
   fullname: string;
   phone: string;
@@ -257,7 +257,7 @@ type UpdateUser = {
   [key: string]: string | undefined;
 };
 
-type ApplicationApplied = {
+export type ApplicationApplied = {
   application_id: string;
   companyName: string;
   position: string;
@@ -267,7 +267,7 @@ type ApplicationApplied = {
   totalTests: number;
 };
 
-type ApplicationSaved = {
+export type ApplicationSaved = {
   id: string;
   companyName: string;
   position: string;
@@ -297,7 +297,6 @@ export type ReportedJob = {
   field: string;
   report_reason: string;
 };
-
 
 export type UpdateJob = {
   job_address: string;
@@ -336,36 +335,7 @@ export type Report = {
   is_resolved: string;
 };
 
-export type {
-  UserLevel,
-  User,
-  UnauthorizedUser,
-  CandidateProfile,
-  SkillName,
-  Experience,
-  ExperienceInfo,
-  Education,
-  Attachment,
-  Skill,
-  JobSkill,
-  UserSkill,
-  KeyWord,
-  KeywordsJob,
-  Application,
-  ApplicationLink,
-  Test,
-  JobTest,
-  UserTest,
-  Chat,
-  ChatWithMessages,
-  MessageWithUser,
-  Message,
-  PostMessage,
-  PostMessageText,
-  Swipe,
-  Match,
-  UpdateUser,
-  ApplicationApplied,
-  ApplicationSaved,
-  MatchWithUser,
+export type Field = {
+  field_id: number;
+  field_name: string;
 };

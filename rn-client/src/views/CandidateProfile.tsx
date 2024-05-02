@@ -1,5 +1,12 @@
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Linking,
+  ScrollView,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {Card} from '@rneui/base';
 import {
   faArrowAltCircleLeft,
@@ -21,6 +28,16 @@ export default function CandidateProfile() {
   const {attachments} = useAttachments();
   const {experience} = useExperience();
   const [currentScreen, setCurrentScreen] = useState<number>(0);
+  const handleDownload = async (filename: string) => {
+    try {
+      const link =
+        process.env.EXPO_PUBLIC_UPLOAD_SERVER + '/download/' + filename;
+      Linking.openURL(link);
+    } catch (error) {
+      console.error('Error downloading attachment:', error);
+    }
+  };
+
   const styles = StyleSheet.create({
     card: {
       width: 350,
@@ -57,7 +74,7 @@ export default function CandidateProfile() {
       color: '#5d71c9',
       fontSize: 15,
       textAlign: 'center',
-      margin: 5,
+      margin: 0,
     },
     boldText: {
       color: '#5d71c9',
@@ -127,7 +144,9 @@ export default function CandidateProfile() {
               >
                 <Text style={styles.header3}>Taidot</Text>
                 {skills.map((skill, index) => (
-                  <Text key={index}>{skill.skill_name}</Text>
+                  <Text style={styles.text} key={index}>
+                    {skill.skill_name}
+                  </Text>
                 ))}
               </Card>
             ) : (
@@ -140,10 +159,19 @@ export default function CandidateProfile() {
                   width: 200,
                 }}
               >
-                <Text style={styles.header3}>Liitteet</Text>
-                {attachments.map((attachment, index) => (
-                  <Text key={index}>{attachment.attachment_name}</Text>
-                ))}
+                <ScrollView style={{height: 100}}>
+                  <Text style={styles.header3}>Liitteet</Text>
+                  {attachments.map((attachment, index) => (
+                    <TouchableOpacity
+                      onPress={() => handleDownload(attachment.filename)}
+                      key={index}
+                    >
+                      <Text style={styles.text}>
+                        {attachment.attachment_name} (klikkaa ladataksesi liite)
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
               </Card>
             ) : (
               <Text style={styles.skills}>Ei liitteitä</Text>

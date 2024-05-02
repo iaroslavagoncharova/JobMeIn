@@ -1,4 +1,11 @@
-import {View, Text, ScrollView, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  Linking,
+  TouchableOpacity,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Card} from '@rneui/base';
 import {useApplications, useUser} from '../hooks/apiHooks';
@@ -50,6 +57,16 @@ export default function ChatApplications({route}: any) {
     handleGetApplications(user_id);
     handleGetUserInfo(user_id);
   }, [update]);
+
+  const handleDownload = async (filename: string) => {
+    try {
+      const link =
+        process.env.EXPO_PUBLIC_UPLOAD_SERVER + '/download/' + filename;
+      Linking.openURL(link);
+    } catch (error) {
+      console.error('Error downloading attachment:', error);
+    }
+  };
 
   const styles = StyleSheet.create({
     container: {
@@ -173,7 +190,9 @@ export default function ChatApplications({route}: any) {
           ))}
           <Card containerStyle={{borderRadius: 10}}>
             <Text style={styles.header}>Työnhakijan tiedot</Text>
-            <Text style={styles.text}>Nimi: {privateUser?.fullname}</Text>
+            {interview_status === 'Accepted' && (
+              <Text style={styles.text}>Nimi: {privateUser?.fullname}</Text>
+            )}
             <Text style={styles.text}>Käyttäjänimi: {user?.username}</Text>
             {interview_status === 'Accepted' && (
               <>
@@ -188,7 +207,12 @@ export default function ChatApplications({route}: any) {
             <Text style={styles.text}>Kuvaus: {user?.about_me}</Text>
             <Text style={styles.text}>
               Työnhakijan taidot:{' '}
-              {user?.skills.map((skill) => String(skill)).join(', ')}
+              {user?.skills.map((skill, index) => (
+                <Text style={styles.text} key={index}>
+                  {skill}
+                  {index < user.skills.length - 1 ? ', ' : ''}
+                </Text>
+              ))}
             </Text>
             <Text style={styles.boldText}>Työnhakijan koulutus:</Text>
             {user?.education.map((edu) => (
@@ -245,10 +269,19 @@ export default function ChatApplications({route}: any) {
                 key={attachment.attachment_id}
                 containerStyle={{borderRadius: 10}}
               >
-                <Text style={styles.text}>{attachment.attachment_name}</Text>
-                <Text style={styles.text}>
-                  {attachment.filename ? attachment.filename : 'Ei linkkiä'}
-                </Text>
+                <ScrollView>
+                  <Text style={styles.boldText}>Liitteet</Text>
+                  {user?.attachments.map((attachment, index) => (
+                    <TouchableOpacity
+                      onPress={() => handleDownload(attachment.filename)}
+                      key={index}
+                    >
+                      <Text style={styles.text}>
+                        {attachment.attachment_name} (klikkaa ladataksesi liite)
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
               </Card>
             ))}
           </Card>

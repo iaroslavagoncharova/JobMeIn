@@ -18,12 +18,15 @@ import {
 import RNPickerSelect from 'react-native-picker-select';
 import {useUserContext} from '../hooks/ContextHooks';
 import {UpdateUser, User} from '../types/DBTypes';
+import {useJobs} from '../hooks/apiHooks';
 
 export default function PersonalInfo({user}: {user: User}) {
   const [personalEditing, setPersonalEditing] = useState<boolean>(false);
   const {handleEdit} = useUserContext();
   const [status, setStatus] = useState<string | null>(null);
+  const [selectedField, setSelectedField] = useState<string | null>(null);
   const navigation: NavigationProp<ParamListBase> = useNavigation();
+  const {fields} = useJobs();
   const values: UpdateUser = {
     email: user.email,
     fullname: user.fullname,
@@ -47,9 +50,11 @@ export default function PersonalInfo({user}: {user: User}) {
   };
 
   const edit = async (inputs: UpdateUser) => {
-    console.log(inputs, 'inputs');
     if (status) {
       inputs.status = status;
+    }
+    if (selectedField) {
+      inputs.field = selectedField;
     }
     handleEdit(inputs);
     setPersonalEditing(!personalEditing);
@@ -69,10 +74,23 @@ export default function PersonalInfo({user}: {user: User}) {
     color: '#5d71c9',
   };
 
+  const fieldPlaceholder = {
+    label: 'Valitse ala',
+    value: null,
+    color: '#5d71c9',
+  };
+
   const items = [
     {label: 'Aktiivinen', value: 'Active', color: '#5d71c9'},
     {label: 'Ei aktiivinen', value: 'Paused', color: '#5d71c9'},
   ];
+
+  const fieldItems = fields.map((field) => ({
+    label: field.field_name,
+    value: field.field_name,
+    color: '#5d71c9',
+  }));
+
   const styles = StyleSheet.create({
     card: {
       backgroundColor: '#ffffff',
@@ -155,6 +173,10 @@ export default function PersonalInfo({user}: {user: User}) {
                   <Text style={styles.text}>{user?.username}</Text>
                   <Text style={styles.boldText}>Puhelinnumero:</Text>
                   <Text style={styles.text}>{user?.phone}</Text>
+                  <Text style={styles.boldText}>Ala:</Text>
+                  <Text style={styles.text}>
+                    {user?.field ? user?.field : 'Ei alaa'}
+                  </Text>
                   <Text style={styles.boldText}>Status:</Text>
                   <Text style={styles.text}>
                     {user?.status
@@ -208,6 +230,21 @@ export default function PersonalInfo({user}: {user: User}) {
                       />
                     )}
                     name="phone"
+                  />
+                  <RNPickerSelect
+                    placeholder={fieldPlaceholder}
+                    items={fieldItems}
+                    value={user.field}
+                    onValueChange={(value) => {
+                      setSelectedField(value);
+                    }}
+                    style={{
+                      inputIOS: styles.input,
+                      inputAndroid: styles.input,
+                      placeholder: {
+                        color: '#5d71c9',
+                      },
+                    }}
                   />
                   <RNPickerSelect
                     placeholder={placeholder}
@@ -362,18 +399,20 @@ export default function PersonalInfo({user}: {user: User}) {
                     )}
                     name="address"
                   />
-                  <Controller
-                    control={control}
-                    render={({field: {onChange, onBlur, value}}) => (
-                      <TextInput
-                        style={styles.input}
-                        onBlur={onBlur}
-                        onChangeText={onChange}
-                        value={value}
-                        placeholder={user?.field ? user?.field : 'Ala'}
-                      />
-                    )}
-                    name="field"
+                  <RNPickerSelect
+                    placeholder={fieldPlaceholder}
+                    items={fieldItems}
+                    value={user.field}
+                    onValueChange={(value) => {
+                      setSelectedField(value);
+                    }}
+                    style={{
+                      inputIOS: styles.input,
+                      inputAndroid: styles.input,
+                      placeholder: {
+                        color: '#5d71c9',
+                      },
+                    }}
                   />
                   <Controller
                     control={control}

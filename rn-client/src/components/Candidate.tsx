@@ -1,4 +1,12 @@
-import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  Linking,
+  ScrollView,
+} from 'react-native';
 import React, {useState} from 'react';
 import {Card} from '@rneui/base';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
@@ -19,6 +27,8 @@ export default function Candidate({candidate}: {candidate: CandidateProfile}) {
     reported_item_id: candidate.user_id,
     report_reason: '',
   };
+
+  console.log(candidate.skills, 'candidate.skills');
 
   const {
     control,
@@ -58,6 +68,16 @@ export default function Candidate({candidate}: {candidate: CandidateProfile}) {
     ]);
   };
 
+  const handleDownload = async (filename: string) => {
+    try {
+      const link =
+        process.env.EXPO_PUBLIC_UPLOAD_SERVER + '/download/' + filename;
+      Linking.openURL(link);
+    } catch (error) {
+      console.error('Error downloading attachment:', error);
+    }
+  };
+
   const styles = StyleSheet.create({
     card: {
       width: 350,
@@ -95,7 +115,7 @@ export default function Candidate({candidate}: {candidate: CandidateProfile}) {
       color: '#5d71c9',
       fontSize: 15,
       textAlign: 'center',
-      margin: 5,
+      margin: 0,
     },
     boldText: {
       color: '#5d71c9',
@@ -165,7 +185,9 @@ export default function Candidate({candidate}: {candidate: CandidateProfile}) {
               >
                 <Text style={styles.header3}>Taidot</Text>
                 {candidate.skills.map((skill, index) => (
-                  <Text key={index}>{skill.skill_name}</Text>
+                  <Text style={styles.text} key={index}>
+                    {skill}
+                  </Text>
                 ))}
               </Card>
             ) : (
@@ -178,10 +200,19 @@ export default function Candidate({candidate}: {candidate: CandidateProfile}) {
                   width: 200,
                 }}
               >
-                <Text style={styles.header3}>Liitteet</Text>
-                {candidate.attachments.map((attachment, index) => (
-                  <Text key={index}>{attachment.attachment_name}</Text>
-                ))}
+                <ScrollView>
+                  <Text style={styles.header3}>Liitteet</Text>
+                  {candidate.attachments.map((attachment, index) => (
+                    <TouchableOpacity
+                      onPress={() => handleDownload(attachment.filename)}
+                      key={index}
+                    >
+                      <Text style={styles.text}>
+                        {attachment.attachment_name} (klikkaa ladataksesi liite)
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
               </Card>
             ) : (
               <Text style={styles.skills}>Ei liitteitä</Text>
