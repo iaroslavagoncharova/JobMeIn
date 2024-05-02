@@ -5,6 +5,8 @@ import {
   ScrollView,
   TextInput,
   Alert,
+  TouchableOpacity,
+  Linking,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Button, Card} from '@rneui/base';
@@ -14,10 +16,13 @@ import {
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
-import {useApplications, useJobs, useUser} from '../hooks/apiHooks';
+import {faCircleCheck} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {useApplications, useJobs, useTests, useUser} from '../hooks/apiHooks';
 import {
   Application,
   JobWithSkillsAndKeywords,
+  Test,
   UnauthorizedUser,
 } from '../types/DBTypes';
 import useUpdateContext from '../hooks/updateHooks';
@@ -29,6 +34,7 @@ export default function SingleApplication({route}: {route: any}) {
   );
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const [editing, setEditing] = useState<boolean>(false);
+  const {getTestForJob} = useTests();
   const {update, setUpdate} = useUpdateContext();
   const {getUserById} = useUser();
   const isSubmitted = application.status === 'Submitted';
@@ -43,6 +49,9 @@ export default function SingleApplication({route}: {route: any}) {
   } = useApplications();
   const [user, setUser] = useState<UnauthorizedUser | null>(null);
   const [job, setJob] = useState<JobWithSkillsAndKeywords | null>(null);
+  const [tests, setTests] = useState<Test[] | []>([]);
+  const {getCandidateTests, takeTest} = useTests();
+  const [userTests, setUserTests] = useState<Test[] | []>([]);
   const isDeadlinePassed =
     !isSubmitted &&
     job?.deadline_date &&
@@ -55,6 +64,17 @@ export default function SingleApplication({route}: {route: any}) {
     }
   };
 
+  const getTests = async () => {
+    const test = await getTestForJob(application.job_id);
+    if (test) {
+      setTests(test);
+    }
+    const userTests = await getCandidateTests();
+    if (userTests) {
+      setUserTests(userTests);
+    }
+  };
+
   console.log(application.status, 'application status');
 
   const getJobInfo = async () => {
@@ -63,6 +83,8 @@ export default function SingleApplication({route}: {route: any}) {
       setJob(job);
     }
   };
+
+  console.log(tests, 'tests', userTests, 'userTests');
 
   const send = async () => {
     const result = await sendApplication(application);
@@ -142,6 +164,7 @@ export default function SingleApplication({route}: {route: any}) {
     getEmployerInfo();
     getJobInfo();
     getSavedApplications();
+    getTests();
   }, [update]);
 
   const styles = StyleSheet.create({
@@ -386,6 +409,76 @@ export default function SingleApplication({route}: {route: any}) {
               <Text key={index} style={styles.text}>
                 #{keyword + ' '}
               </Text>
+            ))}
+          </Card>
+          <Card>
+            <Text style={styles.bigHeader}>Testit</Text>
+            <Text style={styles.text}>
+              Siirry tekemään testiä klikkaamalla. Suoritettuasi testin voit
+              merkitä sen suoritetuksi painamalla pohjassa.
+            </Text>
+            {tests.map((test, index) => (
+              <Card
+                containerStyle={{
+                  borderRadius: 10,
+                  alignItems: 'center',
+                }}
+                key={test.test_id}
+              >
+                <TouchableOpacity
+                  onLongPress={() => {
+                    const isTestTaken = userTests?.find(
+                      (userTest) => userTest.test_id === test.test_id,
+                    );
+
+                    if (isTestTaken) {
+                      Alert.alert('Huomio!', 'Testi on jo suoritettu.');
+                    } else {
+                      Alert.alert(
+                        'Oletko suorittanut testin?',
+                        '',
+                        [
+                          {
+                            text: 'Kyllä',
+                            onPress: () => {
+                              takeTest(test.test_id);
+                              setUpdate((prevState) => !prevState);
+                            },
+                          },
+                          {
+                            text: 'Peruuta',
+                            onPress: () => console.log('Peruuta'),
+                          },
+                        ],
+                        {cancelable: true},
+                      );
+                    }
+                  }}
+                  onPress={async () => {
+                    const isTestTaken = userTests?.find(
+                      (userTest) => userTest.test_id === test.test_id,
+                    );
+
+                    if (isTestTaken) {
+                      Alert.alert('Huomio!', 'Testi on jo suoritettu.');
+                    } else {
+                      Linking.openURL(test.test_link!);
+                    }
+                  }}
+                >
+                  <Text style={styles.boldText}>{test.test_type}</Text>
+                  {userTests?.find(
+                    (userTest) => userTest.test_id === test.test_id,
+                  ) ? (
+                    <FontAwesomeIcon
+                      icon={faCircleCheck}
+                      color={'#5d71c9'}
+                      size={25}
+                      style={{left: 90}}
+                    />
+                  ) : null}
+                </TouchableOpacity>
+              </Card>
             ))}
           </Card>
           <Card>
