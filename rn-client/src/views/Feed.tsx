@@ -54,8 +54,8 @@ const Feed = () => {
   };
 
   const items = fields.map((field) => ({
-    label: field,
-    value: field,
+    label: field.field_name,
+    value: field.field_name,
     color: '#5d71c9',
   }));
 
