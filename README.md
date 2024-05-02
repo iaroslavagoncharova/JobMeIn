@@ -42,7 +42,8 @@ The app's database consists of 23 tables:
 - **Applications** stores users' job applications, including application text and status of the application ('submitted', 'accepted', 'declined')
 - **Attachments** stores users' attachments, such as resumes, CVs, personal projects, etc.
 - **Chats** stores all chats, including user IDs and interview status
-- **Education** consists of users' education information, including school, degree, field, and graduation date        
+- **Education** consists of users' education information, including school, degree, field, and graduation date
+- **Fields** stores all available job fields  
 - **JobAds** stores all app's job ads and their information, including job title, salary, address, field, description, and deadline date   
 - **JobExperience** consists of users' job experience information, including job title, company, city, description, start and end dates
 - **JobSkills** associates skills from the Skills table with the job ads they are required for         
