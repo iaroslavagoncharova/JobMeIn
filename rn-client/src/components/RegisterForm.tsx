@@ -13,7 +13,7 @@ import {useEffect} from 'react';
 import {useUser} from '../hooks/apiHooks';
 
 const RegisterForm = ({handleToggle}: {handleToggle: () => void}) => {
-  const {postUser} = useUser();
+  const {postUser, checkEmail, checkUsername} = useUser();
   const initValues = {
     fullname: '',
     email: '',
@@ -29,6 +29,26 @@ const RegisterForm = ({handleToggle}: {handleToggle: () => void}) => {
     defaultValues: initValues,
     mode: 'onBlur',
   });
+
+  const handleCheckEmail = async (email: string) => {
+    try {
+      console.log(email, 'email');
+      const result = await checkEmail(email);
+      console.log(result, 'result');
+      if (result) {
+        Alert.alert('Sähköposti on jo käytössä', 'Käytä toista sähköpostia');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const checkPasswordsMatch = (password: string, password2: string) => {
+    if (password !== password2) {
+      return 'Salasanat eivät täsmää';
+    }
+    return true;
+  };
 
   const doRegister = async (inputs: {
     fullname: string;
@@ -90,7 +110,6 @@ const RegisterForm = ({handleToggle}: {handleToggle: () => void}) => {
             value: /^\S+@\S+\.\S+$/,
             message: 'Sähköpostiosoite ei ole validi',
           },
-          // TODO: Add email availability check
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <View style={styles.inputWithLabel}>
@@ -101,8 +120,8 @@ const RegisterForm = ({handleToggle}: {handleToggle: () => void}) => {
               keyboardType="default"
               autoCorrect={false}
               inputMode="email"
-              onBlur={onBlur}
               onChangeText={onChange}
+              onBlur={() => handleCheckEmail(value)}
               value={value}
               errorMessage={errors.email?.message}
               autoCapitalize="none"
@@ -137,7 +156,7 @@ const RegisterForm = ({handleToggle}: {handleToggle: () => void}) => {
         )}
         name="password"
       />
-      {/* TODO: add password confirmation */}
+
       <Controller
         control={control}
         rules={{

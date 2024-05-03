@@ -44,7 +44,7 @@ const Applied = () => {
           style={styles.date}
         >{`Haettu ${item.created_at.toString().substring(0, 10).split('-').reverse().join('.')}`}</Text>
         <View style={styles.matchContainer}>
-          <Text style={styles.matchPercentage}>100%</Text>
+          <Text style={styles.matchPercentage}>{item.job.percentage}%</Text>
         </View>
         <Button
           title="Näytä hakemus"

@@ -19,24 +19,6 @@ const Saved = () => {
 
   console.log(savedApplications, 'savedApplications ');
 
-  useEffect(() => {
-    const fetchJobs = async () => {
-      const jobsData: JobWithUser[] = [];
-      if (!savedApplications || savedApplications.length === 0) {
-        return;
-      }
-      for (const application of savedApplications as Application[]) {
-        const job = await getJobForApplication(application.job_id);
-        if (job) {
-          jobsData.push(job);
-        }
-        console.log(jobsData, 'jobsData');
-      }
-    };
-
-    fetchJobs();
-  }, [update]);
-
   const renderItem = ({item}: {item: Application}) => (
     <View>
       <View style={styles.itemContainer}>
@@ -59,8 +41,19 @@ const Saved = () => {
             textAlign: 'center',
           }}
         >{`Luotu ${item.created_at.toString().substring(0, 10).split('-').reverse().join('.')}`}</Text>
+        <Text
+          style={{
+            color: 'grey',
+            textAlign: 'center',
+          }}
+        >
+          Testejä: {item.job.userTestsCount ?? 0} /{' '}
+          {item.job.jobTestsCount ?? 0}
+        </Text>
         <View style={styles.matchContainer}>
-          <Text style={styles.matchPercentage}>{`100%`}</Text>
+          <Text style={styles.matchPercentage}>
+            {item.job.percentage ?? 0}%
+          </Text>
         </View>
         <Button
           title="Siirry hakemuksen lähettämiseen"

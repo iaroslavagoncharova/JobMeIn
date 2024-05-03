@@ -311,6 +311,9 @@ export type UpdateJob = {
 
 export type JobWithUser = Job & {
   username: string;
+  userTestsCount: number;
+  jobTestsCount: number;
+  percentage: number;
 };
 
 export type Notification = {
@@ -323,6 +326,12 @@ export type JobWithSkillsAndKeywords = Job & {
   skills: string;
   keywords: string;
   username: string;
+};
+
+export type JobWithSkillSKeywordsAndUser = JobWithSkillsAndKeywords & {
+  userTestsCount: number;
+  jobTestsCount: number;
+  percentage: number;
 };
 
 export type Report = {
