@@ -6,7 +6,8 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import {Button} from 'react-native-elements';
-import {Application, ApplicationApplied, JobWithUser} from '../types/DBTypes';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Application, JobWithUser} from '../types/DBTypes';
 import {useApplications, useJobs} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
 
@@ -16,6 +17,19 @@ const Applied = () => {
   const {update} = useUpdateContext();
   const [showInstructions, setShowInstructions] = useState<boolean>(true);
   const navigation: NavigationProp<ParamListBase> = useNavigation();
+  const handleSetInstructions = async () => {
+    const show = await AsyncStorage.getItem('appliedInstructions');
+    if (show) {
+      setShowInstructions(false);
+    } else {
+      setShowInstructions(true);
+      await AsyncStorage.setItem('appliedInstructions', 'true');
+    }
+  };
+
+  useEffect(() => {
+    handleSetInstructions();
+  }, []);
   useEffect(() => {
     const fetchJobs = async () => {
       const jobsData: JobWithUser[] = [];
@@ -44,7 +58,7 @@ const Applied = () => {
           style={styles.date}
         >{`Haettu ${item.created_at.toString().substring(0, 10).split('-').reverse().join('.')}`}</Text>
         <View style={styles.matchContainer}>
-          <Text style={styles.matchPercentage}>100%</Text>
+          <Text style={styles.matchPercentage}>{item.job.percentage}%</Text>
         </View>
         <Button
           title="Näytä hakemus"
@@ -58,6 +72,9 @@ const Applied = () => {
   return (
     <>
       <Text style={styles.text}>Lähettämäsi hakemukset</Text>
+      {sentApplications && sentApplications.length === 0 && (
+        <Text style={styles.text}>Ei hakemuksia</Text>
+      )}
       <FlatList
         data={sentApplications}
         renderItem={renderItem}

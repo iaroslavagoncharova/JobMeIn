@@ -23,8 +23,9 @@ import {
   RouteProp,
 } from '@react-navigation/native';
 import {Button} from '@rneui/base';
-import {Application, PostMessageText, UnauthorizedUser} from '../types/DBTypes';
-import {useApplications, useChats, useUser} from '../hooks/apiHooks';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {PostMessageText, UnauthorizedUser} from '../types/DBTypes';
+import {useChats, useUser} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
 
 type RootStackParamList = {
@@ -73,6 +74,20 @@ const SingleChat = ({route}: any) => {
   const resetForm = () => {
     reset(values);
   };
+
+  const handleSetInstructions = async () => {
+    const show = await AsyncStorage.getItem('chatInstructions');
+    if (show) {
+      setShowInstructions(false);
+    } else {
+      setShowInstructions(true);
+      await AsyncStorage.setItem('chatInstructions', 'true');
+    }
+  };
+
+  useEffect(() => {
+    handleSetInstructions();
+  }, []);
 
   useEffect(() => {
     getChatById(chatId);

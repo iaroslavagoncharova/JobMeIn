@@ -6,36 +6,30 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import {Button} from 'react-native-elements';
-import {Application, JobWithUser} from '../types/DBTypes';
-import {useApplications, useJobs} from '../hooks/apiHooks';
-import useUpdateContext from '../hooks/updateHooks';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Application} from '../types/DBTypes';
+import {useApplications} from '../hooks/apiHooks';
 
 const Saved = () => {
   const {savedApplications} = useApplications();
-  const {getJobForApplication} = useJobs();
-  const {update} = useUpdateContext();
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const [showInstructions, setShowInstructions] = useState<boolean>(true);
 
-  console.log(savedApplications, 'savedApplications ');
+  const handleSetInstructions = async () => {
+    const show = await AsyncStorage.getItem('savedInstructions');
+    if (show) {
+      setShowInstructions(false);
+    } else {
+      setShowInstructions(true);
+      await AsyncStorage.setItem('savedInstructions', 'true');
+    }
+  };
 
   useEffect(() => {
-    const fetchJobs = async () => {
-      const jobsData: JobWithUser[] = [];
-      if (!savedApplications || savedApplications.length === 0) {
-        return;
-      }
-      for (const application of savedApplications as Application[]) {
-        const job = await getJobForApplication(application.job_id);
-        if (job) {
-          jobsData.push(job);
-        }
-        console.log(jobsData, 'jobsData');
-      }
-    };
+    handleSetInstructions();
+  }, []);
 
-    fetchJobs();
-  }, [update]);
+  console.log(savedApplications, 'savedApplications ');
 
   const renderItem = ({item}: {item: Application}) => (
     <View>
@@ -59,8 +53,19 @@ const Saved = () => {
             textAlign: 'center',
           }}
         >{`Luotu ${item.created_at.toString().substring(0, 10).split('-').reverse().join('.')}`}</Text>
+        <Text
+          style={{
+            color: 'grey',
+            textAlign: 'center',
+          }}
+        >
+          Testejä: {item.job.userTestsCount ?? 0} /{' '}
+          {item.job.jobTestsCount ?? 0}
+        </Text>
         <View style={styles.matchContainer}>
-          <Text style={styles.matchPercentage}>{`100%`}</Text>
+          <Text style={styles.matchPercentage}>
+            {item.job.percentage ?? 0}%
+          </Text>
         </View>
         <Button
           title="Siirry hakemuksen lähettämiseen"
@@ -75,6 +80,9 @@ const Saved = () => {
   return (
     <>
       <Text style={styles.text}>Tykkäämäsi työpaikkailmoitukset</Text>
+      {savedApplications && savedApplications.length === 0 && (
+        <Text style={styles.text}>Ei hakemuksia</Text>
+      )}
       <FlatList
         data={savedApplications}
         renderItem={renderItem}

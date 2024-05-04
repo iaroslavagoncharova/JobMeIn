@@ -49,6 +49,16 @@ import useUpdateContext from './updateHooks';
 
 const useUser = () => {
   const [candidates, setCandidates] = useState<CandidateProfile[]>();
+  const checkUsername = async (username: string) => {
+    return await fetchData<{available: boolean}>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/users/username/' + username,
+    );
+  };
+  const checkEmail = async (email: string) => {
+    return await fetchData<{available: boolean}>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/users/email/' + email,
+    );
+  };
   const getUserById = async (id: number) => {
     return await fetchData<UnauthorizedUser>(
       process.env.EXPO_PUBLIC_AUTH_API + '/users/' + id,
@@ -192,6 +202,8 @@ const useUser = () => {
     putUser,
     deleteUser,
     deleteUserAsAdmin,
+    checkUsername,
+    checkEmail,
   };
 };
 
@@ -756,11 +768,18 @@ const useJobs = () => {
         process.env.EXPO_PUBLIC_AUTH_API + '/jobs/calculate/' + job_id,
         options,
       );
+      if (!result) {
+        return 0;
+      }
       if (result) {
         return result;
       }
     } catch (e) {
-      console.error('Error calculating percentage', e);
+      if ((e as Error).message === 'No percentage calculated') {
+        return 0;
+      } else {
+        console.error('Error calculating percentage', e);
+      }
     }
   };
 
@@ -1390,14 +1409,17 @@ const useApplications = () => {
         process.env.EXPO_PUBLIC_AUTH_API + '/applications/user/saved',
         options,
       );
+      console.log(result, 'result');
       if (result) {
         for (const app of result) {
+          console.log(app, 'app');
           const job = await fetchData<JobWithUser>(
             process.env.EXPO_PUBLIC_AUTH_API +
               '/jobs/application/' +
               app.job_id,
             options,
           );
+          console.log(job, 'job');
           app.job = job;
         }
         setSavedApplications(result);
@@ -1472,6 +1494,19 @@ const useApplications = () => {
     }
   };
 
+  const getJobWithUser = async (job_id: number) => {
+    const token = await AsyncStorage.getItem('token');
+    const options = {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    return await fetchData<JobWithUser>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/jobs/application/' + job_id,
+      options,
+    );
+  };
+
   useEffect(() => {
     getSavedApplications();
     getSentApplications();
@@ -1531,18 +1566,8 @@ const useApplications = () => {
         process.env.EXPO_PUBLIC_AUTH_API + '/applications/user/' + id,
         options,
       );
-      if (result) {
-        for (const app of result) {
-          const job = await fetchData<JobWithUser>(
-            process.env.EXPO_PUBLIC_AUTH_API +
-              '/jobs/application/' +
-              app.job_id,
-            options,
-          );
-          app.job = job;
-        }
-        return result;
-      }
+      console.log(result, 'result');
+      return result;
     } catch (e) {
       if ((e as Error).message === 'No applications found') {
         return [];
@@ -1566,6 +1591,7 @@ const useApplications = () => {
     sentApplications,
     deleteApplication,
     acceptApplication,
+    getJobWithUser,
   };
 };
 
@@ -1606,7 +1632,11 @@ const useTests = () => {
         return [];
       }
     } catch (e) {
-      console.error('Error fetching tests', e);
+      if ((e as Error).message === 'No tests found') {
+        return [];
+      } else {
+        console.error('Error fetching tests', e);
+      }
     }
   };
   const getTests = async () => {
@@ -1645,7 +1675,7 @@ const useTests = () => {
         return result;
       }
     } catch (e) {
-      if ((e as Error).message === 'No tests found') {
+      if ((e as Error).message === 'Tests not found') {
         return [];
       } else {
         console.error('Error fetching tests', e);
@@ -1795,7 +1825,7 @@ const useTests = () => {
         options,
       );
     } catch (e) {
-      if ((e as Error).message === 'No tests found') {
+      if ((e as Error).message === 'Tests not found') {
         return [];
       } else {
         console.error('Error fetching tests', e);

@@ -8,6 +8,7 @@ import {
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faRotateRight} from '@fortawesome/free-solid-svg-icons';
 import {Button} from 'react-native-elements';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useApplications, useJobs} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
 import {Application, JobWithSkillsAndKeywords} from '../types/DBTypes';
@@ -24,6 +25,20 @@ export default function Received() {
     [jobId: number]: Application[];
   }>({});
   const navigation: NavigationProp<ParamListBase> = useNavigation();
+
+  const handleSetInstructions = async () => {
+    const show = await AsyncStorage.getItem('receivedInstructions');
+    if (show) {
+      setShowInstructions(false);
+    } else {
+      setShowInstructions(true);
+      await AsyncStorage.setItem('receivedInstructions', 'true');
+    }
+  };
+
+  useEffect(() => {
+    handleSetInstructions();
+  }, []);
 
   const handleFetchJobs = async () => {
     const jobs = await getJobsByCompany();
@@ -132,9 +147,9 @@ export default function Received() {
           >
             <Text style={styles.boldText}>Ohjeet</Text>
             <Text style={styles.text}>
-              Tässä näet kaikki työpaikkasi ja niille saapuneet hakemukset. Voit
-              nähdä hakemukset klikkaamalla "Näytä hakemus" -nappia. Jos et näe
-              yhtään hakemusta, paina "Päivitä" -nappia.
+              Tässä näet kaikki työpaikkailmoituksesi ja niille saapuneet
+              hakemukset. Voit nähdä hakemukset klikkaamalla "Näytä hakemus"
+              -nappia. Jos et näe yhtään hakemusta, paina "Päivitä" -nappia.
             </Text>
             <Button
               title="Sulje"

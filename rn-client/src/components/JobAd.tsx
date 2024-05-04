@@ -8,18 +8,32 @@ import {
   faExclamationCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import {useForm} from 'react-hook-form';
-import {JobWithSkillsAndKeywords, UnauthorizedUser} from '../types/DBTypes';
-import {useJobs, useReports, useUser} from '../hooks/apiHooks';
+import {
+  JobWithSkillSKeywordsAndUser,
+  JobWithSkillsAndKeywords,
+  JobWithUser,
+  UnauthorizedUser,
+} from '../types/DBTypes';
+import {
+  useApplications,
+  useJobs,
+  useReports,
+  useTests,
+  useUser,
+} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
+import {fetchData} from '../lib/functions';
 
 export default function JobAd({job}: {job: JobWithSkillsAndKeywords}) {
   const {calculatePercentage} = useJobs();
+  const {getJobWithUser} = useApplications();
   const {sendReport} = useReports();
   const [currentScreen, setCurrentScreen] = useState<number>(0);
   const [user, setUser] = useState<UnauthorizedUser | null>(null);
   const {update} = useUpdateContext();
   const {getUserById} = useUser();
   const [percentage, setPercentage] = useState<number>(0);
+  const [jobInfo, setJobInfo] = useState<JobWithUser | null>(null);
   const values = {
     reported_item_type: 'Job',
     reported_item_id: job.job_id,
@@ -39,6 +53,19 @@ export default function JobAd({job}: {job: JobWithSkillsAndKeywords}) {
       setPercentage(result);
     }
   };
+
+  const handleGetJobWithUser = async (job_id: number) => {
+    const job = await getJobWithUser(job_id);
+    if (job) {
+      setJobInfo(job);
+    }
+  };
+
+  useEffect(() => {
+    handleGetJobWithUser(job.job_id);
+  }, []);
+
+  console.log(jobInfo);
 
   const handleSendReport = async () => {
     const onSubmit = async (data: any) => {
@@ -198,7 +225,7 @@ export default function JobAd({job}: {job: JobWithSkillsAndKeywords}) {
             <Text style={styles.header2}>Yritys: {job.username}</Text>
             <Text style={styles.header3}>Sijainti: {job.job_address}</Text>
             <Text style={styles.header3}>Palkka: {job.salary}€/kk</Text>
-            <Text style={styles.percent}>{percentage ? percentage : 0}%</Text>
+            <Text style={styles.percent}>{jobInfo?.percentage ?? 0}%</Text>
             <Text style={styles.skills}>{job.skills}</Text>
             <Text style={styles.keywords}>{job.keywords}</Text>
           </>
@@ -224,6 +251,10 @@ export default function JobAd({job}: {job: JobWithSkillsAndKeywords}) {
                 #{keyword}
               </Text>
             ))}
+            <Text style={styles.header3}>
+              Testit: {jobInfo?.userTestsCount ?? 0}/
+              {jobInfo?.jobTestsCount ?? 0}
+            </Text>
             <Text
               style={{
                 color: '#ffffff',

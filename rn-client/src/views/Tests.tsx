@@ -17,6 +17,7 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import {Controller, useForm} from 'react-hook-form';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useTests} from '../hooks/apiHooks';
 import {Job, Test} from '../types/DBTypes';
 import useUpdateContext from '../hooks/updateHooks';
@@ -50,6 +51,20 @@ const Tests = () => {
   const resetForm = () => {
     reset(values);
   };
+
+  const handleSetInstructions = async () => {
+    const show = await AsyncStorage.getItem('testsInstructions');
+    if (show) {
+      setShowInstructions(false);
+    } else {
+      setShowInstructions(true);
+      await AsyncStorage.setItem('testsInstructions', 'true');
+    }
+  };
+
+  useEffect(() => {
+    handleSetInstructions();
+  }, []);
 
   const getUserTest = async () => {
     const userTests = await getTestsByUser();
@@ -294,9 +309,9 @@ const Tests = () => {
           >
             <Text style={styles.boldText}>Ohjeet</Text>
             <Text style={styles.text}>
-              Tässä näet sekä JobMe In:n että sinun lisäämät testit. Voit lisätä
+              Tässä näet JobMe In:n sekä sinun lisäämät testit. Voit lisätä
               uuden testin painamalla plus-ikonia. Voit tarkastella, muokata,
-              poistaa ja lisätä testit työpaikkoihin painamalla testin nimeä.
+              poistaa ja lisätä testejä työpaikkoihin painamalla testin nimeä.
             </Text>
             <Button
               title="Sulje"

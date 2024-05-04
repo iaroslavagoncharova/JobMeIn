@@ -3,7 +3,8 @@ import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faCircleUser} from '@fortawesome/free-solid-svg-icons';
 import {NavigationProp, ParamListBase} from '@react-navigation/native';
 import {Button} from '@rneui/base';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useChats} from '../hooks/apiHooks';
 import {ChatPreview} from '../components/ChatPreview';
 
@@ -17,6 +18,21 @@ const Chats = ({navigation}: {navigation: NavigationProp<ParamListBase>}) => {
       navigation.navigate('Keskustelu', {chat_id: result.chat_id});
     }
   };
+
+  const handleSetInstructions = async () => {
+    const show = await AsyncStorage.getItem('chatsInstructions');
+    console.log(show, 'show');
+    if (show) {
+      setShowInstructions(false);
+    } else {
+      setShowInstructions(true);
+      await AsyncStorage.setItem('chatsInstructions', 'true');
+    }
+  };
+
+  useEffect(() => {
+    handleSetInstructions();
+  }, []);
 
   return (
     <View style={styles.container}>

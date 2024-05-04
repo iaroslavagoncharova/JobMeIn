@@ -19,10 +19,9 @@ import {
 } from '@react-navigation/native';
 import RNPickerSelect from 'react-native-picker-select';
 import {Button} from '@rneui/base';
-import {useUserContext} from '../hooks/ContextHooks';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useJobs, useMatch, useSwipe, useUser} from '../hooks/apiHooks';
-import {CandidateProfile, JobWithSkillsAndKeywords} from '../types/DBTypes';
-import JobAd from '../components/JobAd';
+import {CandidateProfile} from '../types/DBTypes';
 import useUpdateContext from '../hooks/updateHooks';
 import Candidate from '../components/Candidate';
 
@@ -38,6 +37,21 @@ const EmployerFeed = () => {
   const {matches, deleteMatch} = useMatch();
   const [loading, setLoading] = useState(false);
   const [swipingEnabled, setSwipingEnabled] = useState(true);
+  const [showInstructions, setShowInstructions] = useState<boolean>(true);
+
+  const handleSetInstructions = async () => {
+    const show = await AsyncStorage.getItem('feedInstructions');
+    if (show) {
+      setShowInstructions(false);
+    } else {
+      setShowInstructions(true);
+      await AsyncStorage.setItem('feedInstructions', 'true');
+    }
+  };
+
+  useEffect(() => {
+    handleSetInstructions();
+  }, []);
 
   console.log(fields, 'fields');
 
@@ -175,6 +189,26 @@ const EmployerFeed = () => {
       borderWidth: 3,
       borderRadius: 12,
     },
+    applyButton: {
+      margin: 5,
+      backgroundColor: '#5d71c9',
+      borderColor: '#004AAD',
+      borderWidth: 3,
+      borderRadius: 12,
+    },
+    text: {
+      fontSize: 16,
+      color: '#5d71c9',
+      textAlign: 'center',
+      margin: 5,
+    },
+    boldText: {
+      fontSize: 16,
+      color: '#5d71c9',
+      fontWeight: 'bold',
+      textAlign: 'center',
+      marginVertical: 5,
+    },
   });
 
   return (
@@ -222,6 +256,50 @@ const EmployerFeed = () => {
         showNope={false}
       />
       {loading && <ActivityIndicator size="large" color="#ffffff" />}
+      {showInstructions && (
+        <View
+          style={{
+            ...StyleSheet.absoluteFillObject,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: '#ffffff',
+              padding: 20,
+              borderRadius: 10,
+              margin: 10,
+            }}
+          >
+            <Text style={styles.boldText}>Ohjeet</Text>
+            <Text style={styles.text}>
+              Tässä näet työnhakijoiden profiileja. Voit suodattaa työnhakijoita
+              valitsemalla alan yllä olevasta valikosta.
+            </Text>
+            <Text style={styles.text}>
+              Tykätä työnhakijasta swippaamalla oikealle ja hylätä swippaamalla
+              vasemmalle. Klikkaamalla nuolia näet lisää tietoja työnhakijasta.
+            </Text>
+            <Text style={styles.text}>
+              Jos olet swipannut työnhakijan oikealle ja työnhakija on myös
+              swipannut jonkun työilmoituksesi oikealle, teille tulee matchi ja
+              voitte aloittaa keskustelun.
+            </Text>
+            <Text style={styles.boldText}>
+              Muista ettet näe työnhakijan henkilötietoja ennen kuin kutsut
+              hänet haastatteluun.
+            </Text>
+            <Button
+              title="Sulje"
+              titleStyle={{color: '#ffffff'}}
+              buttonStyle={styles.applyButton}
+              onPress={() => setShowInstructions(false)}
+            />
+          </View>
+        </View>
+      )}
     </View>
   );
 };

@@ -200,8 +200,8 @@ const ExampleFeed = () => {
             }}
           >
             <Text style={styles.text}>
-              Tinder työnhaulle? Meillä on sinut katettu. Swipe-and-match
-              potentiaalisten työnantajien kanssa saadaksesi haastatteluja.
+              Tinder työnhaulle? Me hoidamme! Swipe-and-match potentiaalisten
+              työnantajien kanssa saadaksesi haastatteluja.
             </Text>
             <Text style={styles.boldText}>- Anonyymi ja syrjimätön haku</Text>
             <Text style={styles.boldText}>- Persoonallisuustestit</Text>

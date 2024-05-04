@@ -364,7 +364,7 @@ export default function NewJob() {
               render={({field: {onChange, onBlur, value}}) => (
                 <TextInput
                   style={styles.input}
-                  placeholder="Palkka"
+                  placeholder="Palkka (€/kk)"
                   inputMode="numeric"
                   onBlur={onBlur}
                   onChangeText={onChange}

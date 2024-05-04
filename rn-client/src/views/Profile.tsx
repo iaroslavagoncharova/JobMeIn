@@ -6,6 +6,7 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import {useEffect, useState} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useUserContext} from '../hooks/ContextHooks';
 import {
   useAttachments,
@@ -31,13 +32,48 @@ const Profile = () => {
   const {getExperience, experience} = useExperience();
   const {getSkills, skills, allSkills, getAllSkills} = useSkills();
   const {attachments, getUserAttachments} = useAttachments();
-  const {update} = useUpdateContext();
+  const {update, setUpdate} = useUpdateContext();
   const navigation: NavigationProp<ParamListBase> = useNavigation();
 
   const logout = async () => {
     await handleLogout();
     navigation.navigate('Kirjaudu/luo profiili');
   };
+
+  const handleSetInstructions = async () => {
+    const show = await AsyncStorage.getItem('profileInstructions');
+    if (show) {
+      setShowInstructions(false);
+    } else {
+      setShowInstructions(true);
+      await AsyncStorage.setItem('profileInstructions', 'true');
+    }
+  };
+
+  useEffect(() => {
+    handleSetInstructions();
+  }, []);
+
+  // const handleShowInstructions = async () => {
+  //   // set all instructions in the async storage to true
+  //   const instructionsList = [
+  //     'profileInstructions',
+  //     'testsInstructions',
+  //     'receivedInstructions',
+  //     'chatInstructions',
+  //     'chatsInstructions',
+  //     'companyJobsInstructions',
+  //     'feedInstructions',
+  //   ];
+  //   instructionsList.forEach(async (instruction) => {
+  //     const check = await AsyncStorage.getItem(instruction);
+  //     if (check) {
+  //       await AsyncStorage.setItem(instruction, 'true');
+  //     }
+  //   });
+  //   setShowInstructions(true);
+  //   setUpdate((prevState) => !prevState);
+  // };
 
   const handleDelete = async () => {
     Alert.alert('Poista profiili', 'Haluatko varmasti poistaa profiilisi?', [
@@ -241,7 +277,7 @@ const Profile = () => {
             </Text>
             <Text style={styles.text}>
               Työnhakijana voit lisätä koulutuksia, työkokemuksia, taitoja ja
-              liitteitä. Myös pystyt katsomaan miltä profiilisi näyttää
+              liitteitä. Pystyt myös katsomaan miltä profiilisi näyttää
               työnantajan näkökulmasta.
             </Text>
             <Button

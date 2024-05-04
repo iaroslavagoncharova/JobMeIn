@@ -37,6 +37,20 @@ const Tests = () => {
   const [tests, setTests] = useState<Test[] | null>(null);
   const {getAllTests, getCandidateTests, takeTest} = useTests();
 
+  const handleSetInstructions = async () => {
+    const show = await AsyncStorage.getItem('userTestsInstructions');
+    if (show) {
+      setShowInstructions(false);
+    } else {
+      setShowInstructions(true);
+      await AsyncStorage.setItem('userTestsInstructions', 'true');
+    }
+  };
+
+  useEffect(() => {
+    handleSetInstructions();
+  }, []);
+
   const handleGetTests = async () => {
     const tests = await getAllTests();
     if (tests) {
@@ -254,11 +268,11 @@ const Tests = () => {
           >
             <Text style={styles.boldText}>Ohjeet</Text>
             <Text style={styles.text}>
-              Tässä näet työnantajien ja JobMe In:n testit. Suorittamassa
+              Tässä näet työnantajien ja JobMe In:n testit. Suorittamalla
               testejä nostat mahdollisuuksiasi työllistyä.
             </Text>
             <Text style={styles.text}>
-              Työpaikan vaaditut testit näet työpaikkailmoituksista. Siirry
+              Työpaikan vaaditut testit näet työpaikkailmoituksesta. Siirry
               tekemään testiä klikkaamalla.
             </Text>
             <Text style={styles.text}>
