@@ -13,6 +13,53 @@
  
 
 ## Candidate profile
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/a76ec383-af13-4546-bacf-1cc2a5c603a0" width="400" alt="Profile"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/1d569e23-6b04-4b92-8221-9520aafe0fc8" width="400" alt="Personal info editing"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/7af87c8c-da3a-4e5d-ad2a-d64e31c5bf1b" width="400" alt="Education editing"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/2d3d59cf-7172-4bf0-91ba-69a7ffca5c3e" width="400" alt="Education creation"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/ab01a4db-beae-4b48-bda2-da4ed4a1444e" width="400" alt="Job experience editing"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/17acf731-4322-40c4-b308-bcbdd5ef27b4" width="400" alt="Job experience creation"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/986c7175-b548-4ea5-b030-260719f1ddad" width="400" alt="Date picker"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/8fc43970-71e0-4e01-abf3-103493e8aa42" width="400" alt="Skills adding"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/46d69c02-fe30-4989-b119-1a8a77457fd3" width="400" alt="Attachments editing"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/ad936a3b-662e-4e8c-9485-d4f7d92e8d43" width="400" alt="Attachments upload"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/5168bf37-8828-4043-9986-ddd2becf9ba2" width="400" alt="Employer's view page 1"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/e9416d5c-011f-4c73-9e34-3522e18d4986" width="400" alt="Employer's view page 2"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/83dc4dd2-580c-4cca-ac30-5817cd18fba6" width="400" alt="Employer's view page 3"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/1eb42193-7745-411e-b909-3fb296d86639" width="400" alt="Feed job ad page 1"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/e62c84df-0702-4ffb-a2b1-97e50ce908a4" width="400" alt="Feed job ad page 2"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/7791655c-046e-48c9-a834-222b12bc9ce5" width="400" alt="Feed job ad page 3"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/b4408e55-ff9c-426d-a0ca-9576f744f990" width="400" alt="Sort by field"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/f0d874d0-a244-4307-8f00-ed32cde9b568" width="400" alt="Liked job ads/ready applications"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/4cf8d1d7-4a76-4b64-afbc-f3d4a001fd8b" width="400" alt="Sent applications"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/c3a6059e-fec8-4153-8ed0-d2d4cfe781e6" width="400" alt="Sending new application"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/1fb77611-2975-4532-986e-a40a9d7c6647" width="400" alt="User tests"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/47d39902-5c7c-40cf-90ec-5d75c12265d7" width="400" alt="Job ad report"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/4afcfb9a-a168-407d-807f-208d6f5712bd" width="400" alt="Job ad report part 2"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/7f0b263e-3615-434e-908c-1bd88a05bde9" width="400" alt="Chat with employer and interview request"/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+
+
 ## Employer profile
 <img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/8f56d83e-fa4d-4605-9fee-a59e62dc58fb" width="400" alt="Employer profile"/> 
 <img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/f074a2e5-9182-45a6-9198-4473de3f39a1" width="400" alt="Editing company info"/>
@@ -33,22 +80,12 @@
 <img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/16f7a85b-ed3f-4cfc-b599-be61254843d7" width="400" alt="Sort by field"/> 
 <img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/342dc4f6-58b4-4e69-b03c-3cb043a48d97" width="400" alt="Sending interview request"/> 
 <img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/6818079a-cc1a-4d8f-90c5-01c0ac366458" width="400" alt="Interview request sent"/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
 
 ## Administrator
 <img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/12485c5f-7a02-43cc-96ea-935e95afd45d" width="400" alt="Reported users" />
 <img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/10b476b1-6cf1-435c-9d66-c740049f4fa8" width="400" alt="Administrator profile"/>
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/03d6e736-8a47-4dd6-b9a4-49522e7560f7" width="400" alt="Administrator's chat"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/763cf9d9-d80a-45d6-b1f5-21e807367677" width="400" alt="User's reports"/> 
 
 ## Instructions
 
