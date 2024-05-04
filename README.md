@@ -190,6 +190,9 @@ Click the image to open it in a new tab.
 - provide support by chatting with candidates and employers regarding issues
 
 ## Known issues
+- React-native-swipe-cards warning: the library react-native-swipe-cards throws a warning stating "Animated: useNativeDriver was not specified. This is a required option and must be explicitly set to true or false" despite being set properly
+- Input checks: on the Auth page, input checks appear on top of the input text, potentially obscuring user input
+- Redirect after registering a company: upon registering a company (a subpage of Register user), users are not redirected to the Login page as expected but are taken back to the Register user page instead
 
 ## References
 
