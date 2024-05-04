@@ -3,6 +3,15 @@
 **Welcome to JobMe In**, a Tinder-type app for job search free of discrimination. This README provides information on how to use the app, deploy it, and details about its functionalities.
 
 ## Screenshots
+## Login and registration + example feed 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/51ef1ca0-603e-4c75-afd7-5578925cb0fb" width="400" alt="Login"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/83c72470-c636-4da2-bfd4-b7de21b345b5" width="400" alt="Create user profile"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/dcba5603-9317-471b-828c-e102495b6ba8" width="400" alt="Create company profile"/>
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/4a5a9927-fce3-4a72-a5b6-ec8699937335" width="400" alt="Example feed job ad page 1"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/02b2797e-d59c-4f2e-a914-163541ba9bdb" width="400" alt="Example feed job ad page 2"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/4c3ff61e-20ac-47f8-bd2a-f94a6482aabb" width="400" alt="Example feed job ad page 3"/> 
+ 
+
 ## Candidate profile
 ## Employer profile
 <img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/8f56d83e-fa4d-4605-9fee-a59e62dc58fb" width="400" alt="Employer profile"/> 
@@ -30,11 +39,25 @@
 <img src="" width="400" alt=""/> 
 <img src="" width="400" alt=""/> 
 <img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
 
 ## Administrator
 <img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/12485c5f-7a02-43cc-96ea-935e95afd45d" width="400" alt="Reported users" />
 <img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/10b476b1-6cf1-435c-9d66-c740049f4fa8" width="400" alt="Administrator profile"/>
 
+## Instructions
+
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
 ## Deployment
 
 To deploy the JobMe In app, follow these steps:
