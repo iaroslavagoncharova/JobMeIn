@@ -36,29 +36,7 @@
 <img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/1fb77611-2975-4532-986e-a40a9d7c6647" width="400" alt="User tests"/> 
 <img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/47d39902-5c7c-40cf-90ec-5d75c12265d7" width="400" alt="Job ad report"/> 
 <img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/4afcfb9a-a168-407d-807f-208d6f5712bd" width="400" alt="Job ad report part 2"/> 
-<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/7f0b263e-3615-434e-908c-1bd88a05bde9" width="400" alt="Chat with employer and interview request"/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/7f0b263e-3615-434e-908c-1bd88a05bde9" width="400" alt="Chat with employer and interview request"/>
 
 ## Employer profile
 <img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/8f56d83e-fa4d-4605-9fee-a59e62dc58fb" width="400" alt="Employer profile"/> 
@@ -88,13 +66,28 @@
 <img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/763cf9d9-d80a-45d6-b1f5-21e807367677" width="400" alt="User's reports"/> 
 
 ## Instructions
+## Welcome text
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/4174b316-ea16-46c8-87f5-0d9884469f27" width="400" alt="Welcome text instructions"/> 
 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
+## Candidate
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/7308e496-1eef-4006-9a7b-737ff9e76b95" width="400" alt="Profile instructions"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/1d671cb7-8678-442c-b078-c32c91664727" width="400" alt="Feed instructions"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/5424668e-1629-43af-ba46-3d9b5dc90bc2" width="400" alt="Chats instructions"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/d608ab40-7582-43a8-999c-1c67f3acb0d3" width="400" alt="Chat with employer instructions"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/ea28e4d9-37c4-4498-8129-f8c4be5e753f" width="400" alt="Liked job ads/ready applications instructions"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/a352abff-4a9f-43ea-b936-282275d4050e" width="400" alt="Sent applications instructions"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/4d9fe513-859c-4991-b285-f28bf487f5f8" width="400" alt="Application instructions"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/62345859-1c17-487d-98da-e90d7fd6d0ad" width="400" alt="Candidate tests instructions"/> 
+
+## Employer
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/7308e496-1eef-4006-9a7b-737ff9e76b95" width="400" alt="Profile instructions"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/e116989f-4dbe-4361-aad2-ead5254dbdce" width="400" alt="Employer's feed instructions"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/5424668e-1629-43af-ba46-3d9b5dc90bc2" width="400" alt="Chats instructions "/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/d0855ac8-61ba-42e1-afe0-c0714ea022c8" width="400" alt="Employer's job ads instructions"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/f03d0b68-2ce4-4243-81a5-c64d4ccc8e73" width="400" alt="Received applications instructions"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/7a6fde8e-0e73-4920-8f30-996df1b4b735" width="400" alt="Employer's tests instructions"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/921b13b3-c578-40b1-bc1a-58861dd10c00" width="400" alt="Applications in the chat instructions"/> 
+
 ## Deployment
 
 To deploy the JobMe In app, follow these steps:
