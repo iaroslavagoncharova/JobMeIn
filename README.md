@@ -17,22 +17,23 @@
 <img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/b071f184-85cb-4a80-a9c6-bed5735d1373" width="400" alt="Adding new test"/> 
 <img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/293cd649-61fd-45fb-aa10-138b2f710de9" width="400" alt="Editing a test"/> 
 <img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/991868a0-7974-4350-a68e-c2f96dfbd4ee" width="400" alt="Employer's jobs"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/252fb070-4b31-4f84-9f24-d3e0191388de" width="400" alt="New job"/> 
 <img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/d6f89ca3-c214-46c7-aada-03e7cb53ef50" width="400" alt="Editing a job"/> 
 <img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/53788d16-41f7-43ec-9d81-5e6fe7c6052d" width="400" alt="Received applications"/> 
 <img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/57fe2196-fd0c-426a-9e4d-e7d67a301bd5" width="400" alt="Received application"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/16f7a85b-ed3f-4cfc-b599-be61254843d7" width="400" alt="Sort by field"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/342dc4f6-58b4-4e69-b03c-3cb043a48d97" width="400" alt="Sending interview request"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/6818079a-cc1a-4d8f-90c5-01c0ac366458" width="400" alt="Interview request sent"/> 
 <img src="" width="400" alt=""/> 
 <img src="" width="400" alt=""/> 
 <img src="" width="400" alt=""/> 
 <img src="" width="400" alt=""/> 
 <img src="" width="400" alt=""/> 
 <img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
-<img src="" width="400" alt=""/> 
+
 ## Administrator
 <img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/12485c5f-7a02-43cc-96ea-935e95afd45d" width="400" alt="Reported users" />
 <img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/10b476b1-6cf1-435c-9d66-c740049f4fa8" width="400" alt="Administrator profile"/>
-## Instructions
 
 ## Deployment
 
