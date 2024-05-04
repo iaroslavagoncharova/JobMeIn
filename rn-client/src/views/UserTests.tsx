@@ -268,11 +268,11 @@ const Tests = () => {
           >
             <Text style={styles.boldText}>Ohjeet</Text>
             <Text style={styles.text}>
-              Tässä näet työnantajien ja JobMe In:n testit. Suorittamassa
+              Tässä näet työnantajien ja JobMe In:n testit. Suorittamalla
               testejä nostat mahdollisuuksiasi työllistyä.
             </Text>
             <Text style={styles.text}>
-              Työpaikan vaaditut testit näet työpaikkailmoituksista. Siirry
+              Työpaikan vaaditut testit näet työpaikkailmoituksesta. Siirry
               tekemään testiä klikkaamalla.
             </Text>
             <Text style={styles.text}>
