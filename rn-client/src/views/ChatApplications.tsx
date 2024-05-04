@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Button, Card} from '@rneui/base';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useApplications, useUser} from '../hooks/apiHooks';
 import {
   Application,
@@ -26,6 +27,19 @@ export default function ChatApplications({route}: any) {
   const [applications, setApplications] = useState<Application[]>([]);
   const [user, setUser] = useState<CandidateProfile | null>(null);
   const [privateUser, setPrivateUser] = useState<UnauthorizedUser | null>(null);
+  const handleSetInstructions = async () => {
+    const show = await AsyncStorage.getItem('chatApplicationsInstructions');
+    if (show) {
+      setShowInstructions(false);
+    } else {
+      setShowInstructions(true);
+      await AsyncStorage.setItem('chatApplicationsInstructions', 'true');
+    }
+  };
+
+  useEffect(() => {
+    handleSetInstructions();
+  }, []);
   const handleGetApplications = async (user_id: number) => {
     const response = await getUserApplications(user_id);
     if (response) {

@@ -42,14 +42,6 @@ const RegisterForm = ({handleToggle}: {handleToggle: () => void}) => {
       console.log(error);
     }
   };
-
-  const checkPasswordsMatch = (password: string, password2: string) => {
-    if (password !== password2) {
-      return 'Salasanat eivät täsmää';
-    }
-    return true;
-  };
-
   const doRegister = async (inputs: {
     fullname: string;
     email: string;

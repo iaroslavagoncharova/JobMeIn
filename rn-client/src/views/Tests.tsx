@@ -17,6 +17,7 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import {Controller, useForm} from 'react-hook-form';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useTests} from '../hooks/apiHooks';
 import {Job, Test} from '../types/DBTypes';
 import useUpdateContext from '../hooks/updateHooks';
@@ -50,6 +51,20 @@ const Tests = () => {
   const resetForm = () => {
     reset(values);
   };
+
+  const handleSetInstructions = async () => {
+    const show = await AsyncStorage.getItem('testsInstructions');
+    if (show) {
+      setShowInstructions(false);
+    } else {
+      setShowInstructions(true);
+      await AsyncStorage.setItem('testsInstructions', 'true');
+    }
+  };
+
+  useEffect(() => {
+    handleSetInstructions();
+  }, []);
 
   const getUserTest = async () => {
     const userTests = await getTestsByUser();

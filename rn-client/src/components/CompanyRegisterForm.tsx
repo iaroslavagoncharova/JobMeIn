@@ -17,7 +17,7 @@ import {
 import {useUser} from '../hooks/apiHooks';
 
 const CompanyRegisterForm = () => {
-  const {postUser} = useUser();
+  const {postUser, checkEmail} = useUser();
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const initValues = {
     username: '',
@@ -36,6 +36,19 @@ const CompanyRegisterForm = () => {
     defaultValues: initValues,
     mode: 'onBlur',
   });
+
+  const handleCheckEmail = async (email: string) => {
+    try {
+      console.log(email, 'email');
+      const result = await checkEmail(email);
+      console.log(result, 'result');
+      if (result) {
+        Alert.alert('Sähköposti on jo käytössä', 'Käytä toista sähköpostia');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const doRegister = async (inputs: {
     username: string;
@@ -145,7 +158,6 @@ const CompanyRegisterForm = () => {
             value: /^\S+@\S+\.\S+$/,
             message: 'Sähköpostiosoite ei ole validi',
           },
-          // TODO: Add email availability check
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <View style={styles.inputWithLabel}>
@@ -156,7 +168,7 @@ const CompanyRegisterForm = () => {
               keyboardType="default"
               autoCorrect={false}
               inputMode="email"
-              onBlur={onBlur}
+              onBlur={() => handleCheckEmail(value)}
               onChangeText={onChange}
               value={value}
               errorMessage={errors.email?.message}
@@ -171,10 +183,14 @@ const CompanyRegisterForm = () => {
         rules={{
           maxLength: 100,
           required: {value: true, message: 'is required'},
+          minLength: {
+            value: 8,
+            message: 'Salasanan tulee olla vähintään 8 merkkiä pitkä',
+          },
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <View style={styles.inputWithLabel}>
-            <Text style={styles.labelText}>SALASANA</Text>
+            <Text style={styles.labelText}>SALASANA (vähintään 8 merkkiä)</Text>
             <Input
               style={styles.input}
               secureTextEntry

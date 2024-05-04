@@ -6,16 +6,28 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import {Button} from 'react-native-elements';
-import {Application, JobWithUser} from '../types/DBTypes';
-import {useApplications, useJobs} from '../hooks/apiHooks';
-import useUpdateContext from '../hooks/updateHooks';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Application} from '../types/DBTypes';
+import {useApplications} from '../hooks/apiHooks';
 
 const Saved = () => {
   const {savedApplications} = useApplications();
-  const {getJobForApplication} = useJobs();
-  const {update} = useUpdateContext();
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const [showInstructions, setShowInstructions] = useState<boolean>(true);
+
+  const handleSetInstructions = async () => {
+    const show = await AsyncStorage.getItem('savedInstructions');
+    if (show) {
+      setShowInstructions(false);
+    } else {
+      setShowInstructions(true);
+      await AsyncStorage.setItem('savedInstructions', 'true');
+    }
+  };
+
+  useEffect(() => {
+    handleSetInstructions();
+  }, []);
 
   console.log(savedApplications, 'savedApplications ');
 
@@ -68,6 +80,9 @@ const Saved = () => {
   return (
     <>
       <Text style={styles.text}>Tykkäämäsi työpaikkailmoitukset</Text>
+      {savedApplications && savedApplications.length === 0 && (
+        <Text style={styles.text}>Ei hakemuksia</Text>
+      )}
       <FlatList
         data={savedApplications}
         renderItem={renderItem}

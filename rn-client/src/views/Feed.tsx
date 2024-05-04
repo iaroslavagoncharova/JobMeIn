@@ -19,6 +19,7 @@ import {
 } from '@react-navigation/native';
 import RNPickerSelect from 'react-native-picker-select';
 import {Button} from '@rneui/base';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useUserContext} from '../hooks/ContextHooks';
 import {useJobs, useMatch, useSwipe} from '../hooks/apiHooks';
 import {JobWithSkillsAndKeywords} from '../types/DBTypes';
@@ -41,6 +42,20 @@ const Feed = () => {
     const result = await calculatePercentage(job_id);
     console.log(result);
   };
+
+  const handleSetInstructions = async () => {
+    const show = await AsyncStorage.getItem('jobFeedInstructions');
+    if (show) {
+      setShowInstructions(false);
+    } else {
+      setShowInstructions(true);
+      await AsyncStorage.setItem('jobFeedInstructions', 'true');
+    }
+  };
+
+  useEffect(() => {
+    handleSetInstructions();
+  }, []);
 
   console.log(jobs, 'jobs');
 
@@ -266,9 +281,8 @@ const Feed = () => {
               valitsemalla alan yllä olevasta valikosta.
             </Text>
             <Text style={styles.text}>
-              Tykkää työpaikasta swippaamalla oikealle ja hylkää swippaamalla
-              vasemmalle. Klikkaamalla nuoleja voit katsella lisää tietoja
-              työpaikasta.
+              Tykätä työpaikasta swippaamalla oikealle ja hylätä swippaamalla
+              vasemmalle. Klikkaamalla nuolia näet lisää tietoja työpaikasta.
             </Text>
             <Text style={styles.text}>
               Kun swippaat oikealle, työpaikka tallentuu Työhakemukset-sivuun

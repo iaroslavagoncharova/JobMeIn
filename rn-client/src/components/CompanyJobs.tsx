@@ -8,6 +8,7 @@ import {
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
 import {Button} from '@rneui/base';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {JobWithSkillsAndKeywords} from '../types/DBTypes';
 import {useJobs} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
@@ -17,6 +18,19 @@ export default function CompanyJobs() {
   const {update} = useUpdateContext();
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const [showInstructions, setShowInstructions] = useState<boolean>(true);
+  const handleSetInstructions = async () => {
+    const show = await AsyncStorage.getItem('companyJobsInstructions');
+    if (show) {
+      setShowInstructions(false);
+    } else {
+      setShowInstructions(true);
+      await AsyncStorage.setItem('companyJobsInstructions', 'true');
+    }
+  };
+
+  useEffect(() => {
+    handleSetInstructions();
+  }, []);
   const renderJob = ({item}: {item: JobWithSkillsAndKeywords}) => (
     <TouchableOpacity onPress={() => navigation.navigate('Työpaikka', item)}>
       <View style={styles.itemContainer}>

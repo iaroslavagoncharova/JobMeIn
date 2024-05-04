@@ -17,6 +17,7 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import {faCircleCheck} from '@fortawesome/free-solid-svg-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {useApplications, useJobs, useTests, useUser} from '../hooks/apiHooks';
 import {
@@ -52,6 +53,19 @@ export default function SingleApplication({route}: {route: any}) {
   const [tests, setTests] = useState<Test[] | []>([]);
   const {getCandidateTests, takeTest} = useTests();
   const [userTests, setUserTests] = useState<Test[] | []>([]);
+  const handleSetInstructions = async () => {
+    const show = await AsyncStorage.getItem('singleAppInstructions');
+    if (show) {
+      setShowInstructions(false);
+    } else {
+      setShowInstructions(true);
+      await AsyncStorage.setItem('singleAppInstructions', 'true');
+    }
+  };
+
+  useEffect(() => {
+    handleSetInstructions();
+  }, []);
   const isDeadlinePassed =
     !isSubmitted &&
     job?.deadline_date &&
@@ -551,12 +565,12 @@ export default function SingleApplication({route}: {route: any}) {
           >
             <Text style={styles.boldText}>Ohjeet</Text>
             <Text style={styles.text}>
-              Voit muokata hakemuksen tekstiä painamalla "Muokkaa" -nappia. Voit
-              myös poistaa hakemuksen painamalla "Poista hakemus" -nappia.
+              Voit muokata hakemuksen tekstiä painamalla "Muokkaa" -nappia.
+              Poista hakemus painamalla "Poista hakemus" -nappia.
             </Text>
             <Text style={styles.text}>
-              Kun olet valmis, paina "Lähetä hakemus" -nappia. Jos hakemuksen
-              hakuaika on päättynyt, voit poistaa hakemuksen.
+              Kun olet valmis, paina "Lähetä hakemus" -nappia. Jos
+              työilmoituksen hakuaika on päättynyt, voit poistaa hakemuksesi.
             </Text>
             <Button
               title="Sulje"

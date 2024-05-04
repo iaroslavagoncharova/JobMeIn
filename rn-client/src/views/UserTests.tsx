@@ -37,6 +37,20 @@ const Tests = () => {
   const [tests, setTests] = useState<Test[] | null>(null);
   const {getAllTests, getCandidateTests, takeTest} = useTests();
 
+  const handleSetInstructions = async () => {
+    const show = await AsyncStorage.getItem('userTestsInstructions');
+    if (show) {
+      setShowInstructions(false);
+    } else {
+      setShowInstructions(true);
+      await AsyncStorage.setItem('userTestsInstructions', 'true');
+    }
+  };
+
+  useEffect(() => {
+    handleSetInstructions();
+  }, []);
+
   const handleGetTests = async () => {
     const tests = await getAllTests();
     if (tests) {
