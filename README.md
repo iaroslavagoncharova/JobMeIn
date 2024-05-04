@@ -3,6 +3,36 @@
 **Welcome to JobMe In**, a Tinder-type app for job search free of discrimination. This README provides information on how to use the app, deploy it, and details about its functionalities.
 
 ## Screenshots
+## Candidate profile
+## Employer profile
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/8f56d83e-fa4d-4605-9fee-a59e62dc58fb" width="400" alt="Employer profile"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/f074a2e5-9182-45a6-9198-4473de3f39a1" width="400" alt="Editing company info"/>
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/edc3a1c5-220d-4101-8fc7-cffe7c27ac1a" width="400" alt="Employer chats"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/7bc19bf1-5448-4a48-8ed7-bba98bbfca0c" width="400" alt="Chat with a candidate"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/a112ac5e-cec9-43ca-a38a-d4cc91649dd6" width="400" alt="Applications in the chat"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/00d46d76-3fec-4eb0-a9c1-86c094997b90" width="400" alt="Employer feed page 1"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/f3da802b-2857-4e2c-a93c-b0751437569f" width="400" alt="Employer feed page 2"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/90c2f942-8868-4afc-85f9-a32dbb296b8d" width="400" alt="Employer feed page 3"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/1cc3696e-6b46-436a-b22c-686482298b50" width="400" alt="Employer tests"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/b071f184-85cb-4a80-a9c6-bed5735d1373" width="400" alt="Adding new test"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/293cd649-61fd-45fb-aa10-138b2f710de9" width="400" alt="Editing a test"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/991868a0-7974-4350-a68e-c2f96dfbd4ee" width="400" alt="Employer's jobs"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/d6f89ca3-c214-46c7-aada-03e7cb53ef50" width="400" alt="Editing a job"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/53788d16-41f7-43ec-9d81-5e6fe7c6052d" width="400" alt="Received applications"/> 
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/57fe2196-fd0c-426a-9e4d-e7d67a301bd5" width="400" alt="Received application"/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+<img src="" width="400" alt=""/> 
+## Administrator
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/12485c5f-7a02-43cc-96ea-935e95afd45d" width="400" alt="Reported users" />
+<img src="https://github.com/iaroslavagoncharova/JobMeIn/assets/111697910/10b476b1-6cf1-435c-9d66-c740049f4fa8" width="400" alt="Administrator profile"/>
+## Instructions
 
 ## Deployment
 
