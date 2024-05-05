@@ -118,7 +118,7 @@ To deploy the JobMe In app, follow these steps:
 
 ## Database Description
 
-The app's database consists of 23 tables:
+The app's database consists of 24 tables:
 
 - **Adjectives** stores adjectives that are used for username generation
 - **Animals** stores animals' names that are used for username generation         
