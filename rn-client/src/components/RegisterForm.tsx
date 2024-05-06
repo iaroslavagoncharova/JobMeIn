@@ -35,7 +35,7 @@ const RegisterForm = ({handleToggle}: {handleToggle: () => void}) => {
       console.log(email, 'email');
       const result = await checkEmail(email);
       console.log(result, 'result');
-      if (result) {
+      if (result.available === false) {
         Alert.alert('Sähköposti on jo käytössä', 'Käytä toista sähköpostia');
       }
     } catch (error) {
